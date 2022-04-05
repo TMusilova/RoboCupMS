@@ -1,51 +1,52 @@
 package com.robogames.RoboCupMS;
 
-import java.io.Serializable;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class GlobalConfig implements Serializable {
+public class GlobalConfig {
 
     // -CONFIG-START------------------------------------------------------------------
 
     /**
-     * API prefix
+     * Prefix pro vsechny API serveru
      */
     public static final transient String API_PREFIX = "/api";
 
     /**
+     * Prefix pouze pro sekci autentizace uzivatele
+     */
+    public static final transient String AUTH_PREFIX = "/auth";
+
+    /**
+     * Servis prefix
+     */
+    public static final transient String SERVICE_PREFIX = "/service";
+
+    /**
+     * Nazev promenne v headeru requestu pro pristupovy token
+     */
+    public static String HEADER__FIELD_TOKEN = "X-TOKEN";
+
+    /**
      * Minimalni vek uzivatele
      */
-    public int USER_MIN_AGE = 6;
+    public static int USER_MIN_AGE = 6;
 
     /**
      * Maximalni vek uzivatele
      */
-    public int USER_MAX_AGE = 99;
+    public static int USER_MAX_AGE = 99;
 
     /**
      * Format datumu
      */
-    public String DATE_FORMAT = "yyyy-mm-dd";
+    public static String DATE_FORMAT = "yyyy-mm-dd";
 
     /**
      * Enkoder hesel
      */
-    public PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+    public static transient PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     // -CONFIG-END--------------------------------------------------------------------
-
-    private static GlobalConfig conf = null;
-
-    private GlobalConfig() {
-    }
-
-    public static GlobalConfig getInstance() {
-        if (GlobalConfig.conf == null) {
-            GlobalConfig.conf = new GlobalConfig();
-        }
-        return GlobalConfig.conf;
-    }
 
 }

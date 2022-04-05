@@ -1,72 +1,96 @@
 package com.robogames.RoboCupMS.API;
 
-import java.util.List;
+import java.util.Optional;
 
 import com.robogames.RoboCupMS.GlobalConfig;
-import com.robogames.RoboCupMS.API.Exception.UserException;
-import com.robogames.RoboCupMS.Entity.User;
+import com.robogames.RoboCupMS.Response;
+import com.robogames.RoboCupMS.ResponseHandler;
+import com.robogames.RoboCupMS.Entity.UserRC;
+import com.robogames.RoboCupMS.Enum.ERole;
 import com.robogames.RoboCupMS.Repository.UserRepository;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(GlobalConfig.API_PREFIX)
 public class UserControler {
 
-    private final UserRepository repository;
+    @Autowired
+    private UserRepository repository;
 
-    public UserControler(UserRepository _repository) {
-        this.repository = _repository;
+    /**
+     * Navrati info o prihlasenem uzivateli
+     * 
+     * @return UserRC
+     */
+    //@Secured({ ERole.Names.ADMIN })
+    @GetMapping("/user/info")
+    Response getInfo() {
+        UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseHandler.response(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
     }
 
     /**
      * Navrati vsechny uzivatele
      * 
-     * @return List<User>
+     * @return List<UserRC>
      */
     @GetMapping("/user/all")
-    List<User> getAll() {
-        return repository.findAll();
+    Response getAll() {
+        return ResponseHandler.response(repository.findAll());
     }
 
     /**
      * Navrati jednoho uzivatele se specifickym id
      * 
      * @param id ID hledaneho uzivatele
-     * @return User
+     * @return UserRC
      */
-    @GetMapping("/user/get_id/{id}")
-    User getOne(@PathVariable Long id) {
-        return repository.findById(id).orElseThrow(() -> new UserException.NotFound(id));
+    @GetMapping("/user/get_id")
+    Response getOne(@RequestParam Long id) {
+        Optional<UserRC> findById = repository.findById(id);
+        if (findById.isPresent()) {
+            return ResponseHandler.response(findById);
+        } else {
+            return ResponseHandler.error(String.format("User with ID [%d] not found", id));
+        }
     }
 
     /**
      * Navrati jednoho uzivatele se specifickym emailem
      * 
      * @param id ID hledaneho uzivatele
-     * @return User
+     * @return UserRC
      */
-    @GetMapping("/user/get_email/{email}")
-    User getOne(@PathVariable String email) {
-        return repository.findByEmail(email);
+    @GetMapping("/user/get_email")
+    Response getOne(@RequestParam String email) {
+        Optional<UserRC> findByEmail = repository.findByEmail(email);
+        if (findByEmail.isPresent()) {
+            return ResponseHandler.response(findByEmail);
+        } else {
+            return ResponseHandler.error(String.format("User with email adress [%s] not found", email));
+        }
     }
 
     /**
      * Prida do databaze noveho uzivatele
      * 
      * @param newUser Novy uzivatel
-     * @return User
+     * @return UserRC
      */
     @PostMapping("/user/add")
-    User add(@RequestBody User newUser) {
-        return repository.save(newUser);
+    Response add(@RequestBody UserRC newUser) {
+        return ResponseHandler.response(repository.save(newUser));
     }
 
     /**
@@ -74,20 +98,24 @@ public class UserControler {
      * 
      * @param _newUser Nove atributy uzivatele
      * @param _id      ID uzivatele jehoz atributy budou zmeneny
-     * @return User
+     * @return UserRC
      */
-    @PutMapping("/user/replace/{id}")
-    User replace(@RequestBody User newUser, @PathVariable Long id) {
-        return repository.findById(id)
+    @PutMapping("/user/replace")
+    Response replace(@RequestBody UserRC newUser, @RequestParam Long id) {
+        Optional<UserRC> map = repository.findById(id)
                 .map(user -> {
                     user.setName(newUser.getName());
                     user.setSurname(newUser.getSurname());
                     user.setEmail(newUser.getEmail());
                     user.setBirthDate(newUser.getBirthDate());
-                    user.setRole(newUser.getRole());
+                    user.setRoles(newUser.getRoles());
                     return repository.save(user);
-                })
-                .orElseThrow(() -> new UserException.NotFound(id));
+                });
+        if (map.isPresent()) {
+            return ResponseHandler.response(map);
+        } else {
+            return ResponseHandler.error(String.format("User with ID [%d] not found", id));
+        }
     }
 
     /**
@@ -95,9 +123,10 @@ public class UserControler {
      * 
      * @param id ID uzivatele, ktery ma byt odebran
      */
-    @DeleteMapping("/user/delete/{id}")
-    void delete(@PathVariable Long id) {
+    @DeleteMapping("/user/delete")
+    Response delete(@RequestParam Long id) {
         repository.deleteById(id);
+        return ResponseHandler.response("Successfully removed");
     }
 
 }

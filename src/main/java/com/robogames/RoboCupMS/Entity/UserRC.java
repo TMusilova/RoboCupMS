@@ -4,24 +4,33 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robogames.RoboCupMS.AppInit;
 import com.robogames.RoboCupMS.GlobalConfig;
+import com.robogames.RoboCupMS.Enum.ERole;
+import com.robogames.RoboCupMS.Repository.RoleRepository;
 
 /**
- * Uzivatel aplikace
+ * Uzivatel (RoboCup)
  */
-@Entity
-public class User {
+@Entity(name = "user")
+public class UserRC {
 
     /**
      * ID uzivatele
@@ -64,11 +73,17 @@ public class User {
     /**
      * Role uzivatele
      */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, unique = false)
-    private UserRole role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
-    public User() {
+    /**
+     * Pristupovy token
+     */
+    @Column(name = "token", nullable = true, unique = false)
+    private String token;
+
+    public UserRC() {
     }
 
     /**
@@ -77,15 +92,23 @@ public class User {
      * @param _name      Jmeno uzivatele
      * @param _surname   Prijmeni uzivatele
      * @param _email     Email uzivatele
+     * @param _password  Heslo uzivatele
      * @param _birthDate Datum narozeni
-     * @param _role      Role uzivatele
+     * @param _role      Vsechny role uzivatele (enum)
      */
-    public User(String _name, String _surname, String _email, Date _birthDate, UserRole _role) {
+    public UserRC(String _name, String _surname, String _email, String _password, Date _birthDate, List<ERole> _roles) {
         this.name = _name;
         this.surname = _surname;
         this.email = _email;
-        this.setBirthDate(_birthDate);
-        this.role = _role;
+        this.setPassword(_password);
+        this.birthDate = _birthDate;
+        // this.setBirthDate(_birthDate);
+        RoleRepository roleRepository = (RoleRepository) AppInit.contextProvider().getApplicationContext()
+                .getBean("roleRepository");
+        _roles.stream().forEach(_role -> {
+            Optional<Role> opt = roleRepository.findByName(_role);
+            this.roles.add(opt.get());
+        });
     }
 
     /**
@@ -165,6 +188,7 @@ public class User {
      * 
      * @return String
      */
+    @JsonIgnore
     public String getPassword() {
         return this.password;
     }
@@ -175,7 +199,7 @@ public class User {
      * @param _password Nove heslo (plain text)
      */
     public void setPassword(String _password) {
-        this.password = GlobalConfig.getInstance().PASSWORD_ENCODER.encode(_password);
+        this.password = GlobalConfig.PASSWORD_ENCODER.encode(_password);
     }
 
     /**
@@ -219,28 +243,47 @@ public class User {
         int age = Period.between(bd, currentDate).getYears();
 
         // vek musi splnovat omezeni
-        if (age >= GlobalConfig.getInstance().USER_MIN_AGE &&
-                age <= GlobalConfig.getInstance().USER_MAX_AGE) {
+        if (age >= GlobalConfig.USER_MIN_AGE &&
+                age <= GlobalConfig.USER_MAX_AGE) {
             this.birthDate = _birthDate;
         }
     }
 
     /**
-     * Role uzivatele
+     * Navratit seznam Roli uzivatele
      * 
      * @return Role
      */
-    public UserRole getRole() {
-        return this.role;
+    public Set<Role> getRoles() {
+        return this.roles;
     }
 
     /**
-     * Nastaveni role uzivatele
+     * Nastavi seznam roli uzivatele
      * 
      * @param _role Role
      */
-    public void setRole(UserRole _role) {
-        this.role = _role;
+    public void setRoles(Set<Role> _roles) {
+        this.roles = _roles;
+    }
+
+    /**
+     * Navrati pristupovy token
+     * 
+     * @return Token
+     */
+    @JsonIgnore
+    public String getToken() {
+        return this.getToken();
+    }
+
+    /**
+     * Nastavi novy token
+     * 
+     * @param _token Token
+     */
+    public void setToken(String _token) {
+        this.token = _token;
     }
 
 }
