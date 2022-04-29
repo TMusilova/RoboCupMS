@@ -12,6 +12,7 @@ import com.robogames.RoboCupMS.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,11 +63,11 @@ public class AuthControler {
                 if (user instanceof UserRC) {
                     ((UserRC) user).setToken(null);
                     repository.save(((UserRC) user));
-                    return ResponseHandler.response("Success");
+                    return ResponseHandler.response("SUCCESS");
                 }
             }
         }
-        return ResponseHandler.error("Failure");
+        return ResponseHandler.error("FAILURE");
     }
 
     /**
@@ -75,7 +76,7 @@ public class AuthControler {
      * @param newUser Novy uzivatel
      * @return Nove vytvoreni uzivatel
      */
-    @GetMapping("/register")
+    @PostMapping("/register")
     public Response register(@RequestBody UserRC newUser) {
         return ResponseHandler.response(repository.save(newUser));
     }

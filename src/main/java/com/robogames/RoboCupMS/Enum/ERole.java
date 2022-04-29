@@ -8,44 +8,34 @@ public enum ERole {
     /**
      * Role soutezici
      */
-    COMPETITOR(ERole.Names.COMPETITOR),
+    COMPETITOR,
 
     /**
      * Role admin
      */
-    ADMIN(ERole.Names.ADMIN),
+    ADMIN,
 
     /**
      * Role vedouci
      */
-    LEADER(ERole.Names.LEADER),
+    LEADER,
 
     /**
      * Role asistent
      */
-    ASSISTANT(ERole.Names.ASSISTANT),
+    ASSISTANT,
 
     /**
      * Role rozhodci
      */
-    REFEREE(ERole.Names.REFEREE);
+    REFEREE;
 
     public static class Names {
-        public static final String COMPETITOR = "COMPETITOR";
-        public static final String ADMIN = "ADMIN";
-        public static final String LEADER = "LEADER";
-        public static final String ASSISTANT = "ASSISTANT";
-        public static final String REFEREE = "REFEREE";
-    }
-
-    private final String label;
-
-    private ERole(String label) {
-        this.label = label;
-    }
-
-    public String toString() {
-        return this.label;
+        public static final String COMPETITOR = "ROLE_COMPETITOR";
+        public static final String ADMIN = "ROLE_ADMIN";
+        public static final String LEADER = "ROLE_LEADER";
+        public static final String ASSISTANT = "ROLE_ASSISTANT";
+        public static final String REFEREE = "ROLE_REFEREE";
     }
 
 }

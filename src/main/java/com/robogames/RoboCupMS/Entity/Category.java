@@ -8,13 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.robogames.RoboCupMS.Enum.EMatchState;
+import com.robogames.RoboCupMS.Enum.ECategory;
 
 /**
- * Entita reprezentujici mozne stavy zapasu
+ * Entita reprezentujici kategorie, ve kterych muze tym soutezit
  */
 @Entity
-public class MatchState {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +22,12 @@ public class MatchState {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
-    private EMatchState name;
+    private ECategory name;
 
-    public MatchState() {
+    public Category() {
     }
 
-    public MatchState(EMatchState name) {
+    public Category(ECategory name) {
         this.name = name;
     }
 
@@ -39,11 +39,11 @@ public class MatchState {
         this.id = id;
     }
 
-    public EMatchState getName() {
+    public ECategory getName() {
         return name;
     }
 
-    public void setName(EMatchState name) {
+    public void setName(ECategory name) {
         this.name = name;
     }
 

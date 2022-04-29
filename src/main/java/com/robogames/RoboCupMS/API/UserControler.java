@@ -1,5 +1,7 @@
 package com.robogames.RoboCupMS.API;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.robogames.RoboCupMS.GlobalConfig;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(GlobalConfig.API_PREFIX)
+@RequestMapping(GlobalConfig.API_PREFIX + "/user")
 public class UserControler {
 
     @Autowired
@@ -31,21 +33,21 @@ public class UserControler {
     /**
      * Navrati info o prihlasenem uzivateli
      * 
-     * @return UserRC
+     * @return Informace o uzivateli
      */
-    //@Secured({ ERole.Names.ADMIN })
-    @GetMapping("/user/info")
+    @GetMapping("/info")
     Response getInfo() {
         UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseHandler.response(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
+        return ResponseHandler.response(user);
     }
 
     /**
      * Navrati vsechny uzivatele
      * 
-     * @return List<UserRC>
+     * @return Vsichni uzivatele v databazi
      */
-    @GetMapping("/user/all")
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
+    @GetMapping("/all")
     Response getAll() {
         return ResponseHandler.response(repository.findAll());
     }
@@ -54,9 +56,10 @@ public class UserControler {
      * Navrati jednoho uzivatele se specifickym id
      * 
      * @param id ID hledaneho uzivatele
-     * @return UserRC
+     * @return Informace o uzivateli
      */
-    @GetMapping("/user/get_id")
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
+    @GetMapping("/get_id")
     Response getOne(@RequestParam Long id) {
         Optional<UserRC> findById = repository.findById(id);
         if (findById.isPresent()) {
@@ -70,9 +73,10 @@ public class UserControler {
      * Navrati jednoho uzivatele se specifickym emailem
      * 
      * @param id ID hledaneho uzivatele
-     * @return UserRC
+     * @return Informace o uzivateli
      */
-    @GetMapping("/user/get_email")
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
+    @GetMapping("/get_email")
     Response getOne(@RequestParam String email) {
         Optional<UserRC> findByEmail = repository.findByEmail(email);
         if (findByEmail.isPresent()) {
@@ -86,21 +90,32 @@ public class UserControler {
      * Prida do databaze noveho uzivatele
      * 
      * @param newUser Novy uzivatel
-     * @return UserRC
+     * @return Informace o stavu provedene operace
      */
-    @PostMapping("/user/add")
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @PostMapping("/add")
     Response add(@RequestBody UserRC newUser) {
-        return ResponseHandler.response(repository.save(newUser));
+        List<ERole> roles = new ArrayList<ERole>();
+        roles.add(ERole.COMPETITOR);
+        UserRC u = new UserRC(
+                newUser.getName(),
+                newUser.getSurname(),
+                newUser.getEmail(),
+                newUser.getPassword(),
+                newUser.getBirthDate(),
+                roles);
+        return ResponseHandler.response(repository.save(u));
     }
 
     /**
-     * Nahradi atributy uzivatele s konktretnim ID
+     * Editace atributu uzivatele s konktretnim ID
      * 
      * @param _newUser Nove atributy uzivatele
      * @param _id      ID uzivatele jehoz atributy budou zmeneny
-     * @return UserRC
+     * @return Informace o stavu provedene operace
      */
-    @PutMapping("/user/replace")
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @PutMapping("/edit")
     Response replace(@RequestBody UserRC newUser, @RequestParam Long id) {
         Optional<UserRC> map = repository.findById(id)
                 .map(user -> {
@@ -122,11 +137,13 @@ public class UserControler {
      * Odebere uzivatele
      * 
      * @param id ID uzivatele, ktery ma byt odebran
+     * @return Informace o stavu provedene operace
      */
-    @DeleteMapping("/user/delete")
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @DeleteMapping("/delete")
     Response delete(@RequestParam Long id) {
         repository.deleteById(id);
-        return ResponseHandler.response("Successfully removed");
+        return ResponseHandler.response("SUCCESS");
     }
 
 }

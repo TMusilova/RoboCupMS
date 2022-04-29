@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -78,6 +79,12 @@ public class UserRC {
     private Set<Role> roles = new HashSet<>();
 
     /**
+     * Tym, ve kterem se uzivatel nachazi
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Team team;
+
+    /**
      * Pristupovy token
      */
     @Column(name = "token", nullable = true, unique = false)
@@ -101,8 +108,8 @@ public class UserRC {
         this.surname = _surname;
         this.email = _email;
         this.setPassword(_password);
-        this.birthDate = _birthDate;
-        // this.setBirthDate(_birthDate);
+        // this.birthDate = _birthDate;
+        this.setBirthDate(_birthDate);
         RoleRepository roleRepository = (RoleRepository) AppInit.contextProvider().getApplicationContext()
                 .getBean("roleRepository");
         _roles.stream().forEach(_role -> {
@@ -188,7 +195,6 @@ public class UserRC {
      * 
      * @return String
      */
-    @JsonIgnore
     public String getPassword() {
         return this.password;
     }
@@ -265,6 +271,25 @@ public class UserRC {
      */
     public void setRoles(Set<Role> _roles) {
         this.roles = _roles;
+    }
+
+    /**
+     * Navrati tym, ve kterem se uzivatel nachazi
+     * 
+     * @return
+     */
+    public Team getTeam() {
+        return this.team;
+    }
+
+    
+    /**
+     * Priradi uzivateli tym, ve kterem se nachazi
+     * 
+     * @param _team Novy tym
+     */
+    public void setTeam(Team _team) {
+        this.team = _team;
     }
 
     /**

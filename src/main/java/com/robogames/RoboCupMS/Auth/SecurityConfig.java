@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled=true, jsr250Enabled=true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         private static final String[] NOT_SECURED = new String[] {
@@ -36,4 +36,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 .permitAll()
                                 .anyRequest().authenticated();
         }
+
 }
