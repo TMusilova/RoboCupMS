@@ -13,12 +13,12 @@ import com.robogames.RoboCupMS.Enum.ECategory;
 /**
  * Entita reprezentujici kategorie, ve kterych muze tym soutezit
  */
-@Entity
+@Entity(name="category")
 public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)

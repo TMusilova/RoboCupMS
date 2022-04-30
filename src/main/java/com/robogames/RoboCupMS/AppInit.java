@@ -4,9 +4,15 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import com.robogames.RoboCupMS.Entity.Category;
+import com.robogames.RoboCupMS.Entity.MatchState;
 import com.robogames.RoboCupMS.Entity.Role;
 import com.robogames.RoboCupMS.Entity.UserRC;
+import com.robogames.RoboCupMS.Enum.ECategory;
+import com.robogames.RoboCupMS.Enum.EMatchState;
 import com.robogames.RoboCupMS.Enum.ERole;
+import com.robogames.RoboCupMS.Repository.CategoryRepository;
+import com.robogames.RoboCupMS.Repository.MatchStateRepository;
 import com.robogames.RoboCupMS.Repository.RoleRepository;
 import com.robogames.RoboCupMS.Repository.UserRepository;
 
@@ -42,6 +48,43 @@ public class AppInit {
                     new Role(ERole.ASSISTANT),
                     new Role(ERole.REFEREE),
                     new Role(ERole.COMPETITOR)));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Prvni inicializace kategorii
+     * 
+     * @param repository RoleRepository
+     * @return
+     */
+    @Bean
+    public ApplicationRunner initCategory(CategoryRepository repository) {
+        if (repository.count() == 0) {
+            return args -> repository.saveAll(Arrays.asList(
+                    new Category(ECategory.ELEMENTARY_SCHOOL),
+                    new Category(ECategory.HIGH_SCHOOL),
+                    new Category(ECategory.UNIVERSITY),
+                    new Category(ECategory.OPEN)));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Prvni inicializace stavu zapasu
+     * 
+     * @param repository RoleRepository
+     * @return
+     */
+    @Bean
+    public ApplicationRunner initMatchState(MatchStateRepository repository) {
+        if (repository.count() == 0) {
+            return args -> repository.saveAll(Arrays.asList(
+                    new MatchState(EMatchState.DONE),
+                    new MatchState(EMatchState.REMATCH),
+                    new MatchState(EMatchState.WAITING)));
         } else {
             return null;
         }

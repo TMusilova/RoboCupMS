@@ -81,7 +81,8 @@ public class UserRC {
     /**
      * Tym, ve kterem se uzivatel nachazi
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
+    @JoinColumn(name = "team_id", nullable = true)
     private Team team;
 
     /**
@@ -278,11 +279,14 @@ public class UserRC {
      * 
      * @return
      */
-    public Team getTeam() {
-        return this.team;
+    public long getTeamID() {
+        if (this.team == null) {
+            return -1;
+        } else {
+            return this.team.getID();
+        }
     }
 
-    
     /**
      * Priradi uzivateli tym, ve kterem se nachazi
      * 

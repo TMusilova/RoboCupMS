@@ -65,7 +65,7 @@ public class UserControler {
         if (findById.isPresent()) {
             return ResponseHandler.response(findById);
         } else {
-            return ResponseHandler.error(String.format("User with ID [%d] not found", id));
+            return ResponseHandler.error(String.format("user with ID [%d] not found", id));
         }
     }
 
@@ -82,7 +82,7 @@ public class UserControler {
         if (findByEmail.isPresent()) {
             return ResponseHandler.response(findByEmail);
         } else {
-            return ResponseHandler.error(String.format("User with email adress [%s] not found", email));
+            return ResponseHandler.error(String.format("user with email adress [%s] not found", email));
         }
     }
 
@@ -127,9 +127,9 @@ public class UserControler {
                     return repository.save(user);
                 });
         if (map.isPresent()) {
-            return ResponseHandler.response(map);
+            return ResponseHandler.response("success");
         } else {
-            return ResponseHandler.error(String.format("User with ID [%d] not found", id));
+            return ResponseHandler.error(String.format("failure, user with ID [%d] not found", id));
         }
     }
 
@@ -143,7 +143,7 @@ public class UserControler {
     @DeleteMapping("/delete")
     Response delete(@RequestParam Long id) {
         repository.deleteById(id);
-        return ResponseHandler.response("SUCCESS");
+        return ResponseHandler.response("success");
     }
 
 }

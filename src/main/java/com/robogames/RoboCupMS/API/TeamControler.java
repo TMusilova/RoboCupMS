@@ -31,18 +31,36 @@ public class TeamControler {
     private UserRepository userRepository;
 
     /**
+     * Navrati info o tymu, ve kterem se prihlaseny uzivatel nachazi
+     * 
+     * @param id ID tymu
+     * @return Informace o stavu provedene operace
+     */
+    @GetMapping("/myTeam")
+    Response myTeam() {
+        UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (user.getTeamID() != -1) {
+            Optional<Team> team = this.teamRepository.findById(user.getTeamID());
+            return ResponseHandler.response(team.get());
+        } else {
+            return ResponseHandler.error("you are not a member of any team");
+        }
+    }
+
+    /**
      * Navrati info o tymu s konkretnim ID
      * 
      * @param id ID tymu
      * @return Informace o stavu provedene operace
      */
-    @GetMapping("/infoByID")
-    Response getInfoID(@RequestParam Long id) {
+    @GetMapping("/findByID")
+    Response findID(@RequestParam Long id) {
         Optional<Team> team = this.teamRepository.findById(id);
         if (team.isPresent()) {
             return ResponseHandler.response(team);
         } else {
-            return ResponseHandler.error(String.format("Team with ID [%d] not found", id));
+            return ResponseHandler.error(String.format("team with ID [%d] not found", id));
         }
     }
 
@@ -52,14 +70,24 @@ public class TeamControler {
      * @param name Jmeno tymu
      * @return Informace o stavu provedene operace
      */
-    @GetMapping("/infoByName")
-    Response getInfoName(@RequestParam String name) {
+    @GetMapping("/findByName")
+    Response findName(@RequestParam String name) {
         Optional<Team> team = this.teamRepository.findByName(name);
         if (team.isPresent()) {
             return ResponseHandler.response(team);
         } else {
-            return ResponseHandler.error(String.format("Team with Name [%s] not found", name));
+            return ResponseHandler.error(String.format("team with Name [%s] not found", name));
         }
+    }
+
+    /**
+     * Navrati vsechny tymy
+     * 
+     * @return Seznam vsech tymu
+     */
+    @GetMapping("/all")
+    Response getAll() {
+        return ResponseHandler.response(this.teamRepository.findAll());
     }
 
     /**
@@ -72,9 +100,11 @@ public class TeamControler {
     Response create(@RequestParam String name) {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (leader.getTeam() == null) {
+        if (leader.getTeamID() == -1) {
             Team t = new Team(name, leader);
-            return ResponseHandler.response(this.teamRepository.save(t));
+            this.teamRepository.save(t);
+            this.userRepository.save(leader);
+            return ResponseHandler.response("success");
         } else {
             return ResponseHandler.error("failure, you already have team");
         }
@@ -91,6 +121,13 @@ public class TeamControler {
 
         Optional<Team> t = this.teamRepository.findByLeader(leader);
         if (t.isPresent()) {
+            // odebere cleny z tymu
+            t.get().getMembers().forEach((m) -> {
+                m.setTeam(null);
+            });
+            this.userRepository.saveAll(t.get().getMembers());
+            t.get().getMembers().clear();
+            // odstrani tym
             this.teamRepository.delete(t.get());
             return ResponseHandler.response("success");
         } else {
@@ -111,6 +148,7 @@ public class TeamControler {
         Optional<Team> t = this.teamRepository.findByLeader(leader);
         if (t.isPresent()) {
             t.get().setName(name);
+            this.teamRepository.save(t.get());
             return ResponseHandler.response("success");
         } else {
             return ResponseHandler.error("failure, you are not the leader of any existing team");
@@ -123,7 +161,7 @@ public class TeamControler {
      * @param id ID clena, ktery ma byt pridat do tymu
      * @return Informace o stavu provedene operace
      */
-    @PutMapping("/addmember")
+    @PutMapping("/addMember")
     Response addMember(@RequestParam long id) {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -132,6 +170,9 @@ public class TeamControler {
             Optional<UserRC> u = this.userRepository.findById(id);
             if (u.isPresent()) {
                 t.get().getMembers().add(u.get());
+                u.get().setTeam(t.get());
+                this.teamRepository.save(t.get());
+                this.userRepository.save(u.get());
                 return ResponseHandler.response("success");
             } else {
                 return ResponseHandler.response(String.format("failure, user with ID [%d] not found", id));
@@ -156,6 +197,9 @@ public class TeamControler {
             Optional<UserRC> u = this.userRepository.findById(id);
             if (u.isPresent()) {
                 t.get().getMembers().remove(u.get());
+                u.get().setTeam(null);
+                this.teamRepository.save(t.get());
+                this.userRepository.save(u.get());
                 return ResponseHandler.response("success");
             } else {
                 return ResponseHandler.response(String.format("failure, user with ID [%d] not found", id));

@@ -13,12 +13,12 @@ import com.robogames.RoboCupMS.Enum.EMatchState;
 /**
  * Entita reprezentujici mozne stavy zapasu
  */
-@Entity
+@Entity(name = "match_state")
 public class MatchState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
