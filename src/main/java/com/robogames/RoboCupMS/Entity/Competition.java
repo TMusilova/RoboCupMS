@@ -1,12 +1,18 @@
 package com.robogames.RoboCupMS.Entity;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity(name = "competition")
 public class Competition {
@@ -48,16 +54,36 @@ public class Competition {
     @Column(name = "started", nullable = false, unique = false)
     private Boolean started;
 
-    public Competition() {
+    /**
+     * Registrace tymu do tohoto rocniku souteze
+     */
+    @OneToMany(mappedBy = "competition", fetch = FetchType.EAGER)
+    private List<TeamRegistration> registrations;
 
+    /**
+     * Vytvori instanci rocniku souteze. Do souteze se muzi registrovat tymy, ktere
+     * chteji v tomto danem rocniku soutezit.
+     */
+    public Competition() {
+        this.registrations = new ArrayList<TeamRegistration>();
     }
 
+    /**
+     * Vytvori instanci rocniku souteze. Do souteze se muzi registrovat tymy, ktere
+     * chteji v tomto danem rocniku soutezit.
+     * 
+     * @param _year  Rocnik souteze
+     * @param _date  Datum konani souteze
+     * @param _start Cas zacatku souteze
+     * @param _end   Cas ukonceni souteze
+     */
     public Competition(int _year, Date _date, Time _start, Time _end) {
         this.year = _year;
         this.date = _date;
         this.startTime = _start;
         this.endTime = _end;
         this.started = false;
+        this.registrations = new ArrayList<TeamRegistration>();
     }
 
     /**
@@ -157,6 +183,16 @@ public class Competition {
      */
     public void setStarted(Boolean s) {
         this.started = s;
+    }
+
+    /**
+     * Navrati vsechny registrace tymu do tohoto rocniku souteze
+     * 
+     * @return Seznam vsech registraci
+     */
+    @JsonIgnore
+    public List<TeamRegistration> getRegistrations() {
+        return this.registrations;
     }
 
 }

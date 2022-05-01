@@ -8,7 +8,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,6 +24,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.robogames.RoboCupMS.AppInit;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Enum.ERole;
@@ -39,6 +43,12 @@ public class UserRC {
     @Id
     @GeneratedValue
     private Long id;
+
+    /**
+     * UUID uzivatele
+     */
+    @Column(name = "uuid", nullable = false, unique = true)
+    private String uuid;
 
     /**
      * Jmeno uzivatele
@@ -74,7 +84,7 @@ public class UserRC {
     /**
      * Role uzivatele
      */
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
@@ -91,11 +101,14 @@ public class UserRC {
     @Column(name = "token", nullable = true, unique = false)
     private String token;
 
+    /**
+     * Vytvori noveho uzivatele robosouteze
+     */
     public UserRC() {
     }
 
     /**
-     * Vytvori noveho uzivatele
+     * Vytvori noveho uzivatele robosouteze
      * 
      * @param _name      Jmeno uzivatele
      * @param _surname   Prijmeni uzivatele
@@ -105,17 +118,18 @@ public class UserRC {
      * @param _role      Vsechny role uzivatele (enum)
      */
     public UserRC(String _name, String _surname, String _email, String _password, Date _birthDate, List<ERole> _roles) {
+        this.uuid = UUID.randomUUID().toString();
         this.name = _name;
         this.surname = _surname;
         this.email = _email;
         this.setPassword(_password);
-        // this.birthDate = _birthDate;
         this.setBirthDate(_birthDate);
         RoleRepository roleRepository = (RoleRepository) AppInit.contextProvider().getApplicationContext()
                 .getBean("roleRepository");
         _roles.stream().forEach(_role -> {
             Optional<Role> opt = roleRepository.findByName(_role);
-            this.roles.add(opt.get());
+            if (opt.isPresent())
+                this.roles.add(opt.get());
         });
     }
 
@@ -129,12 +143,12 @@ public class UserRC {
     }
 
     /**
-     * Nastavi nove ID uzivateli
+     * Navrati UUID uzivatele
      * 
-     * @param _id Nove ID
+     * @return UUID
      */
-    public void setID(long _id) {
-        this.id = _id;
+    public String getUuid() {
+        return this.uuid;
     }
 
     /**
@@ -196,6 +210,8 @@ public class UserRC {
      * 
      * @return String
      */
+    @JsonIgnore
+    @JsonProperty(access = Access.WRITE_ONLY)
     public String getPassword() {
         return this.password;
     }
@@ -210,6 +226,16 @@ public class UserRC {
     }
 
     /**
+     * Ovari zda se heslo shoduje z heslem uzivatele
+     * 
+     * @param password Heslo
+     * @return Heslo je/neni stejne
+     */
+    public boolean passwordMatch(String password) {
+        return GlobalConfig.PASSWORD_ENCODER.matches(password, this.getPassword());
+    }
+
+    /**
      * Navrati vek uzivatele
      * 
      * @return Vek
@@ -218,9 +244,7 @@ public class UserRC {
     public int getAge() {
         LocalDate currentDate = LocalDate.now();
         if ((this.birthDate != null) && (currentDate != null)) {
-            LocalDate bd = birthDate.toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate();
+            LocalDate bd = ((java.sql.Date) birthDate).toLocalDate();
             return Period.between(bd, currentDate).getYears();
         } else {
             return 0;
@@ -281,7 +305,7 @@ public class UserRC {
      */
     public long getTeamID() {
         if (this.team == null) {
-            return -1;
+            return Team.NOT_IN_TEAM;
         } else {
             return this.team.getID();
         }

@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import com.robogames.RoboCupMS.Enum.ECategory;
 
 /**
- * Entita reprezentujici kategorie, ve kterych muze tym soutezit
+ * Entita reprezentujici kategorie, ve kterych muze tym soutezit (Enum)
  */
 @Entity(name="category")
 public class Category {
@@ -31,11 +31,11 @@ public class Category {
         this.name = name;
     }
 
-    public Integer getID() {
+    public Long getID() {
         return id;
     }
 
-    public void getID(Integer id) {
+    public void getID(Long id) {
         this.id = id;
     }
 

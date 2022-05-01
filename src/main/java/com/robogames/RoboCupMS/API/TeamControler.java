@@ -40,11 +40,11 @@ public class TeamControler {
     Response myTeam() {
         UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (user.getTeamID() != -1) {
+        if (user.getTeamID() != Team.NOT_IN_TEAM) {
             Optional<Team> team = this.teamRepository.findById(user.getTeamID());
             return ResponseHandler.response(team.get());
         } else {
-            return ResponseHandler.error("you are not a member of any team");
+            return ResponseHandler.error("failure, you are not a member of any team");
         }
     }
 
@@ -52,6 +52,7 @@ public class TeamControler {
      * Navrati info o tymu s konkretnim ID
      * 
      * @param id ID tymu
+     * 
      * @return Informace o stavu provedene operace
      */
     @GetMapping("/findByID")
@@ -100,7 +101,7 @@ public class TeamControler {
     Response create(@RequestParam String name) {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (leader.getTeamID() == -1) {
+        if (leader.getTeamID() == Team.NOT_IN_TEAM) {
             Team t = new Team(name, leader);
             this.teamRepository.save(t);
             this.userRepository.save(leader);
@@ -162,20 +163,23 @@ public class TeamControler {
      * @return Informace o stavu provedene operace
      */
     @PutMapping("/addMember")
-    Response addMember(@RequestParam long id) {
+    Response addMember(@RequestParam String uuid) {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Optional<Team> t = this.teamRepository.findByLeader(leader);
         if (t.isPresent()) {
-            Optional<UserRC> u = this.userRepository.findById(id);
+            Optional<UserRC> u = this.userRepository.findByUuid(uuid);
             if (u.isPresent()) {
+                if (u.get().getTeamID() != Team.NOT_IN_TEAM) {
+                    return ResponseHandler.error("failure, user is already in team");
+                }
                 t.get().getMembers().add(u.get());
                 u.get().setTeam(t.get());
                 this.teamRepository.save(t.get());
                 this.userRepository.save(u.get());
                 return ResponseHandler.response("success");
             } else {
-                return ResponseHandler.response(String.format("failure, user with ID [%d] not found", id));
+                return ResponseHandler.response(String.format("failure, user with UUID [%s] not found", uuid));
             }
         } else {
             return ResponseHandler.error("failure, you are not the leader of any existing team");
@@ -189,12 +193,12 @@ public class TeamControler {
      * @return Informace o stavu provedene operace
      */
     @PutMapping("/removeMember")
-    Response removeMember(@RequestParam long id) {
+    Response removeMember(@RequestParam String uuid) {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Optional<Team> t = this.teamRepository.findByLeader(leader);
         if (t.isPresent()) {
-            Optional<UserRC> u = this.userRepository.findById(id);
+            Optional<UserRC> u = this.userRepository.findByUuid(uuid);
             if (u.isPresent()) {
                 t.get().getMembers().remove(u.get());
                 u.get().setTeam(null);
@@ -202,7 +206,7 @@ public class TeamControler {
                 this.userRepository.save(u.get());
                 return ResponseHandler.response("success");
             } else {
-                return ResponseHandler.response(String.format("failure, user with ID [%d] not found", id));
+                return ResponseHandler.response(String.format("failure, user with UUID [%s] not found", uuid));
             }
         } else {
             return ResponseHandler.error("failure, you are not the leader of any existing team");

@@ -3,10 +3,12 @@ package com.robogames.RoboCupMS.API;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
+import com.robogames.RoboCupMS.Entity.Role;
 import com.robogames.RoboCupMS.Entity.UserRC;
 import com.robogames.RoboCupMS.Enum.ERole;
 import com.robogames.RoboCupMS.Repository.UserRepository;
@@ -65,7 +67,7 @@ public class UserControler {
         if (findById.isPresent()) {
             return ResponseHandler.response(findById);
         } else {
-            return ResponseHandler.error(String.format("user with ID [%d] not found", id));
+            return ResponseHandler.error(String.format("failure, user with ID [%d] not found", id));
         }
     }
 
@@ -82,7 +84,7 @@ public class UserControler {
         if (findByEmail.isPresent()) {
             return ResponseHandler.response(findByEmail);
         } else {
-            return ResponseHandler.error(String.format("user with email adress [%s] not found", email));
+            return ResponseHandler.error(String.format("failure, user with email adress [%s] not found", email));
         }
     }
 
@@ -110,26 +112,84 @@ public class UserControler {
     /**
      * Editace atributu uzivatele s konktretnim ID
      * 
-     * @param _newUser Nove atributy uzivatele
-     * @param _id      ID uzivatele jehoz atributy budou zmeneny
+     * @param newUser Nove atributy uzivatele
+     * @param id      ID uzivatele jehoz atributy budou zmeneny
      * @return Informace o stavu provedene operace
      */
-    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PutMapping("/edit")
-    Response replace(@RequestBody UserRC newUser, @RequestParam Long id) {
-        Optional<UserRC> map = repository.findById(id)
+    Response edit(@RequestBody UserRC newUser, @RequestParam String uuid) {
+        Optional<UserRC> map = repository.findByUuid(uuid)
                 .map(user -> {
                     user.setName(newUser.getName());
                     user.setSurname(newUser.getSurname());
                     user.setEmail(newUser.getEmail());
                     user.setBirthDate(newUser.getBirthDate());
-                    user.setRoles(newUser.getRoles());
                     return repository.save(user);
                 });
         if (map.isPresent()) {
             return ResponseHandler.response("success");
         } else {
-            return ResponseHandler.error(String.format("failure, user with ID [%d] not found", id));
+            return ResponseHandler.error(String.format("failure, user with UUID [%s] not found", uuid));
+        }
+    }
+
+    /**
+     * Zmena uzivatelskeho hesla
+     * 
+     * @param oldPassword Stare heslo
+     * @param newPasword  Nove heslo
+     * @return Informace o stavu provedene operace
+     */
+    @PutMapping("/changePassword")
+    Response changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
+        UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (user.passwordMatch(oldPassword)) {
+            user.setPassword(newPassword);
+            this.repository.save(user);
+            return ResponseHandler.response("success");
+        } else {
+            return ResponseHandler.error("failure, your old password is invalid");
+        }
+    }
+
+    /**
+     * Vygenerovat nove heslo
+     * 
+     * @param newPasword Nove heslo
+     * @return Informace o stavu provedene operace
+     */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @PutMapping("/generatePassword")
+    Response generatePassword(@RequestParam String newPassword, @RequestParam String uuid) {
+        Optional<UserRC> user = repository.findByUuid(uuid);
+        if (user.isPresent()) {
+            user.get().setPassword(newPassword);
+            this.repository.save(user.get());
+            return ResponseHandler.response("success");
+        } else {
+            return ResponseHandler.error(String.format("failure, user with UUID [%s] not found", uuid));
+        }
+    }
+
+    /**
+     * Zmeni role uzivatele
+     * 
+     * @param roles Nove atributy uzivatele
+     * @param id    ID uzivatele jehoz atributy budou zmeneny
+     * @return Informace o stavu provedene operace
+     */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @PutMapping("/editRole")
+    Response editRole(@RequestBody Set<Role> roles, @RequestParam String uuid) {
+        Optional<UserRC> map = repository.findByUuid(uuid)
+                .map(user -> {
+                    user.setRoles(roles);
+                    return repository.save(user);
+                });
+        if (map.isPresent()) {
+            return ResponseHandler.response("success");
+        } else {
+            return ResponseHandler.error(String.format("failure, user with UUID [%s] not found", uuid));
         }
     }
 
@@ -141,9 +201,14 @@ public class UserControler {
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @DeleteMapping("/delete")
-    Response delete(@RequestParam Long id) {
-        repository.deleteById(id);
-        return ResponseHandler.response("success");
+    Response delete(@RequestParam String uuid) {
+        Optional<UserRC> user = repository.findByUuid(uuid);
+        if (user.isPresent()) {
+            this.repository.delete(user.get());
+            return ResponseHandler.response("success");
+        } else {
+            return ResponseHandler.error(String.format("failure, user with UUID [%s] not found", uuid));
+        }
     }
 
 }

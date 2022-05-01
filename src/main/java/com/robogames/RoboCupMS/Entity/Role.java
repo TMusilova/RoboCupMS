@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import com.robogames.RoboCupMS.Enum.ERole;
 
 /**
- * Entita reprezentujici vsechny dostupne uzivatelske role
+ * Entita reprezentujici vsechny dostupne uzivatelske role (Enum)
  */
 @Entity
 public class Role {

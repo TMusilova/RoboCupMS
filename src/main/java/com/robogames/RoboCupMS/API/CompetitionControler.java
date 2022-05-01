@@ -33,8 +33,24 @@ public class CompetitionControler {
      * @return List soutezi
      */
     @GetMapping("/all")
-    Response all() {
+    Response getAll() {
         return ResponseHandler.response(repository.findAll());
+    }
+
+    /**
+     * Navrati vsechny registrace tymu pro dany rocnik
+     * 
+     * @param year Rocnik souteze
+     * @return List vsech registraci
+     */
+    @GetMapping("/allRegistrations")
+    Response allRegistrations(@RequestParam int year) {
+        Optional<Competition> c = this.repository.findByYear(year);
+        if (c.isPresent()) {
+            return ResponseHandler.response(c.get().getRegistrations());
+        } else {
+            return ResponseHandler.error(String.format("compatition [year: %d] not exists", year));
+        }
     }
 
     /**
@@ -46,7 +62,17 @@ public class CompetitionControler {
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/create")
     Response create(@RequestBody Competition compatition) {
-        return ResponseHandler.response(this.repository.save(compatition));
+        if (this.repository.findByYear(compatition.getYear()).isPresent()) {
+            return ResponseHandler.error("failure, the competition has already been created for this year");
+        } else {
+            Competition c = new Competition(
+                    compatition.getYear(),
+                    compatition.getDate(),
+                    compatition.getStartTime(),
+                    compatition.getEndTime());
+            this.repository.save(c);
+            return ResponseHandler.response("success");
+        }
     }
 
     /**

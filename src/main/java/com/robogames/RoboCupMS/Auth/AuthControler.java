@@ -1,5 +1,7 @@
 package com.robogames.RoboCupMS.Auth;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -7,6 +9,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.UserRC;
+import com.robogames.RoboCupMS.Enum.ERole;
 import com.robogames.RoboCupMS.Repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +41,7 @@ public class AuthControler {
     public Response login(@RequestParam String email, @RequestParam String password) {
         Optional<UserRC> user = repository.findByEmail(email);
         if (user.isPresent()) {
-            if (GlobalConfig.PASSWORD_ENCODER.matches(password, user.get().getPassword())) {
+            if (user.get().passwordMatch(password)) {
                 String token = UUID.randomUUID().toString();
                 UserRC u = user.get();
                 u.setToken(token);
@@ -78,7 +81,21 @@ public class AuthControler {
      */
     @PostMapping("/register")
     public Response register(@RequestBody UserRC newUser) {
-        return ResponseHandler.response(repository.save(newUser));
+        if (this.repository.findByEmail(newUser.getEmail()).isPresent()) {
+            return ResponseHandler.error("failure, user with this email already exists");
+        } else {
+            List<ERole> roles = new ArrayList<ERole>();
+            roles.add(ERole.COMPETITOR);
+            UserRC u = new UserRC(
+                    newUser.getName(),
+                    newUser.getSurname(),
+                    newUser.getEmail(),
+                    newUser.getPassword(),
+                    newUser.getBirthDate(),
+                    roles);
+            repository.save(u);
+            return ResponseHandler.response("success");
+        }
     }
 
 }

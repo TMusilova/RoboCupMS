@@ -38,6 +38,32 @@ public class GlobalConfig {
     public static int USER_MAX_AGE = 99;
 
     /**
+     * Defaultni nastaveni kategorii
+     * zakladni skola: max 15 let
+     * stredni skola: max 19 let
+     * vysoka skola: max 26 let
+     * open kategorie: vic jak 26 let
+     */
+
+    /**
+     * Maximalni vekove hranice pro zakladni skoly
+     * (pro zruseni kategorie zadej zaporne cislo)
+     */
+    public static int ELEMENTARY_SCHOOL_MAX_AGE = 15;
+
+    /**
+     * Maximalni vekove hranice pro strdeni skoly
+     * (pro zruseni kategorie zadej zaporne cislo)
+     */
+    public static int HIGH_SCHOOL_MAX_AGE = 19;
+
+    /**
+     * Maximalni vekova hranice pro vysoke skoly
+     * (pro zruseni kategorie zadej zaporne cislo)
+     */
+    public static int UNIVERSITY_MAX_AGE = 26;
+
+    /**
      * Format datumu
      */
     public static String DATE_FORMAT = "yyyy-mm-dd";

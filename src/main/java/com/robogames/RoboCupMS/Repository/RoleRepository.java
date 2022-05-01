@@ -7,6 +7,9 @@ import com.robogames.RoboCupMS.Enum.ERole;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * Repozitar pro uzivatelske role
+ */
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
     Optional<Role> findByName(ERole name);

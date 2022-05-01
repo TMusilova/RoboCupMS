@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import com.robogames.RoboCupMS.Enum.EMatchState;
 
 /**
- * Entita reprezentujici mozne stavy zapasu
+ * Entita reprezentujici mozne stavy zapasu (Enum)
  */
 @Entity(name = "match_state")
 public class MatchState {
@@ -31,11 +31,11 @@ public class MatchState {
         this.name = name;
     }
 
-    public Integer getID() {
+    public Long getID() {
         return id;
     }
 
-    public void getID(Integer id) {
+    public void getID(Long id) {
         this.id = id;
     }
 
