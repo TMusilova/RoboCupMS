@@ -178,7 +178,7 @@ public class UserControler {
      * @param id    ID uzivatele jehoz atributy budou zmeneny
      * @return Informace o stavu provedene operace
      */
-    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @Secured({ ERole.Names.ADMIN })
     @PutMapping("/editRole")
     Response editRole(@RequestBody Set<Role> roles, @RequestParam String uuid) {
         Optional<UserRC> map = repository.findByUuid(uuid)

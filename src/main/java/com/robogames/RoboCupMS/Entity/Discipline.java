@@ -9,6 +9,12 @@ import javax.persistence.Id;
 public class Discipline {
 
     /**
+     * Navratova hodnota ID "zadne" discipliny (navrati pokud robot neni registrovan v zadne
+     * discipline)
+     */
+    public static final int NOT_REGISTRED = -1;
+
+    /**
      * ID discipliny
      */
     @Id

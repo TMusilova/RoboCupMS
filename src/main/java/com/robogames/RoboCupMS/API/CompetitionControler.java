@@ -49,7 +49,7 @@ public class CompetitionControler {
         if (c.isPresent()) {
             return ResponseHandler.response(c.get().getRegistrations());
         } else {
-            return ResponseHandler.error(String.format("compatition [year: %d] not exists", year));
+            return ResponseHandler.error(String.format("failure, compatition [year: %d] not exists", year));
         }
     }
 

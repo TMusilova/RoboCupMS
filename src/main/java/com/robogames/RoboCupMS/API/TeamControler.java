@@ -6,6 +6,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.Team;
+import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Entity.UserRC;
 import com.robogames.RoboCupMS.Repository.TeamRepository;
 import com.robogames.RoboCupMS.Repository.UserRepository;
@@ -122,12 +123,23 @@ public class TeamControler {
 
         Optional<Team> t = this.teamRepository.findByLeader(leader);
         if (t.isPresent()) {
+            // overi zda jiz tento tym neni registrovan v nejakem rocnik, ktery jit zacal.
+            // Pak v tom pripade neni mozne jiz tym odstranit, jelikoz system zaznamenava i
+            // zapasy z minulych rocniku
+            for (TeamRegistration reg : t.get().getRegistrations()) {
+                if (reg.getCompatition().getStarted()) {
+                    return ResponseHandler.error(
+                            "failure, it is not possible to remove the team because it is already registred in a competition that has already started");
+                }
+            }
+
             // odebere cleny z tymu
             t.get().getMembers().forEach((m) -> {
                 m.setTeam(null);
             });
             this.userRepository.saveAll(t.get().getMembers());
             t.get().getMembers().clear();
+
             // odstrani tym
             this.teamRepository.delete(t.get());
             return ResponseHandler.response("success");

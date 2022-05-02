@@ -98,6 +98,16 @@ public class TeamRegistration {
     }
 
     /**
+     * Navrati registrovany tym
+     * 
+     * @return Tym
+     */
+    @JsonIgnore
+    public Team getTeam() {
+        return this.team;
+    }
+
+    /**
      * Navrati rocnik souteze, do ktere se tym registuruje
      * 
      * @return Rocnik souteze
