@@ -1,15 +1,23 @@
 package com.robogames.RoboCupMS.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity(name = "discipline")
 public class Discipline {
 
     /**
-     * Navratova hodnota ID "zadne" discipliny (navrati pokud robot neni registrovan v zadne
+     * Navratova hodnota ID "zadne" discipliny (navrati pokud robot neni registrovan
+     * v zadne
      * discipline)
      */
     public static final int NOT_REGISTRED = -1;
@@ -34,10 +42,16 @@ public class Discipline {
     private String description;
 
     /**
+     * Seznam vsech hrist pro tuto disciplinu
+     */
+    @OneToMany(mappedBy = "discipline", fetch = FetchType.EAGER)
+    private List<Playground> playgrounds;
+
+    /**
      * Disciplina, ve ktere muzou roboti soutezit
      */
     public Discipline() {
-
+        this.playgrounds = new ArrayList<Playground>();
     }
 
     /**
@@ -49,6 +63,7 @@ public class Discipline {
     public Discipline(String _name, String _description) {
         this.name = _name;
         this.description = _description;
+        this.playgrounds = new ArrayList<Playground>();
     }
 
     /**
@@ -76,6 +91,15 @@ public class Discipline {
      */
     public String getDescription() {
         return this.description;
+    }
+
+    /**
+     * Navrati seznam vsech hrist pro tuto disciplinu
+     * @return
+     */
+    @JsonIgnore
+    public List<Playground> getPlaygrounds() {
+        return this.playgrounds;  
     }
 
     /**

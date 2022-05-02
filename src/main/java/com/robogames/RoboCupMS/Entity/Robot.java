@@ -1,11 +1,16 @@
 package com.robogames.RoboCupMS.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -62,10 +67,17 @@ public class Robot {
     private Boolean confirmed;
 
     /**
+     * Seznam vsech odehranych zapasu
+     */
+    @OneToMany(mappedBy = "robot", fetch = FetchType.EAGER)
+    private List<Match> matches;
+
+    /**
      * Vytvori robota, ten pokud se prihlasi do urcite kategorie tak muze zapasit
      */
     public Robot() {
         this.confirmed = false;
+        this.matches = new ArrayList<Match>();
     }
 
     /**
@@ -82,6 +94,7 @@ public class Robot {
         this.number = _number;
         this.teamRegistration = _teamRegistration;
         this.confirmed = false;
+        this.matches = new ArrayList<Match>();
     }
 
     /**
@@ -182,6 +195,16 @@ public class Robot {
     @JsonIgnore
     public Discipline getDiscipline() {
         return this.discipline;
+    }
+
+    /**
+     * Seznam vsech zapasu, ktere robot odehral nebo jsou jen naplanovane
+     * 
+     * @return Seznam zapasu
+     */
+    @JsonIgnore
+    public List<Match> getMatches() {
+        return this.matches;
     }
 
     /**

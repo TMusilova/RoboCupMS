@@ -13,7 +13,7 @@ import com.robogames.RoboCupMS.Enum.ECategory;
 /**
  * Entita reprezentujici kategorie, ve kterych muze tym soutezit (Enum)
  */
-@Entity(name="category")
+@Entity(name = "category")
 public class Category {
 
     @Id
@@ -24,25 +24,44 @@ public class Category {
     @Column(length = 20)
     private ECategory name;
 
+    /**
+     * Kategorie, ve ktere mouze tym soutezit
+     */
     public Category() {
     }
 
+    /**
+     * Kategorie, ve ktere mouze tym soutezit
+     * 
+     * @param name Nazev kategorie
+     */
     public Category(ECategory name) {
         this.name = name;
     }
 
+    /**
+     * Navrati ID kategorie
+     * 
+     * @return ID kategorie
+     */
     public Long getID() {
         return id;
     }
 
-    public void getID(Long id) {
-        this.id = id;
-    }
-
+    /**
+     * Navrati nazev kategorie
+     * 
+     * @return Nazev kategorie
+     */
     public ECategory getName() {
         return name;
     }
 
+    /**
+     * Nastavi novy nazev kategorie
+     * 
+     * @param name Novy nazev
+     */
     public void setName(ECategory name) {
         this.name = name;
     }

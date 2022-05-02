@@ -24,25 +24,44 @@ public class MatchState {
     @Column(length = 20)
     private EMatchState name;
 
+    /**
+     * Entita reprezentujici mozne stav zapasu
+     */
     public MatchState() {
     }
 
+    /**
+     * Entita reprezentujici mozne stav zapasu
+     * 
+     * @param name Nazev stavu zapasu
+     */
     public MatchState(EMatchState name) {
         this.name = name;
     }
 
+    /**
+     * Navrati ID stavu zapasu
+     * 
+     * @return ID stavu zapasu
+     */
     public Long getID() {
         return id;
     }
 
-    public void getID(Long id) {
-        this.id = id;
-    }
-
+    /**
+     * Navrati nazev stavu zapasu
+     * 
+     * @return Nazev stavu
+     */
     public EMatchState getName() {
         return name;
     }
 
+    /**
+     * Nastavi nazev stavu zapasu
+     * 
+     * @param name Novy nazes stavu
+     */
     public void setName(EMatchState name) {
         this.name = name;
     }

@@ -1,11 +1,22 @@
 package com.robogames.RoboCupMS.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+/**
+ * Hriste, na kterem roboti uskutecnuji zapasy mezi sebou
+ */
 @Entity(name = "playground")
 public class Playground {
 
@@ -19,7 +30,7 @@ public class Playground {
     /**
      * Nazev hriste
      */
-    @Column(name = "name", length = 40, nullable = false, unique = true)
+    @Column(name = "name", length = 40, nullable = false, unique = false)
     private String name;
 
     /**
@@ -29,22 +40,38 @@ public class Playground {
     private int number;
 
     /**
+     * Pro kterou disciplinu je hriste urcene
+     */
+    @ManyToOne(optional = false)
+    private Discipline discipline;
+
+    /**
+     * Vsechny zapasy odehrane na tomto hristi
+     */
+    @OneToMany(mappedBy = "playground", fetch = FetchType.EAGER)
+    private List<Match> matches;
+
+    /**
      * Vytvori soutezni hriste. V systemu urcitovani poradi pro jednoznacne urceni
      * konani mista zapasu.
      */
     public Playground() {
+        this.matches = new ArrayList<Match>();
     }
 
     /**
      * Vytvori soutezni hriste. V systemu urcitovani poradi pro jednoznacne urceni
      * konani mista zapasu.
      * 
-     * @param _name   Jmeno hriste
-     * @param _number Cislo hriste
+     * @param _name       Jmeno hriste
+     * @param _number     Cislo hriste
+     * @param _discipline Disciplina, pro kterou je hriste urcene
      */
-    public Playground(String _name, int _number) {
+    public Playground(String _name, int _number, Discipline _discipline) {
         this.name = _name;
         this.number = _number;
+        this.discipline = _discipline;
+        this.matches = new ArrayList<Match>();
     }
 
     /**
@@ -75,6 +102,25 @@ public class Playground {
     }
 
     /**
+     * Navrati ID discipliny, pro kterou je toto hriste urcine
+     * 
+     * @return ID discipliny
+     */
+    public long getDisciplineID() {
+        return this.discipline.getID();
+    }
+
+    /**
+     * Navrati vsechny odehrane zapasy na tomto hristi
+     * 
+     * @return Seznam zapasu
+     */
+    @JsonIgnore
+    public List<Match> getMatches() {
+        return this.matches;
+    }
+
+    /**
      * Nastavi nove jmeno hriste
      * 
      * @param _name Nove jmeno hriste
@@ -90,6 +136,15 @@ public class Playground {
      */
     public void setNumber(int _number) {
         this.number = _number;
+    }
+
+    /**
+     * Nastavi disciplinu hriste
+     * 
+     * @param _discipline Disciplina
+     */
+    public void setDiscipline(Discipline _discipline) {
+        this.discipline = _discipline;
     }
 
 }

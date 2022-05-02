@@ -11,6 +11,7 @@ import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.Role;
 import com.robogames.RoboCupMS.Entity.UserRC;
 import com.robogames.RoboCupMS.Enum.ERole;
+import com.robogames.RoboCupMS.Repository.RoleRepository;
 import com.robogames.RoboCupMS.Repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class UserControler {
 
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     /**
      * Navrati info o prihlasenem uzivateli
@@ -61,8 +65,8 @@ public class UserControler {
      * @return Informace o uzivateli
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
-    @GetMapping("/get_id")
-    Response getOne(@RequestParam Long id) {
+    @GetMapping("/getByID")
+    Response getByID(@RequestParam Long id) {
         Optional<UserRC> findById = repository.findById(id);
         if (findById.isPresent()) {
             return ResponseHandler.response(findById);
@@ -78,8 +82,8 @@ public class UserControler {
      * @return Informace o uzivateli
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
-    @GetMapping("/get_email")
-    Response getOne(@RequestParam String email) {
+    @GetMapping("/getByEmail")
+    Response getByEmail(@RequestParam String email) {
         Optional<UserRC> findByEmail = repository.findByEmail(email);
         if (findByEmail.isPresent()) {
             return ResponseHandler.response(findByEmail);
@@ -172,18 +176,60 @@ public class UserControler {
     }
 
     /**
-     * Zmeni role uzivatele
+     * Prida roli uzivateli
      * 
-     * @param roles Nove atributy uzivatele
-     * @param id    ID uzivatele jehoz atributy budou zmeneny
+     * @param role Nova role, kterou prideli uzivateli
+     * @param id   ID uzivatele jehoz atributy budou zmeneny
      * @return Informace o stavu provedene operace
      */
     @Secured({ ERole.Names.ADMIN })
-    @PutMapping("/editRole")
-    Response editRole(@RequestBody Set<Role> roles, @RequestParam String uuid) {
+    @PutMapping("/addRole")
+    Response addRole(@RequestParam ERole role, @RequestParam String uuid) {
+        // overi zda role existuje
+        Optional<Role> newRole = this.roleRepository.findByName(role);
+        if (!newRole.isPresent()) {
+            return ResponseHandler.error(String.format("failure, role [%s] not exists", role.toString()));
+        }
+
+        // provede zmeny
         Optional<UserRC> map = repository.findByUuid(uuid)
                 .map(user -> {
-                    user.setRoles(roles);
+                    Set<Role> roles = user.getRoles();
+                    if (!roles.contains(newRole.get())) {
+                        roles.add(newRole.get());
+                    }
+                    return repository.save(user);
+                });
+        if (map.isPresent()) {
+            return ResponseHandler.response("success");
+        } else {
+            return ResponseHandler.error(String.format("failure, user with UUID [%s] not found", uuid));
+        }
+    }
+
+    /**
+     * Prida roli uzivateli
+     * 
+     * @param role Nova role, kterou prideli uzivateli
+     * @param id   ID uzivatele jehoz atributy budou zmeneny
+     * @return Informace o stavu provedene operace
+     */
+    @Secured({ ERole.Names.ADMIN })
+    @PutMapping("/removeRole")
+    Response removeRole(@RequestParam ERole role, @RequestParam String uuid) {
+        // overi zda role existuje
+        Optional<Role> newRole = this.roleRepository.findByName(role);
+        if (!newRole.isPresent()) {
+            return ResponseHandler.error(String.format("failure, role [%s] not exists", role.toString()));
+        }
+
+        // provede zmeny
+        Optional<UserRC> map = repository.findByUuid(uuid)
+                .map(user -> {
+                    Set<Role> roles = user.getRoles();
+                    if (roles.contains(newRole.get())) {
+                        roles.remove(newRole.get());
+                    }
                     return repository.save(user);
                 });
         if (map.isPresent()) {

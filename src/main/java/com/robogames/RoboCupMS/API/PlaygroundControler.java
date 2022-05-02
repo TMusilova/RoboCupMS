@@ -5,8 +5,10 @@ import java.util.Optional;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
+import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Entity.Playground;
 import com.robogames.RoboCupMS.Enum.ERole;
+import com.robogames.RoboCupMS.Repository.DisciplineRepository;
 import com.robogames.RoboCupMS.Repository.PlaygroundRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class PlaygroundControler {
 
     @Autowired
-    private PlaygroundRepository repository;
+    private PlaygroundRepository playgroundRepository;
+
+    @Autowired
+    private DisciplineRepository disciplineRepository;
 
     /**
      * Navrati vsechny hriste
@@ -34,19 +39,66 @@ public class PlaygroundControler {
      */
     @GetMapping("/all")
     Response getAll() {
-        return ResponseHandler.response(repository.findAll());
+        return ResponseHandler.response(this.playgroundRepository.findAll());
+    }
+
+    /**
+     * Navrati vsechny hriste pro urcitou disciplinu
+     * 
+     * @return Seznam vsech souteznich hrist pro urcitou disciplinu
+     */
+    @GetMapping("/get")
+    Response get(@RequestParam Long id) {
+        // overi zda disciplina existuje
+        Optional<Discipline> discipline = this.disciplineRepository.findById(id);
+        if (!discipline.isPresent()) {
+            return ResponseHandler
+                    .error(String.format("failure, discipline with ID [%d] not exists", id));
+        }
+
+        return ResponseHandler.response(discipline.get().getPlaygrounds());
+    }
+
+    /**
+     * Navrati vsechny zapasy odehrane na konkretnim hristi
+     * 
+     * @return Seznam zapasu
+     */
+    @GetMapping("/getMatches")
+    Response getMatches(@RequestParam Long id) {
+        // overi zda disciplina existuje
+        Optional<Playground> p = this.playgroundRepository.findById(id);
+        if (p.isPresent()) {
+            return ResponseHandler.response(p.get().getMatches());
+        } else {
+            return ResponseHandler
+                    .error(String.format("failure, playground with ID [%d] not exists", id));
+        }
     }
 
     /**
      * Vytvori nove soutezni hriste
      * 
-     * @param playground Soutezni hriste
+     * @param name         Jmeno noveho hriste
+     * @param number       Cislo noveho hriste
+     * @param disciplineID ID discipliny, pro ktere bude nove vytvorene hriste
+     *                     urcene
      * @return Informace o stavu provedene operace
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/create")
-    Response create(@RequestBody Playground playground) {
-        return ResponseHandler.response(this.repository.save(playground));
+    Response create(@RequestParam String name, @RequestParam int number, @RequestParam Long disciplineID) {
+        // overi zda disciplina existuje
+        Optional<Discipline> discipline = this.disciplineRepository.findById(disciplineID);
+        if (!discipline.isPresent()) {
+            return ResponseHandler
+                    .error(String.format("failure, discipline with ID [%d] not exists", disciplineID));
+        }
+
+        // vytvori hriste
+        Playground p = new Playground(name, number, discipline.get());
+        this.playgroundRepository.save(p);
+        return ResponseHandler.response("success");
     }
 
     /**
@@ -58,9 +110,9 @@ public class PlaygroundControler {
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @DeleteMapping("/remove")
     Response remove(@RequestParam Long id) {
-        Optional<Playground> p = this.repository.findById(id);
+        Optional<Playground> p = this.playgroundRepository.findById(id);
         if (p.isPresent()) {
-            this.repository.delete(p.get());
+            this.playgroundRepository.delete(p.get());
             return ResponseHandler.response("success");
         } else {
             return ResponseHandler.error(String.format("failure, playground with ID [%d] not exists", id));
@@ -77,11 +129,20 @@ public class PlaygroundControler {
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PutMapping("/edit")
     Response edit(@RequestParam Long id, @RequestBody Playground playground) {
-        Optional<Playground> map = repository.findById(id)
+        // overi zda disciplina existuje
+        Optional<Discipline> discipline = this.disciplineRepository.findById(playground.getID());
+        if (!discipline.isPresent()) {
+            return ResponseHandler
+                    .error(String.format("failure, discipline with ID [%d] not exists", playground.getID()));
+        }
+
+        // provede zmeni
+        Optional<Playground> map = this.playgroundRepository.findById(id)
                 .map(p -> {
                     p.setName(playground.getName());
                     p.setNumber(playground.getNumber());
-                    return repository.save(p);
+                    p.setDiscipline(discipline.get());
+                    return this.playgroundRepository.save(p);
                 });
         if (map.isPresent()) {
             return ResponseHandler.response("success");
