@@ -18,9 +18,9 @@ public class GlobalConfig {
     public static final transient String AUTH_PREFIX = "/auth";
 
     /**
-     * Servis prefix
+     * Module prefix
      */
-    public static final transient String SERVICE_PREFIX = "/service";
+    public static final transient String MODULE_PREFIX = "/module";
 
     /**
      * Nazev promenne v headeru requestu pro pristupovy token
