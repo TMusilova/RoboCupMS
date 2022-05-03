@@ -299,7 +299,8 @@ public class UserRC {
     }
 
     /**
-     * Navrati tym, ve kterem se uzivatel nachazi
+     * Navrati tym, ve kterem se uzivatel nachazi. Pokud neni v zadnem tymu navrati
+     * Team.NOT_IN_TEAM
      * 
      * @return
      */

@@ -1,12 +1,12 @@
 package com.robogames.RoboCupMS.Repository;
 
-import com.robogames.RoboCupMS.Entity.Match;
+import com.robogames.RoboCupMS.Entity.RobotMatch;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Repozitar pro zapasove skupiny
  */
-public interface MatchRepository extends JpaRepository<Match, Long> {
+public interface RobotMatchRepository extends JpaRepository<RobotMatch, Long> {
 
 }

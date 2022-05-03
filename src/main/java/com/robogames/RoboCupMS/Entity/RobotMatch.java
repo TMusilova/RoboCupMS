@@ -12,8 +12,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 /**
  * Entita reprezentujici zapas
  */
-@Entity(name = "match")
-public class Match {
+@Entity(name = "robot_match")
+public class RobotMatch {
 
     /**
      * ID zapasu
@@ -57,7 +57,7 @@ public class Match {
      * robo strong, ...), nebo jen ciste zapsat vysledek zapasu (line follower =>
      * cas)
      */
-    public Match() {
+    public RobotMatch() {
         this.score = 0;
     }
 
@@ -72,7 +72,7 @@ public class Match {
      * @param _playground Hriste, na kterem se bude soutezit
      * @param _state      Aktualni stav zapasu
      */
-    public Match(Robot _robot, MatchGroup _group, Playground _playground, MatchState _state) {
+    public RobotMatch(Robot _robot, MatchGroup _group, Playground _playground, MatchState _state) {
         this.robot = _robot;
         this.group = _group;
         this.playground = _playground;
@@ -126,12 +126,17 @@ public class Match {
     }
 
     /**
-     * Navrati ID zapasove skupiny
+     * Navrati ID zapasove skupiny. Pokud neni ve zadne skupine navrati
+     * MatchGroup.NOT_IN_GROUP
      * 
      * @return ID zapasove skupiny
      */
     public long getGroupID() {
-        return this.group.getID();
+        if (this.group == null) {
+            return MatchGroup.NOT_IN_GROUP;
+        } else {
+            return this.group.getID();
+        }
     }
 
     /**

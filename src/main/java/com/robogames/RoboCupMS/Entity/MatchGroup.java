@@ -1,5 +1,6 @@
 package com.robogames.RoboCupMS.Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -20,6 +21,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class MatchGroup {
 
     /**
+     * Navratova hodnota ID pokud neni definovana zadna skupina
+     */
+    public static final long NOT_IN_GROUP = -1;
+
+    /**
      * ID skupiny
      */
     @Id
@@ -37,12 +43,13 @@ public class MatchGroup {
      * Zapasy, ktere jsou v teto skupine
      */
     @OneToMany(mappedBy = "group")
-    private List<Match> matches;
+    private List<RobotMatch> matches;
 
     /**
      * Vytvori skupinu zapasu pro vice robotu
      */
     public MatchGroup() {
+        this.matches = new ArrayList<RobotMatch>();
     }
 
     /**
@@ -52,6 +59,7 @@ public class MatchGroup {
      */
     public MatchGroup(long _creatorIdentifier) {
         this.creatorIdentifier = _creatorIdentifier;
+        this.matches = new ArrayList<RobotMatch>();
     }
 
     /**
@@ -78,7 +86,7 @@ public class MatchGroup {
      * @return Seznam vsech zapasu
      */
     @JsonIgnore
-    public List<Match> getMatches() {
+    public List<RobotMatch> getMatches() {
         return this.matches;
     }
 

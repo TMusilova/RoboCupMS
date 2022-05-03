@@ -70,14 +70,14 @@ public class Robot {
      * Seznam vsech odehranych zapasu
      */
     @OneToMany(mappedBy = "robot", fetch = FetchType.EAGER)
-    private List<Match> matches;
+    private List<RobotMatch> matches;
 
     /**
      * Vytvori robota, ten pokud se prihlasi do urcite kategorie tak muze zapasit
      */
     public Robot() {
         this.confirmed = false;
-        this.matches = new ArrayList<Match>();
+        this.matches = new ArrayList<RobotMatch>();
     }
 
     /**
@@ -94,7 +94,7 @@ public class Robot {
         this.number = _number;
         this.teamRegistration = _teamRegistration;
         this.confirmed = false;
-        this.matches = new ArrayList<Match>();
+        this.matches = new ArrayList<RobotMatch>();
     }
 
     /**
@@ -203,7 +203,7 @@ public class Robot {
      * @return Seznam zapasu
      */
     @JsonIgnore
-    public List<Match> getMatches() {
+    public List<RobotMatch> getMatches() {
         return this.matches;
     }
 

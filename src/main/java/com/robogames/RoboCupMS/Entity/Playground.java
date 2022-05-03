@@ -49,14 +49,14 @@ public class Playground {
      * Vsechny zapasy odehrane na tomto hristi
      */
     @OneToMany(mappedBy = "playground", fetch = FetchType.EAGER)
-    private List<Match> matches;
+    private List<RobotMatch> matches;
 
     /**
      * Vytvori soutezni hriste. V systemu urcitovani poradi pro jednoznacne urceni
      * konani mista zapasu.
      */
     public Playground() {
-        this.matches = new ArrayList<Match>();
+        this.matches = new ArrayList<RobotMatch>();
     }
 
     /**
@@ -71,7 +71,7 @@ public class Playground {
         this.name = _name;
         this.number = _number;
         this.discipline = _discipline;
-        this.matches = new ArrayList<Match>();
+        this.matches = new ArrayList<RobotMatch>();
     }
 
     /**
@@ -116,7 +116,7 @@ public class Playground {
      * @return Seznam zapasu
      */
     @JsonIgnore
-    public List<Match> getMatches() {
+    public List<RobotMatch> getMatches() {
         return this.matches;
     }
 
