@@ -7,7 +7,7 @@ import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Enum.ERole;
-import com.robogames.RoboCupMS.business.model.DisciplineService;
+import com.robogames.RoboCupMS.Business.model.DisciplineService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

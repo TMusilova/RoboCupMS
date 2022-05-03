@@ -8,7 +8,7 @@ import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Enum.ERole;
-import com.robogames.RoboCupMS.business.model.CompetitionService;
+import com.robogames.RoboCupMS.Business.model.CompetitionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

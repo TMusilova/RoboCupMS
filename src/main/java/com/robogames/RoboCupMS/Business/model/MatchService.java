@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.business.model;
+package com.robogames.RoboCupMS.Business.model;
 
 import java.util.ArrayList;
 import java.util.List;

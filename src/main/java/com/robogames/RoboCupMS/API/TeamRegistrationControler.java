@@ -6,7 +6,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
-import com.robogames.RoboCupMS.business.model.TeamRegistrationService;
+import com.robogames.RoboCupMS.Business.model.TeamRegistrationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;

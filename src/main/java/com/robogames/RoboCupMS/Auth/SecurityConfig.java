@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
                 http.csrf().disable()
                                 .addFilterAfter(
-                                                new TokenAuthorizationFilter(GlobalConfig.HEADER__FIELD_TOKEN,
+                                                new TokenAuthorizationFilter(GlobalConfig.HEADER_FIELD_TOKEN,
                                                                 repository, NOT_SECURED),
                                                 UsernamePasswordAuthenticationFilter.class)
                                 .authorizeRequests()

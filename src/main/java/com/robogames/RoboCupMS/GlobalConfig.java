@@ -25,7 +25,7 @@ public class GlobalConfig {
     /**
      * Nazev promenne v headeru requestu pro pristupovy token
      */
-    public static String HEADER__FIELD_TOKEN = "X-TOKEN";
+    public static String HEADER_FIELD_TOKEN = "X-TOKEN";
 
     /**
      * Minimalni vek uzivatele
@@ -64,9 +64,14 @@ public class GlobalConfig {
     public static int UNIVERSITY_MAX_AGE = 26;
 
     /**
-     * Format datumu
+     * Maximalni pocet robotu v kategorii na jeden tym
      */
-    public static String DATE_FORMAT = "yyyy-mm-dd";
+    public static int MAX_ROBOTS_IN_CATEGORY = 1;
+
+    /**
+     * Maximalni pocet clenu v jednom tymu
+     */
+    public static int MAX_TEAM_MEMBERS = 4;
 
     /**
      * Enkoder hesel
