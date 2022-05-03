@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.robogames.RoboCupMS.Enum.ECategory;
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
 
 @Entity(name = "team_registration")
 public class TeamRegistration {

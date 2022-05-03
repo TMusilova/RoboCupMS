@@ -5,18 +5,10 @@ import java.util.List;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
-import com.robogames.RoboCupMS.Entity.Competition;
-import com.robogames.RoboCupMS.Entity.TeamRegistration;
-import com.robogames.RoboCupMS.Enum.ERole;
-import com.robogames.RoboCupMS.Business.model.CompetitionService;
+import com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Service.CompetitionEvaluationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(GlobalConfig.API_PREFIX + "/competitionEvaluation")
 public class CompetitionEvaluation {
 
+    @Autowired
+    private CompetitionEvaluationService competitionEvaluationService;
+
     /**
      * Navrati skore a poradi vsech robotu, kteri soutezili v danem rocniku
      * 
@@ -36,6 +31,11 @@ public class CompetitionEvaluation {
      */
     @GetMapping("/scoreOfAll")
     Response getScoreOfAll(@RequestParam int year) {
+        try {
+            this.competitionEvaluationService.getScoreOfAll(year);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
         return ResponseHandler.response("");
     }
 
@@ -48,6 +48,11 @@ public class CompetitionEvaluation {
      */
     @GetMapping("/scoreOfTeam")
     Response getScoreOfTeam(@RequestParam int year, @RequestParam long id) {
+        try {
+            this.competitionEvaluationService.getScoreOfTeam(year, id);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
         return ResponseHandler.response("");
     }
 
@@ -60,6 +65,11 @@ public class CompetitionEvaluation {
      */
     @GetMapping("/scoreOfRobot")
     Response getScoreOfRobot(@RequestParam int year, @RequestParam long id) {
+        try {
+            this.competitionEvaluationService.getScoreOfRobot(year, id);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
         return ResponseHandler.response("");
     }
 
@@ -71,6 +81,11 @@ public class CompetitionEvaluation {
      */
     @GetMapping("/winners")
     Response getWinners(@RequestParam int year) {
+        try {
+            this.competitionEvaluationService.getWinners(year);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
         return ResponseHandler.response("");
     }
 
@@ -84,6 +99,11 @@ public class CompetitionEvaluation {
      */
     @GetMapping("/dataForPrinting")
     Response getDataForPrinting(@RequestParam int year, @RequestParam long id, @RequestParam int place) {
+        try {
+            this.competitionEvaluationService.getDataForPrinting(year, id, place);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
         return ResponseHandler.response("");
     }
 

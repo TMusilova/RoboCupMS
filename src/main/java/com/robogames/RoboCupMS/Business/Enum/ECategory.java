@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.Enum;
+package com.robogames.RoboCupMS.Business.Enum;
 
 /**
  * Kategorie tymu

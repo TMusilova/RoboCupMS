@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.robogames.RoboCupMS.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Enum.ERole;
 
 /**
  * Entita reprezentujici vsechny dostupne uzivatelske role (Enum)

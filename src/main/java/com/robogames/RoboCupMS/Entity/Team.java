@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.robogames.RoboCupMS.GlobalConfig;
-import com.robogames.RoboCupMS.Enum.ECategory;
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
 
 /**
  * Tym pro soutezici

@@ -2,8 +2,8 @@ package com.robogames.RoboCupMS.Repository;
 
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Entity.Category;
-import com.robogames.RoboCupMS.Enum.ECategory;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

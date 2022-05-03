@@ -6,18 +6,21 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
+import com.robogames.RoboCupMS.Business.Enum.EMatchState;
+import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Enum.EScoreAggregation;
 import com.robogames.RoboCupMS.Entity.Category;
 import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Entity.MatchState;
 import com.robogames.RoboCupMS.Entity.Role;
+import com.robogames.RoboCupMS.Entity.ScoreAggregation;
 import com.robogames.RoboCupMS.Entity.UserRC;
-import com.robogames.RoboCupMS.Enum.ECategory;
-import com.robogames.RoboCupMS.Enum.EMatchState;
-import com.robogames.RoboCupMS.Enum.ERole;
 import com.robogames.RoboCupMS.Repository.CategoryRepository;
 import com.robogames.RoboCupMS.Repository.DisciplineRepository;
 import com.robogames.RoboCupMS.Repository.MatchStateRepository;
 import com.robogames.RoboCupMS.Repository.RoleRepository;
+import com.robogames.RoboCupMS.Repository.ScoreAggregationRepository;
 import com.robogames.RoboCupMS.Repository.UserRepository;
 
 import org.json.simple.JSONObject;
@@ -122,6 +125,25 @@ public class AppInit {
     }
 
     /**
+     * Prvni inicializace agregacnich funkci skore (pouziva se pro automaticke
+     * vyhodnoceni vysledku souteze)
+     * 
+     * @param repository RoleRepository
+     */
+    @Bean
+    public ApplicationRunner initScoreAggregation(ScoreAggregationRepository repository) {
+        if (repository.count() == 0) {
+            return args -> repository.saveAll(Arrays.asList(
+                    new ScoreAggregation(EScoreAggregation.AVG),
+                    new ScoreAggregation(EScoreAggregation.MAX),
+                    new ScoreAggregation(EScoreAggregation.MIN),
+                    new ScoreAggregation(EScoreAggregation.SUM)));
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Prvni inicializace kategorii
      * 
      * @param repository RoleRepository
@@ -198,13 +220,18 @@ public class AppInit {
      * @param repository DisciplineRepository
      */
     @Bean
-    public ApplicationRunner initDisciplines(DisciplineRepository repository) {
+    public ApplicationRunner initDisciplines(DisciplineRepository repository,
+            ScoreAggregationRepository aggregationRepository) {
         if (repository.count() == 0) {
             return args -> repository.saveAll(Arrays.asList(
-                    new Discipline("Robosumo", "Maximální rozměry robota jsou 25x25 cm, výška neomezena"),
-                    new Discipline("Mini robosumo", "Maximální rozměry robota jsou 15x15 cm, výška neomezena"),
-                    new Discipline("Sledování čáry", "Maximální rozměry robota jsou 25x25 cm, výška neomezena"),
-                    new Discipline("Robot uklízeč", "Maximální rozměry robota jsou 25x25 cm, výška neomezena")));
+                    new Discipline("Robosumo", "Maximální rozměry robota jsou 25x25 cm, výška neomezena",
+                            EScoreAggregation.SUM),
+                    new Discipline("Mini robosumo", "Maximální rozměry robota jsou 15x15 cm, výška neomezena",
+                            EScoreAggregation.SUM),
+                    new Discipline("Sledování čáry", "Maximální rozměry robota jsou 25x25 cm, výška neomezena",
+                            EScoreAggregation.MIN),
+                    new Discipline("Robot uklízeč", "Maximální rozměry robota jsou 25x25 cm, výška neomezena",
+                            EScoreAggregation.MIN)));
         } else {
             return null;
         }

@@ -2,8 +2,8 @@ package com.robogames.RoboCupMS.Repository;
 
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.Business.Enum.EMatchState;
 import com.robogames.RoboCupMS.Entity.MatchState;
-import com.robogames.RoboCupMS.Enum.EMatchState;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

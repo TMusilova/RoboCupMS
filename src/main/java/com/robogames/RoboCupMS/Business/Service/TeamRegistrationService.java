@@ -1,14 +1,14 @@
-package com.robogames.RoboCupMS.Business.model;
+package com.robogames.RoboCupMS.Business.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Entity.Category;
 import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.Team;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Entity.UserRC;
-import com.robogames.RoboCupMS.Enum.ECategory;
 import com.robogames.RoboCupMS.Repository.CategoryRepository;
 import com.robogames.RoboCupMS.Repository.CompetitionRepository;
 import com.robogames.RoboCupMS.Repository.TeamRegistrationRepository;

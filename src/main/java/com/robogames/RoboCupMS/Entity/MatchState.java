@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.robogames.RoboCupMS.Enum.EMatchState;
+import com.robogames.RoboCupMS.Business.Enum.EMatchState;
 
 /**
  * Entita reprezentujici mozne stavy zapasu (Enum)

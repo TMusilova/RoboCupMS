@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.robogames.RoboCupMS.Enum.ECategory;
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
 
 /**
  * Entita reprezentujici kategorie, ve kterych muze tym soutezit (Enum)

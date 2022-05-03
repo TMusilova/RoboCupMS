@@ -7,9 +7,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robogames.RoboCupMS.AppInit;
+import com.robogames.RoboCupMS.Business.Enum.EScoreAggregation;
+import com.robogames.RoboCupMS.Repository.ScoreAggregationRepository;
 
 @Entity(name = "discipline")
 public class Discipline {
@@ -33,6 +37,12 @@ public class Discipline {
      */
     @Column(name = "name", length = 80, nullable = false, unique = false)
     private String name;
+
+    /**
+     * Agregacni funkce skore (pouziva se pro automaticke vyhodnoceni skore)
+     */
+    @ManyToOne(optional = false)
+    private ScoreAggregation scoreAggregation;
 
     /**
      * Popis discipliny
@@ -65,8 +75,12 @@ public class Discipline {
      * @param _name        Nazev discipliny
      * @param _description Popis discipliny (max 8192 znaku)
      */
-    public Discipline(String _name, String _description) {
+    public Discipline(String _name, String _description, EScoreAggregation _scoreAggregation) {
         this.name = _name;
+        ScoreAggregationRepository repository = (ScoreAggregationRepository) AppInit.contextProvider()
+                .getApplicationContext()
+                .getBean("scoreAggregationRepository");
+        this.scoreAggregation = repository.findByName(_scoreAggregation).get();
         this.description = _description;
         this.playgrounds = new ArrayList<Playground>();
     }
@@ -87,6 +101,15 @@ public class Discipline {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Navrati agregacni funkci skore
+     * 
+     * @return Agregacni funkce skore
+     */
+    public ScoreAggregation getScoreAggregation() {
+        return this.scoreAggregation;
     }
 
     /**
@@ -125,6 +148,15 @@ public class Discipline {
      */
     public void setName(String _name) {
         this.name = _name;
+    }
+
+    /**
+     * Nastavi novou agragacni funkci skore
+     * 
+     * @param _scoreAggregation Nova agregacni funkce pro skore
+     */
+    public void getScoreAggregation(ScoreAggregation _scoreAggregation) {
+        this.scoreAggregation = _scoreAggregation;
     }
 
     /**

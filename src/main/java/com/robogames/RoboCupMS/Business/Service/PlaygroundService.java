@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.Business.model;
+package com.robogames.RoboCupMS.Business.Service;
 
 import java.util.List;
 import java.util.Optional;

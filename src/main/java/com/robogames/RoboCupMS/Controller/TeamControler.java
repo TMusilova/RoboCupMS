@@ -1,12 +1,12 @@
-package com.robogames.RoboCupMS.API;
+package com.robogames.RoboCupMS.Controller;
 
 import java.util.List;
 
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
+import com.robogames.RoboCupMS.Business.Service.TeamService;
 import com.robogames.RoboCupMS.Entity.Team;
-import com.robogames.RoboCupMS.Business.model.TeamService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
