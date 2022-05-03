@@ -5,6 +5,8 @@ import java.util.List;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
+import com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Model.RobotScore;
+import com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Model.TeamScore;
 import com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Service.CompetitionEvaluationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +33,13 @@ public class CompetitionEvaluation {
      */
     @GetMapping("/scoreOfAll")
     Response getScoreOfAll(@RequestParam int year) {
+        List<RobotScore> scoreOfAll;
         try {
-            this.competitionEvaluationService.getScoreOfAll(year);
+            scoreOfAll = this.competitionEvaluationService.getScoreOfAll(year);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
         }
-        return ResponseHandler.response("");
+        return ResponseHandler.response(scoreOfAll);
     }
 
     /**
@@ -48,12 +51,13 @@ public class CompetitionEvaluation {
      */
     @GetMapping("/scoreOfTeam")
     Response getScoreOfTeam(@RequestParam int year, @RequestParam long id) {
+        TeamScore scoreOfTeam;
         try {
-            this.competitionEvaluationService.getScoreOfTeam(year, id);
+            scoreOfTeam = this.competitionEvaluationService.getScoreOfTeam(year, id);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
         }
-        return ResponseHandler.response("");
+        return ResponseHandler.response(scoreOfTeam);
     }
 
     /**

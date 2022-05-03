@@ -16,11 +16,6 @@ public enum EScoreAggregation {
     MAX,
 
     /**
-     * Prumerne skore vsech zapasu odehranych robotem
-     */
-    AVG,
-
-    /**
      * Soucet skore vsech zapasu odehranych robotem
      */
     SUM;

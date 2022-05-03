@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robogames.RoboCupMS.Business.Enum.EScoreAggregation;
 
 /**
@@ -65,6 +66,47 @@ public class ScoreAggregation {
      */
     public void setName(EScoreAggregation name) {
         this.name = name;
+    }
+
+    /**
+     * Pouziva se pro zpracovani score. Aplikuje se na kazdy odehrany zapas robota.
+     * Do funkce vstupuje hodnota skore zapasu a celkoveho skore. Podle typu
+     * agragacni funkce navraci
+     * vyslednou hodnuto skore.
+     * 
+     * @param totalScore Celkove skore
+     * @param score      Skore zapasu
+     * @return Vysledne celkove skore
+     */
+    @JsonIgnore
+    public int proccess(int totalScore, int score) {
+        switch (this.name) {
+            case MAX:
+                return Math.max(totalScore, score);
+            case MIN:
+                return Math.min(totalScore, score);
+            case SUM:
+                return totalScore + score;
+        }
+        return totalScore;
+    }
+
+    /**
+     * Navrati inicializacni hodnotu celkoveho skore (pro vypocet)
+     * 
+     * @return Celkove skore
+     */
+    @JsonIgnore
+    public int getTotalScoreInitValue() {
+        switch (this.name) {
+            case MAX:
+                return Integer.MIN_VALUE;
+            case MIN:
+                return Integer.MAX_VALUE;
+            case SUM:
+                return 0;
+        }
+        return 0;
     }
 
 }

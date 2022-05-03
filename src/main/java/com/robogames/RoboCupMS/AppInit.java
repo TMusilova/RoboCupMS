@@ -134,7 +134,6 @@ public class AppInit {
     public ApplicationRunner initScoreAggregation(ScoreAggregationRepository repository) {
         if (repository.count() == 0) {
             return args -> repository.saveAll(Arrays.asList(
-                    new ScoreAggregation(EScoreAggregation.AVG),
                     new ScoreAggregation(EScoreAggregation.MAX),
                     new ScoreAggregation(EScoreAggregation.MIN),
                     new ScoreAggregation(EScoreAggregation.SUM)));

@@ -58,6 +58,24 @@ public class RobotScore {
     }
 
     /**
+     * Navrati ID discipliny, ve ktere robot soutezi
+     * 
+     * @return ID discipliny
+     */
+    public long getDisciplindeID() {
+        return this.robot.getDisciplineID();
+    }
+
+    /**
+     * Navrati nazev discipliny, ve ktere robot soutezi
+     * 
+     * @return Nazev discipliny
+     */
+    public String getDisciplindeName() {
+        return this.robot.getDiciplineName();
+    }
+
+    /**
      * Navrati celkove skore
      * 
      * @return Celkove skore
