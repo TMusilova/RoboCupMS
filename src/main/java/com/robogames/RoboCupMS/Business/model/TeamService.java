@@ -3,6 +3,7 @@ package com.robogames.RoboCupMS.Business.model;
 import java.util.List;
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Entity.Team;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Entity.UserRC;
@@ -166,11 +167,19 @@ public class TeamService {
 
         Optional<Team> t = this.teamRepository.findByLeader(leader);
         if (t.isPresent()) {
+            // overi zda nebyl jiz prekrocen pocet clenu v tymu
+            if (t.get().getMembers().size() >= GlobalConfig.MAX_TEAM_MEMBERS) {
+                throw new Exception("failure, team is full");
+            }
+
             Optional<UserRC> u = this.userRepository.findByUuid(uuid);
             if (u.isPresent()) {
+                // overa zda jiz pridavany uzivatel neni v nejakem tymu
                 if (u.get().getTeamID() != Team.NOT_IN_TEAM) {
                     throw new Exception("failure, user is already in team");
                 }
+
+                // prida uzivatele do tymu
                 t.get().getMembers().add(u.get());
                 u.get().setTeam(t.get());
                 this.teamRepository.save(t.get());

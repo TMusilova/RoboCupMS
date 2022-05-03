@@ -3,6 +3,7 @@ package com.robogames.RoboCupMS.Business.model;
 import java.util.List;
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Entity.Robot;
 import com.robogames.RoboCupMS.Entity.Team;
@@ -190,6 +191,20 @@ public class RobotService {
             throw new Exception(String.format("failure, discipline with ID [%d] not exists", disciplineID));
         }
 
+        // overi zda jiz nebyl prekrocen limit na maximalni pocet registrovanych robotu
+        // v jedne discipline pro tym
+        List<Robot> robots = discipline.get().getRobots();
+        long regID = robot.get().getTeamRegistrationID();
+        int cnt = 0;
+        for (Robot r : robots) {
+            if (r.getTeamRegistrationID() == regID) {
+                cnt++;
+            }
+        }
+        if (cnt >= GlobalConfig.MAX_ROBOTS_IN_CATEGORY) {
+            throw new Exception("failure, you have exceeded the maximum limit of registered robots per discipline");
+        }
+
         // zjisti zda uzivatel vlastni tohoto robota (je v tymu, ktery ho vlastni)
         UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         boolean ownership = robot.get().getTeamRegistration().getTeam().getMembers().stream()
@@ -268,13 +283,13 @@ public class RobotService {
             long max = 0;
 
             List<Robot> robots = robot.get().getDiscipline().getRobots();
-            for(Robot r : robots) {
+            for (Robot r : robots) {
                 max = Math.max(max, r.getNumber());
             }
 
             // zapise nove cislo (o jedno vetsi nez maximalni hodnota)
             robot.get().setNumber(max + 1);
-        } 
+        }
 
         this.robotRepository.save(robot.get());
     }
