@@ -1,13 +1,12 @@
 package com.robogames.RoboCupMS.API;
 
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.List;
 
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
-import com.robogames.RoboCupMS.Repository.MatchGroupRepository;
+import com.robogames.RoboCupMS.business.model.MatchGroupService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MatchGroupControler {
 
     @Autowired
-    private MatchGroupRepository repository;
+    private MatchGroupService groupService;
 
     /**
      * Navrati vsechny zapasove skupiny
@@ -31,7 +30,8 @@ public class MatchGroupControler {
      */
     @GetMapping("/all")
     Response getAll() {
-        return ResponseHandler.response(this.repository.findAll());
+        List<MatchGroup> all = this.groupService.getAll();
+        return ResponseHandler.response(all);
     }
 
     /**
@@ -42,9 +42,13 @@ public class MatchGroupControler {
      */
     @GetMapping("/getByCID")
     Response getByCID(@RequestParam Long creatorID) {
-        Stream<MatchGroup> list = this.repository.findAll().stream()
-                .filter((r) -> (r.getCreatorIdentifier() == creatorID));
-        return ResponseHandler.response(list.toArray());
+        List<MatchGroup> groups;
+        try {
+            groups = this.groupService.getByCID(creatorID);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
+        return ResponseHandler.response(groups);
     }
 
     /**
@@ -55,12 +59,13 @@ public class MatchGroupControler {
      */
     @GetMapping("/getByID")
     Response getByID(@RequestParam Long id) {
-        Optional<MatchGroup> g = this.repository.findById(id);
-        if (g.isPresent()) {
-            return ResponseHandler.response(g);
-        } else {
-            return ResponseHandler.error(String.format("failure, group with ID [%d] not exists", id));
+        MatchGroup group;
+        try {
+            group = this.groupService.getByID(id);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
+        return ResponseHandler.response(group);
     }
 
     /**
@@ -71,9 +76,12 @@ public class MatchGroupControler {
      */
     @PostMapping("/create")
     Response create(@RequestParam Long creatorID) {
-        MatchGroup g = new MatchGroup(creatorID);
-        this.repository.save(g);
-        return ResponseHandler.response("success");
+        try {
+            this.groupService.create(creatorID);
+            return ResponseHandler.response("success");
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
     }
 
     /**
@@ -84,8 +92,12 @@ public class MatchGroupControler {
      */
     @DeleteMapping("/remove")
     Response remove(@RequestParam Long id) {
-        this.repository.deleteById(id);
-        return ResponseHandler.response("success");
+        try {
+            this.groupService.remove(id);
+            return ResponseHandler.response("success");
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
     }
 
 }

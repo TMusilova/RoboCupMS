@@ -1,13 +1,14 @@
 package com.robogames.RoboCupMS.API;
 
-import java.util.Optional;
+import java.util.List;
 
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.Competition;
+import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Enum.ERole;
-import com.robogames.RoboCupMS.Repository.CompetitionRepository;
+import com.robogames.RoboCupMS.business.model.CompetitionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CompetitionControler {
 
     @Autowired
-    private CompetitionRepository repository;
+    private CompetitionService competitionService;
 
     /**
      * Navrati vsechny uskutecnene a naplanovane rocniky soutezi
@@ -34,7 +35,8 @@ public class CompetitionControler {
      */
     @GetMapping("/all")
     Response getAll() {
-        return ResponseHandler.response(repository.findAll());
+        List<Competition> all = this.competitionService.getAll();
+        return ResponseHandler.response(all);
     }
 
     /**
@@ -45,12 +47,13 @@ public class CompetitionControler {
      */
     @GetMapping("/allRegistrations")
     Response allRegistrations(@RequestParam int year) {
-        Optional<Competition> c = this.repository.findByYear(year);
-        if (c.isPresent()) {
-            return ResponseHandler.response(c.get().getRegistrations());
-        } else {
-            return ResponseHandler.error(String.format("failure, compatition [year: %d] not exists", year));
+        List<TeamRegistration> registrations;
+        try {
+            registrations = this.competitionService.allRegistrations(year);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
+        return ResponseHandler.response(registrations);
     }
 
     /**
@@ -62,16 +65,11 @@ public class CompetitionControler {
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/create")
     Response create(@RequestBody Competition compatition) {
-        if (this.repository.findByYear(compatition.getYear()).isPresent()) {
-            return ResponseHandler.error("failure, the competition has already been created for this year");
-        } else {
-            Competition c = new Competition(
-                    compatition.getYear(),
-                    compatition.getDate(),
-                    compatition.getStartTime(),
-                    compatition.getEndTime());
-            this.repository.save(c);
+        try {
+            this.competitionService.create(compatition);
             return ResponseHandler.response("success");
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
     }
 
@@ -84,12 +82,11 @@ public class CompetitionControler {
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @DeleteMapping("/remove")
     Response remove(@RequestParam Long id) {
-        Optional<Competition> c = this.repository.findById(id);
-        if (c.isPresent()) {
-            this.repository.delete(c.get());
+        try {
+            this.competitionService.remove(id);
             return ResponseHandler.response("success");
-        } else {
-            return ResponseHandler.error(String.format("compatition with ID [%d] not exists", id));
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
     }
 
@@ -103,19 +100,11 @@ public class CompetitionControler {
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PutMapping("/edit")
     Response edit(@RequestParam Long id, @RequestBody Competition compatition) {
-        Optional<Competition> map = repository.findById(id)
-                .map(c -> {
-                    c.setYear(compatition.getYear());
-                    c.setDate(compatition.getDate());
-                    c.setStartTime(compatition.getStartTime());
-                    c.setEndTime(compatition.getEndTime());
-                    c.setStarted(compatition.getStarted());
-                    return repository.save(c);
-                });
-        if (map.isPresent()) {
+        try {
+            this.competitionService.edit(id, compatition);
             return ResponseHandler.response("success");
-        } else {
-            return ResponseHandler.error(String.format("failure, compatition with ID [%d] not exists", id));
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
     }
 

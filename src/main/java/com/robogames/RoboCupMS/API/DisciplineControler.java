@@ -1,13 +1,13 @@
 package com.robogames.RoboCupMS.API;
 
-import java.util.Optional;
+import java.util.List;
 
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Enum.ERole;
-import com.robogames.RoboCupMS.Repository.DisciplineRepository;
+import com.robogames.RoboCupMS.business.model.DisciplineService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DisciplineControler {
 
     @Autowired
-    private DisciplineRepository disciplineRepository;
+    private DisciplineService disciplineService;
 
     /**
      * Navrati vsechny vytvorene discipliny
@@ -34,7 +34,8 @@ public class DisciplineControler {
      */
     @GetMapping("/all")
     Response getAll() {
-        return ResponseHandler.response(this.disciplineRepository.findAll());
+        List<Discipline> all = this.disciplineService.getAll();
+        return ResponseHandler.response(all);
     }
 
     /**
@@ -45,12 +46,13 @@ public class DisciplineControler {
      */
     @GetMapping("/get")
     Response get(@RequestParam Long id) {
-        Optional<Discipline> d = this.disciplineRepository.findById(id);
-        if (d.isPresent()) {
-            return ResponseHandler.response(d.get());
-        } else {
-            return ResponseHandler.error(String.format("failure, dicipline with ID [%d] not found", id));
+        Discipline discipline;
+        try {
+            discipline = this.disciplineService.get(id);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
+        return ResponseHandler.response(discipline);
     }
 
     /**
@@ -62,7 +64,12 @@ public class DisciplineControler {
     @PostMapping("/create")
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     Response create(@RequestBody Discipline discipline) {
-        return ResponseHandler.response(this.disciplineRepository.save(discipline));
+        try {
+            this.disciplineService.create(discipline);
+            return ResponseHandler.response("success");
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
     }
 
     /**
@@ -74,12 +81,11 @@ public class DisciplineControler {
     @DeleteMapping("/remove")
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     Response remove(@RequestParam Long id) {
-        Optional<Discipline> d = this.disciplineRepository.findById(id);
-        if (d.isPresent()) {
-            this.disciplineRepository.deleteById(id);
+        try {
+            this.disciplineService.remove(id);
             return ResponseHandler.response("success");
-        } else {
-            return ResponseHandler.error(String.format("failure, dicipline with ID [%d] not found", id));
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
     }
 
@@ -93,16 +99,11 @@ public class DisciplineControler {
     @PutMapping("/edit")
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     Response edit(@RequestBody Discipline discipline, @RequestParam Long id) {
-        Optional<Discipline> map = this.disciplineRepository.findById(id)
-                .map(d -> {
-                    d.setName(discipline.getName());
-                    d.setDescription(discipline.getDescription());
-                    return this.disciplineRepository.save(d);
-                });
-        if (map.isPresent()) {
+        try {
+            this.disciplineService.edit(discipline, id);
             return ResponseHandler.response("success");
-        } else {
-            return ResponseHandler.error(String.format("failure, dicipline with ID [%d] not found", id));
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
     }
 

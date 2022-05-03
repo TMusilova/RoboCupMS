@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.business;
+package com.robogames.RoboCupMS.business.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +51,7 @@ public class UserService {
      * 
      * @param id ID hledaneho uzivatele
      * @return Informace o uzivateli
+     * @throws Exception
      */
     public UserRC getByID(Long id) throws Exception {
         Optional<UserRC> user = repository.findById(id);
@@ -66,6 +67,7 @@ public class UserService {
      * 
      * @param id ID hledaneho uzivatele
      * @return Informace o uzivateli
+     * @throws Exception
      */
     public UserRC getByEmail(String email) throws Exception {
         Optional<UserRC> user = repository.findByEmail(email);
@@ -80,17 +82,19 @@ public class UserService {
      * Prida do databaze noveho uzivatele
      * 
      * @param newUser Novy uzivatel
+     * @throws Exception
      */
-    public void add(UserRC newUser) {
+    public void add(UserRC newUser) throws Exception {
         List<ERole> roles = new ArrayList<ERole>();
         roles.add(ERole.COMPETITOR);
-        UserRC u = new UserRC(
+        UserRC user = new UserRC(
                 newUser.getName(),
                 newUser.getSurname(),
                 newUser.getEmail(),
                 newUser.getPassword(),
                 newUser.getBirthDate(),
                 roles);
+        this.repository.save(user);
     }
 
     /**
@@ -98,6 +102,7 @@ public class UserService {
      * 
      * @param newUser Nove atributy uzivatele
      * @param id      ID uzivatele jehoz atributy budou zmeneny
+     * @throws Exception
      */
     public void edit(UserRC newUser, String uuid) throws Exception {
         Optional<UserRC> map = repository.findByUuid(uuid)
@@ -118,6 +123,7 @@ public class UserService {
      * 
      * @param oldPassword Stare heslo
      * @param newPasword  Nove heslo
+     * @throws Exception
      */
     public void changePassword(String oldPassword, String newPassword) throws Exception {
         UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -133,6 +139,7 @@ public class UserService {
      * Vygenerovat nove heslo
      * 
      * @param newPasword Nove heslo
+     * @throws Exception
      */
     public void generatePassword(String newPassword, String uuid) throws Exception {
         Optional<UserRC> user = repository.findByUuid(uuid);
@@ -149,6 +156,7 @@ public class UserService {
      * 
      * @param role Nova role, kterou prideli uzivateli
      * @param id   ID uzivatele jehoz atributy budou zmeneny
+     * @throws Exception
      */
     public void addRole(ERole role, String uuid) throws Exception {
         // overi zda role existuje
@@ -176,6 +184,7 @@ public class UserService {
      * 
      * @param role Nova role, kterou prideli uzivateli
      * @param id   ID uzivatele jehoz atributy budou zmeneny
+     * @throws Exception
      */
     public void removeRole(ERole role, String uuid) throws Exception {
         // overi zda role existuje
@@ -202,6 +211,7 @@ public class UserService {
      * Odebere uzivatele
      * 
      * @param id ID uzivatele, ktery ma byt odebran
+     * @throws Exception
      */
     public void delete(String uuid) throws Exception {
         Optional<UserRC> user = repository.findByUuid(uuid);

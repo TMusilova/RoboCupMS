@@ -1,15 +1,14 @@
 package com.robogames.RoboCupMS.API;
 
-import java.util.Optional;
+import java.util.List;
 
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
-import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Entity.Playground;
+import com.robogames.RoboCupMS.Entity.RobotMatch;
 import com.robogames.RoboCupMS.Enum.ERole;
-import com.robogames.RoboCupMS.Repository.DisciplineRepository;
-import com.robogames.RoboCupMS.Repository.PlaygroundRepository;
+import com.robogames.RoboCupMS.business.model.PlaygroundService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -27,10 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PlaygroundControler {
 
     @Autowired
-    private PlaygroundRepository playgroundRepository;
-
-    @Autowired
-    private DisciplineRepository disciplineRepository;
+    private PlaygroundService playgroundService;
 
     /**
      * Navrati vsechny hriste
@@ -39,7 +35,8 @@ public class PlaygroundControler {
      */
     @GetMapping("/all")
     Response getAll() {
-        return ResponseHandler.response(this.playgroundRepository.findAll());
+        List<Playground> all = this.playgroundService.getAll();
+        return ResponseHandler.response(all);
     }
 
     /**
@@ -49,14 +46,13 @@ public class PlaygroundControler {
      */
     @GetMapping("/get")
     Response get(@RequestParam Long id) {
-        // overi zda disciplina existuje
-        Optional<Discipline> discipline = this.disciplineRepository.findById(id);
-        if (!discipline.isPresent()) {
-            return ResponseHandler
-                    .error(String.format("failure, discipline with ID [%d] not exists", id));
+        List<Playground> playgrounds;
+        try {
+            playgrounds = this.playgroundService.get(id);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
-
-        return ResponseHandler.response(discipline.get().getPlaygrounds());
+        return ResponseHandler.response(playgrounds);
     }
 
     /**
@@ -66,14 +62,13 @@ public class PlaygroundControler {
      */
     @GetMapping("/getMatches")
     Response getMatches(@RequestParam Long id) {
-        // overi zda disciplina existuje
-        Optional<Playground> p = this.playgroundRepository.findById(id);
-        if (p.isPresent()) {
-            return ResponseHandler.response(p.get().getMatches());
-        } else {
-            return ResponseHandler
-                    .error(String.format("failure, playground with ID [%d] not exists", id));
+        List<RobotMatch> matches;
+        try {
+            matches = this.playgroundService.getMatches(id);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
+        return ResponseHandler.response(matches);
     }
 
     /**
@@ -88,17 +83,12 @@ public class PlaygroundControler {
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/create")
     Response create(@RequestParam String name, @RequestParam int number, @RequestParam Long disciplineID) {
-        // overi zda disciplina existuje
-        Optional<Discipline> discipline = this.disciplineRepository.findById(disciplineID);
-        if (!discipline.isPresent()) {
-            return ResponseHandler
-                    .error(String.format("failure, discipline with ID [%d] not exists", disciplineID));
+        try {
+            this.playgroundService.create(name, number, disciplineID);
+            return ResponseHandler.response("success");
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
-
-        // vytvori hriste
-        Playground p = new Playground(name, number, discipline.get());
-        this.playgroundRepository.save(p);
-        return ResponseHandler.response("success");
     }
 
     /**
@@ -110,12 +100,11 @@ public class PlaygroundControler {
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @DeleteMapping("/remove")
     Response remove(@RequestParam Long id) {
-        Optional<Playground> p = this.playgroundRepository.findById(id);
-        if (p.isPresent()) {
-            this.playgroundRepository.delete(p.get());
+        try {
+            this.playgroundService.remove(id);
             return ResponseHandler.response("success");
-        } else {
-            return ResponseHandler.error(String.format("failure, playground with ID [%d] not exists", id));
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
     }
 
@@ -129,25 +118,11 @@ public class PlaygroundControler {
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PutMapping("/edit")
     Response edit(@RequestParam Long id, @RequestBody Playground playground) {
-        // overi zda disciplina existuje
-        Optional<Discipline> discipline = this.disciplineRepository.findById(playground.getID());
-        if (!discipline.isPresent()) {
-            return ResponseHandler
-                    .error(String.format("failure, discipline with ID [%d] not exists", playground.getID()));
-        }
-
-        // provede zmeni
-        Optional<Playground> map = this.playgroundRepository.findById(id)
-                .map(p -> {
-                    p.setName(playground.getName());
-                    p.setNumber(playground.getNumber());
-                    p.setDiscipline(discipline.get());
-                    return this.playgroundRepository.save(p);
-                });
-        if (map.isPresent()) {
+        try {
+            this.playgroundService.edit(id, playground);
             return ResponseHandler.response("success");
-        } else {
-            return ResponseHandler.error(String.format("failure, playground with ID [%d] not exists", id));
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
     }
 
