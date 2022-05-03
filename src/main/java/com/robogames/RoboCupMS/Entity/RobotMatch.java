@@ -108,6 +108,15 @@ public class RobotMatch {
     }
 
     /**
+     * Navrati identifikacni cislo robota
+     * 
+     * @return Identifikacni cislo robota
+     */
+    public long getRobotNumber() {
+        return this.robot.getNumber();
+    }
+
+    /**
      * Navrati jmeno robota
      * 
      * @return Jmeno robota

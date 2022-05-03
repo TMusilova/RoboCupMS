@@ -47,6 +47,12 @@ public class Discipline {
     private List<Playground> playgrounds;
 
     /**
+     * Seznam vsech robotu, kteri jsou registrovani v teto discipline
+     */
+    @OneToMany(mappedBy = "discipline")
+    private List<Robot> robots;
+
+    /**
      * Disciplina, ve ktere muzou roboti soutezit
      */
     public Discipline() {
@@ -94,11 +100,22 @@ public class Discipline {
 
     /**
      * Navrati seznam vsech hrist pro tuto disciplinu
-     * @return
+     * 
+     * @return Seznam vsech hrist pro tuto disciplinu
      */
     @JsonIgnore
     public List<Playground> getPlaygrounds() {
-        return this.playgrounds;  
+        return this.playgrounds;
+    }
+
+    /**
+     * Navrati seznam vsech robotu registrovanych v discipline
+     * 
+     * @return Seznam vsech robotu v discipliny
+     */
+    @JsonIgnore
+    public List<Robot> getRobots() {
+        return this.robots;
     }
 
     /**

@@ -49,7 +49,7 @@ public class Robot {
      * systemu vytvorit dva roboty (v ramci kategorie musi mit kazdy robot unikatni
      * identifikacni cislo)
      */
-    @OneToOne
+    @ManyToOne
     private Discipline discipline;
 
     /**

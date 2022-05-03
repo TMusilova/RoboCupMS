@@ -92,6 +92,12 @@ public class PlaygroundService {
     public void remove(Long id) throws Exception {
         Optional<Playground> p = this.playgroundRepository.findById(id);
         if (p.isPresent()) {
+            // hriste neni mozne odstranit pokud jiz na nem byl odehran nejaky zapas
+            if (p.get().getMatches().size() > 0) {
+                throw new Exception("failure, playground cannot be removed because a match has been played on it");
+            }
+
+            // odstrani hriste
             this.playgroundRepository.delete(p.get());
         } else {
             throw new Exception(String.format("failure, playground with ID [%d] not exists", id));

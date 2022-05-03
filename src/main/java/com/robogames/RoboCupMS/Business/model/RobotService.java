@@ -260,6 +260,22 @@ public class RobotService {
 
         // provede zmeny
         robot.get().setConfirmed(confirmed);
+
+        // jen pokud byla registrace povrzena
+        if (confirmed) {
+            // vygeneruje unikatni identifikacni cislo pro robota v ramci rocniku souteze a
+            // kategorie
+            long max = 0;
+
+            List<Robot> robots = robot.get().getDiscipline().getRobots();
+            for(Robot r : robots) {
+                max = Math.max(max, r.getNumber());
+            }
+
+            // zapise nove cislo (o jedno vetsi nez maximalni hodnota)
+            robot.get().setNumber(max + 1);
+        } 
+
         this.robotRepository.save(robot.get());
     }
 

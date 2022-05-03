@@ -90,6 +90,12 @@ public class MatchService {
             throw new Exception(String.format("failure, playground with ID [%d] not exists", playgroundID));
         }
 
+        // overi zda ma robot povoleno zapasit (registrace byla uspesna => povoluje se
+        // pri kontrole pred zacatkem souteze)
+        if (!robot.get().getConfirmed()) {
+            throw new Exception(String.format("failure, robot with ID [%d] is not confirmed", robotID));
+        }
+
         // overi zda zapasova skupina existuje, pokud je id skupiny zaporne pak jde o
         // zapas jen jednoho robota (line follower, micromouse, ...)
         MatchGroup group = null;
@@ -158,6 +164,9 @@ public class MatchService {
         if (m.isPresent()) {
             // zapise skore zapasu
             m.get().setScore(score);
+            // nastavi stav jako odehrany
+            MatchState state = matchStateRepository.findByName(EMatchState.DONE).get();
+            m.get().setMatchState(state);
             this.robotMatchRepository.save(m.get());
         } else {
             throw new Exception(String.format("failure, match with ID [%d] not exists", id));
@@ -192,5 +201,5 @@ public class MatchService {
             throw new Exception(String.format("failure, match with ID [%d] not exists", id));
         }
     }
-    
+
 }
