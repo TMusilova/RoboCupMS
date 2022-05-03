@@ -1,19 +1,12 @@
 package com.robogames.RoboCupMS.Auth;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.UserRC;
-import com.robogames.RoboCupMS.Enum.ERole;
-import com.robogames.RoboCupMS.Repository.UserRepository;
+import com.robogames.RoboCupMS.business.security.AuthService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthControler {
 
     @Autowired
-    private UserRepository repository;
+    private AuthService authService;
 
     /**
      * Prihlaseni uzivatele do systemu (pokud je email a heslo spravne tak
@@ -39,17 +32,12 @@ public class AuthControler {
      */
     @GetMapping("/login")
     public Response login(@RequestParam String email, @RequestParam String password) {
-        Optional<UserRC> user = repository.findByEmail(email);
-        if (user.isPresent()) {
-            if (user.get().passwordMatch(password)) {
-                String token = UUID.randomUUID().toString();
-                UserRC u = user.get();
-                u.setToken(token);
-                repository.save(u);
-                return ResponseHandler.response(token);
-            }
+        try {
+            String token = this.authService.login(email, password);
+            return ResponseHandler.response(token);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
-        return ResponseHandler.error("Incorrect email or password");
     }
 
     /**
@@ -60,17 +48,12 @@ public class AuthControler {
      */
     @GetMapping("/logout")
     public Response logout() {
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            Object user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            if (user != null) {
-                if (user instanceof UserRC) {
-                    ((UserRC) user).setToken(null);
-                    repository.save(((UserRC) user));
-                    return ResponseHandler.response("SUCCESS");
-                }
-            }
+        try {
+            this.authService.logout();
+            return ResponseHandler.response("success");
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
-        return ResponseHandler.error("FAILURE");
     }
 
     /**
@@ -81,20 +64,11 @@ public class AuthControler {
      */
     @PostMapping("/register")
     public Response register(@RequestBody UserRC newUser) {
-        if (this.repository.findByEmail(newUser.getEmail()).isPresent()) {
-            return ResponseHandler.error("failure, user with this email already exists");
-        } else {
-            List<ERole> roles = new ArrayList<ERole>();
-            roles.add(ERole.COMPETITOR);
-            UserRC u = new UserRC(
-                    newUser.getName(),
-                    newUser.getSurname(),
-                    newUser.getEmail(),
-                    newUser.getPassword(),
-                    newUser.getBirthDate(),
-                    roles);
-            repository.save(u);
+        try {
+            this.authService.register(newUser);
             return ResponseHandler.response("success");
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
         }
     }
 
