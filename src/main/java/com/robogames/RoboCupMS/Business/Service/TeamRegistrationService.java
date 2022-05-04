@@ -54,7 +54,7 @@ public class TeamRegistrationService {
         // overi zda rocnik souteze, do ktereho se hlasi existuje
         Optional<Competition> c = competitionRepository.findByYear(year);
         if (!c.isPresent()) {
-            throw new Exception(String.format("failure, compatition [year: %d] not exists", year));
+            throw new Exception(String.format("failure, compatition [%d] not exists", year));
         }
 
         // overi zda soutez jiz nezacala (registrace je mozna jen pokud soutez jeste
@@ -108,7 +108,7 @@ public class TeamRegistrationService {
         // overi zda rocnik souteze existuje
         Optional<Competition> c = competitionRepository.findByYear(year);
         if (!c.isPresent()) {
-            throw new Exception(String.format("failure, compatition [year: %d] not exists", year));
+            throw new Exception(String.format("failure, compatition [%d] not exists", year));
         }
 
         // overi zda soutez jiz nezacala (registrace je mozna jen pokud soutez jeste
@@ -153,6 +153,91 @@ public class TeamRegistrationService {
 
         // navrati vsechny registrace
         return t.get().getRegistrations();
+    }
+
+    /**
+     * Zmeni kategorii tymu. Jiz neni nijak omezovano vekem a tak je mozne zvolit
+     * libovolnou.
+     * 
+     * @param id       ID tymu
+     * @param year     Rocnik souteze
+     * @param category Nova kategorie, ve ktere bude tym soutezit
+     * @throws Exception
+     */
+    public void changeCategory(long id, int year, ECategory category) throws Exception {
+        // overi zda tym existuje
+        Optional<Team> t = this.teamRepository.findById(id);
+        if (!t.isPresent()) {
+            throw new Exception(String.format("failure, team with ID [%d] not exists", id));
+        }
+
+        // overi zda kategorie existuje
+        Optional<Category> cat = this.categoryRepository.findByName(category);
+        if (!cat.isPresent()) {
+            throw new Exception("failure, category not exists");
+        }
+
+        // najde registraci tymu pro dany rocnik
+        Optional<TeamRegistration> reg = t.get().getRegistrations().stream()
+                .filter((r) -> (r.getCompatitionYear() == year)).findFirst();
+        if (!reg.isPresent()) {
+            throw new Exception(
+                    String.format("failure, team with ID [%d] is not registered for the year [%d]", id, year));
+        }
+
+        // overi zda soutez jiz nezacala (registrace je mozna jen pokud soutez jeste
+        // nezacala)
+        if (reg.get().getCompatition().getStarted()) {
+            throw new Exception("failure, competition has already begun");
+        }
+
+        // provede zmeny
+        reg.get().setCategory(cat.get());
+        this.registrationRepository.save(reg.get());
+    }
+
+    /**
+     * Spoji kategorie dohromady. Vybere se jedna kategorie a vsichni, kteri jsou v
+     * ni registrovani se pridaji k jine zvolene kategorii.
+     * 
+     * @param year        Rocnik souteze
+     * @param category    Aktualni kategorie
+     * @param newCategory Kategorie, do ktere se presunou vsechny registrovane tymy
+     *                    z jejich aktualni kategorie
+     * @throws Exception
+     */
+    public void joinCategory(int year, ECategory category, ECategory newCategory) throws Exception {
+        // overi zda kategorie existuje
+        if (!this.categoryRepository.findByName(category).isPresent()) {
+            throw new Exception("failure, category (param: category) not exists");
+        }
+
+        // overi zda kategorie existuje
+        Optional<Category> catTo = this.categoryRepository.findByName(newCategory);
+        if (!catTo.isPresent()) {
+            throw new Exception("failure, category (param: newCategory) not exists");
+        }
+
+        // najde konkretni rocnik souteze
+        Optional<Competition> competition = this.competitionRepository.findByYear(year);
+        if (!competition.isPresent()) {
+            throw new Exception(String.format("failure, compatition [%d] not exists", year));
+        }
+
+        // overi zda soutez jiz nezacala (registrace je mozna jen pokud soutez jeste
+        // nezacala)
+        if (competition.get().getStarted()) {
+            throw new Exception("failure, competition has already begun");
+        }
+
+        // provede zmeny (slouceni kategorii)
+        List<TeamRegistration> registrations = competition.get().getRegistrations();
+        registrations.forEach((reg) -> {
+            if (reg.getCategory() == category) {
+                reg.setCategory(catTo.get());
+                this.registrationRepository.save(reg);
+            }
+        });
     }
 
 }

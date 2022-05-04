@@ -113,7 +113,7 @@ public class MatchControler {
      * @return Informace o stavu provedene operace
      */
     @PutMapping("/writeScore")
-    Response writeScore(@RequestParam long id, @RequestParam int score) {
+    Response writeScore(@RequestParam long id, @RequestParam float score) {
         try {
             this.matchService.writeScore(id, score);
             return ResponseHandler.response("success");

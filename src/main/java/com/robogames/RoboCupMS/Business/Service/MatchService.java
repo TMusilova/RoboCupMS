@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Business.Enum.EMatchState;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
 import com.robogames.RoboCupMS.Entity.MatchState;
@@ -105,6 +106,16 @@ public class MatchService {
                 throw new Exception(String.format("failure, group with ID [%d] not exists", groupID));
             }
             group = gOpt.get();
+
+            // overi zda maji vsichni roboti stejnou kategorii ve skupine
+            ECategory mainCategory = robot.get().getTeamRegistration().getCategory();
+            List<RobotMatch> matches = group.getMatches();
+            for (RobotMatch matche : matches) {
+                if (matche.getRobot().getTeamRegistration().getCategory() != mainCategory) {
+                    throw new Exception(
+                            String.format("failure, the robots in the group are not in the same category", groupID));
+                }
+            }
         }
 
         // ziska stav zapasu
@@ -159,7 +170,7 @@ public class MatchService {
      * @param id    ID zapasu
      * @param score Skore zapasu
      */
-    public void writeScore(long id, int score) throws Exception {
+    public void writeScore(long id, float score) throws Exception {
         Optional<RobotMatch> m = this.robotMatchRepository.findById(id);
         if (m.isPresent()) {
             // zapise skore zapasu

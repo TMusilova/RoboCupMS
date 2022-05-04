@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.Auth;
+package com.robogames.RoboCupMS.Security;
 
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;

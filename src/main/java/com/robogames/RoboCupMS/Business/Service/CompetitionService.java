@@ -97,4 +97,22 @@ public class CompetitionService {
         }
     }
 
+    /**
+     * Zahaji soutez
+     * 
+     * @param id ID souteze
+     * @throws Exception
+     */
+    public void start(Long id) throws Exception {
+        // overi zda soutez existuje
+        Optional<Competition> competition = this.repository.findById(id);
+        if (!competition.isPresent()) {
+            throw new Exception(String.format("failure, competition with ID [%d] not exists", id));
+        }
+
+        // spusti soutez a ulozi zmeny
+        competition.get().setStarted(true);
+        this.repository.save(competition.get());
+    }
+
 }

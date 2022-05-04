@@ -1,6 +1,7 @@
 package com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Entity.Robot;
 
 /**
@@ -10,7 +11,7 @@ public class RobotScore {
 
     private final Robot robot;
 
-    private final int score;
+    private final float score;
 
     /**
      * Uklada celkove dosazene skore robota v soutezi
@@ -18,7 +19,7 @@ public class RobotScore {
      * @param _robot Robot
      * @param _score Celkove score
      */
-    public RobotScore(Robot _robot, int _score) {
+    public RobotScore(Robot _robot, float _score) {
         this.robot = _robot;
         this.score = _score;
     }
@@ -76,11 +77,20 @@ public class RobotScore {
     }
 
     /**
+     * Navrati nazev kategorie, ve ktere robot soutezi
+     * 
+     * @return Soutezni kategorie
+     */
+    public ECategory getCategory() {
+        return this.robot.getCategory();
+    }
+
+    /**
      * Navrati celkove skore
      * 
      * @return Celkove skore
      */
-    public int getScore() {
+    public float getScore() {
         return this.score;
     }
 

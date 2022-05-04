@@ -79,7 +79,7 @@ public class ScoreAggregation {
      * @return Vysledne celkove skore
      */
     @JsonIgnore
-    public int proccess(int totalScore, int score) {
+    public float proccess(float totalScore, float score) {
         switch (this.name) {
             case MAX:
                 return Math.max(totalScore, score);
@@ -97,12 +97,12 @@ public class ScoreAggregation {
      * @return Celkove skore
      */
     @JsonIgnore
-    public int getTotalScoreInitValue() {
+    public float getTotalScoreInitValue() {
         switch (this.name) {
             case MAX:
-                return Integer.MIN_VALUE;
+                return Float.MIN_VALUE;
             case MIN:
-                return Integer.MAX_VALUE;
+                return Float.MAX_VALUE;
             case SUM:
                 return 0;
         }

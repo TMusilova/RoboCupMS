@@ -108,4 +108,15 @@ public class CompetitionControler {
         }
     }
 
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @PutMapping("/start")
+    Response start(@RequestParam Long id) {
+        try {
+            this.competitionService.start(id);
+            return ResponseHandler.response("success");
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
+    }
+
 }

@@ -50,7 +50,7 @@ public class RobotMatch {
      * Vysledne skore zapasu (kolik bodu dostava robot)
      */
     @Column(name = "score", nullable = true, unique = false)
-    private int score;
+    private float score;
 
     /**
      * Vytvori "naplanuje" zapas. Je mozne planovat skupinove zapasy (robo sumu,
@@ -94,7 +94,7 @@ public class RobotMatch {
      * 
      * @return Skore
      */
-    public int getScore() {
+    public float getScore() {
         return this.score;
     }
 
@@ -201,7 +201,7 @@ public class RobotMatch {
      * 
      * @param _score Score
      */
-    public void setScore(int _score) {
+    public void setScore(float _score) {
         this.score = _score;
     }
 

@@ -5,6 +5,8 @@ import java.util.List;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
+import com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Model.OrderObj;
 import com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Model.RobotScore;
 import com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Model.TeamScore;
 import com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Service.CompetitionEvaluationService;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Ulehcuje praci z vyhodnocovanim souteze
  */
 @RestController
-@RequestMapping(GlobalConfig.API_PREFIX + "/competitionEvaluation")
+@RequestMapping(GlobalConfig.MODULE_PREFIX + "/competitionEvaluation")
 public class CompetitionEvaluation {
 
     @Autowired
@@ -28,14 +30,15 @@ public class CompetitionEvaluation {
     /**
      * Navrati skore a poradi vsech robotu, kteri soutezili v danem rocniku
      * 
-     * @param year Rocnik souteze
+     * @param year     Rocnik souteze
+     * @param category Soutezni kategorie
      * @return Seznam vsech roboku a jejich skore v soutezi
      */
     @GetMapping("/scoreOfAll")
-    Response getScoreOfAll(@RequestParam int year) {
+    Response getScoreOfAll(@RequestParam int year, @RequestParam ECategory category) {
         List<RobotScore> scoreOfAll;
         try {
-            scoreOfAll = this.competitionEvaluationService.getScoreOfAll(year);
+            scoreOfAll = this.competitionEvaluationService.getScoreOfAll(year, category);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
         }
@@ -69,46 +72,33 @@ public class CompetitionEvaluation {
      */
     @GetMapping("/scoreOfRobot")
     Response getScoreOfRobot(@RequestParam int year, @RequestParam long id) {
+        RobotScore scoreOfRobot;
         try {
-            this.competitionEvaluationService.getScoreOfRobot(year, id);
+            scoreOfRobot = this.competitionEvaluationService.getScoreOfRobot(year, id);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
         }
-        return ResponseHandler.response("");
+        return ResponseHandler.response(scoreOfRobot);
     }
 
     /**
-     * Navrati viteze ve vsech kategoriich
+     * Navrati umisteni robotu v konkretni discipline v ramci soutezni kategorie
      * 
-     * @param year Rocnik souteze
-     * @return Seznam vitezu vsech kategorii
+     * @param year     Rocnik souteze
+     * @param category Soutezni kategorie
+     * @param id       ID discipliny
+     * @return Sezname vsech robotu, kteri soutezili v dane discipline a jejich
+     *         poradi
      */
-    @GetMapping("/winners")
-    Response getWinners(@RequestParam int year) {
+    @GetMapping("/getOrder")
+    Response getOrder(@RequestParam int year, @RequestParam ECategory category, @RequestParam long id) {
+        List<OrderObj> winners;
         try {
-            this.competitionEvaluationService.getWinners(year);
+            winners = this.competitionEvaluationService.getOrder(year, category, id);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
         }
-        return ResponseHandler.response("");
-    }
-
-    /**
-     * Navrati data pro tisk na diplom za danou disciplinu a misto.
-     * 
-     * @param year  Rocnik souteze
-     * @param id    ID discipliny
-     * @param place Umisteni robota v discipline (1-3)
-     * @return
-     */
-    @GetMapping("/dataForPrinting")
-    Response getDataForPrinting(@RequestParam int year, @RequestParam long id, @RequestParam int place) {
-        try {
-            this.competitionEvaluationService.getDataForPrinting(year, id, place);
-        } catch (Exception ex) {
-            return ResponseHandler.error(ex.getMessage());
-        }
-        return ResponseHandler.response("");
+        return ResponseHandler.response(winners);
     }
 
 }

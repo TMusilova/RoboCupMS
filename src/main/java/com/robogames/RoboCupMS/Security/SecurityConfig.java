@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.Auth;
+package com.robogames.RoboCupMS.Security;
 
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Repository.UserRepository;
@@ -17,8 +17,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         private static final String[] NOT_SECURED = new String[] {
+                        // sekce prihlasovani a registrace
                         GlobalConfig.AUTH_PREFIX + "/login",
-                        GlobalConfig.AUTH_PREFIX + "/register"
+                        GlobalConfig.AUTH_PREFIX + "/register",
+
+                        // sekce vysledku souteze (dostupne i pro verejnost)
+                        GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/scoreOfAll",
+                        GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/scoreOfTeam",
+                        GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/scoreOfRobot",
+                        GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/getOrder"
         };
 
         @Autowired

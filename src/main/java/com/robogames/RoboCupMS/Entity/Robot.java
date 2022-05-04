@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robogames.RoboCupMS.Business.Enum.ECategory;
 
 /**
  * Robot, se kterym soutezi tymy. Nejdrive je nutne robot vytvorit a pak ho
@@ -175,6 +176,15 @@ public class Robot {
         } else {
             return this.discipline.getName();
         }
+    }
+
+    /**
+     * Navrati kategorii, ve ktere robot soutezi
+     * 
+     * @return Soutezni kategorie
+     */
+    public ECategory getCategory() {
+        return this.teamRegistration.getCategory();
     }
 
     /**
