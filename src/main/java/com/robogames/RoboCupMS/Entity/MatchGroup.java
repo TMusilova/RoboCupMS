@@ -2,6 +2,7 @@ package com.robogames.RoboCupMS.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.robogames.RoboCupMS.Repository.MatchGroupRepository;
 
 /**
  * Herni skupina. Pouzije se jen v pripade pokud proti sobe zapasi vice robotu a
@@ -97,6 +99,34 @@ public class MatchGroup {
      */
     public void setCreatorIdentifier(long _creatorIdentifier) {
         this.creatorIdentifier = _creatorIdentifier;
+    }
+
+    /**
+     * Vygeneruje unikatni identifikator tvurce zapasove skupiny
+     * 
+     * @return Unikatni identifikator
+     */
+    public static long generateCreatorIdentifier(MatchGroupRepository repository) {
+        final List<MatchGroup> all = repository.findAll();
+        final Random rnd = new Random();
+        // nahodne vygeneruje identifikacni cislo, pokud jiz existuje tak generuje znovu
+        // (omezene pocetem iteraci)
+        long creatorIdentifier = 0;
+        for (int i = 0; i < 500; ++i) {
+            creatorIdentifier = rnd.nextLong();
+            // test unikatnosti
+            boolean unique = true;
+            for (MatchGroup m : all) {
+                if (m.getCreatorIdentifier() == creatorIdentifier) {
+                    unique = false;
+                    break;
+                }
+            }
+            if (unique) {
+                break;
+            }
+        }
+        return creatorIdentifier;
     }
 
 }

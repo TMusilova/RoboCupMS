@@ -11,6 +11,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.robogames.RoboCupMS.Communication;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.Role;
 import com.robogames.RoboCupMS.Entity.UserRC;
@@ -49,6 +50,10 @@ public class TokenAuthorizationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
+
+		// odesle zpravu naslouchajicim modulum v aplikaci o tom na jaky endpoint se
+		// pristupuje
+		Communication.getInstance().sendAll(this, request);
 
 		// endpoint filter
 		if (this.ignoredEndpoints != null) {

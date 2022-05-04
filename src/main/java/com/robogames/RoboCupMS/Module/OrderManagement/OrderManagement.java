@@ -72,15 +72,14 @@ public class OrderManagement {
     /**
      * Navrati pro robota seznam vsech zapasu, ktere cekaji na odehrani
      * 
-     * @param year     Rocnik souteze
-     * @param id       ID robota
-     * @param category Soutezni kategorie
-     * @return Seznam vsech
+     * @param year Rocnik souteze
+     * @param id   ID robota
+     * @return Seznam vsech zapasu robota, ktere prace cekaji na odehrani
      */
     @GetMapping("/waitingMatches")
-    Response waitingMatches(@RequestParam int year, @RequestParam long id, @RequestParam ECategory category) {
+    Response waitingMatches(@RequestParam int year, @RequestParam long id) {
         try {
-            this.competitionEvaluationService.waitingMatches(year, id, category);
+            this.competitionEvaluationService.waitingMatches(year, id);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
         }
@@ -90,19 +89,21 @@ public class OrderManagement {
     /**
      * Vygeneruje skupinove zapasy "kazdy s kazdym" (sumo, robo strong, ...)
      * 
-     * @param year   Rocnik souteze
-     * @param robots Seznam ID robotu, pro ktere se zapasy vytvori
+     * @param year         Rocnik souteze
+     * @param robots       Seznam ID robotu, pro ktere se zapasy vytvori
+     * @param playgroundID ID hriste kde se zapasy budou konat
      * @return Navrati identifikacni cislo tvurce zapasovych skupin (nasledne muze
      *         byt uplatneno pro odstraneni zapasu)
      */
     @PostMapping("/generateMatches")
-    Response generateMatches(@RequestParam int year, @RequestBody List<Long> robots) {
+    Response generateMatches(@RequestParam int year, @RequestBody Long[] robots, @RequestBody Long playgroundID) {
+        long creatorIdentifier;
         try {
-            this.competitionEvaluationService.generateMatches(year, robots);
+            creatorIdentifier = this.competitionEvaluationService.generateMatches(year, robots, playgroundID);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
         }
-        return ResponseHandler.response("");
+        return ResponseHandler.response(creatorIdentifier);
     }
 
 }
