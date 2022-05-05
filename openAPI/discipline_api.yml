@@ -1,0 +1,220 @@
+openapi: 3.0.2
+info:
+  title: RoboCupMS - Discipline API
+  description: API slouží pro správu soutěžních disciplín.
+  version: 1.0.0
+  contact:
+    email: m1_krcma@utb.cz
+servers:
+  - url: https://utb-robogames.com/api/discipline
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-TOKEN
+paths:
+  /get:
+    get:
+      summary: Navratí disciplinu s konkrétním ID
+      parameters:
+        - in: query
+          name: id
+          required: true
+          description: ID disciplíny
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Disciplína
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: "Sledovač čáry"
+                      scoreAggregation:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 4
+                          name:
+                            type: string
+                            example: "MIN"
+                      description:
+                        type: string
+                        example: "Popis discipliny"
+
+  /all:
+    get:
+      summary: Navratí všechný vytvořené disciplíny
+      parameters: []
+      responses:
+        "200":
+          description: Robot
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: "Sledovač čáry"
+                        scoreAggregation:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 4
+                            name:
+                              type: string
+                              example: "MIN"
+                        description:
+                          type: string
+                          example: "Popis discipliny"
+
+  /create:
+    post:
+      summary: Vytvoří novou disciplínu
+      parameters:
+        - in: query
+          name: name
+          required: true
+          description: Nazev nové discipliny
+          schema:
+            type: string
+        - in: query
+          name: description
+          required: true
+          description: Popis nové discipliny
+          schema:
+            type: string
+        - in: query
+          name: scoreAggregation
+          required: true
+          description: Název agregáční funkce skore (pro automatizované vyhodnocení) 
+          schema:
+            type: string
+            enum: ["MIN", "MAX", "SUM"]
+
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Odpověd o stavu provedeného požadavku
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: string
+                    example: "success"
+
+  /edit:
+    put:
+      summary: Upravi disciplínu
+      description: Umužnuje upravit jmeno, popis nebo typ agregacni funkce skore
+      parameters:
+        - in: query
+          name: name
+          required: true
+          description: Nazev nové discipliny
+          schema:
+            type: string
+        - in: query
+          name: description
+          required: true
+          description: Popis nové discipliny
+          schema:
+            type: string
+        - in: query
+          name: scoreAggregation
+          required: true
+          description: Název agregáční funkce skore (pro automatizované vyhodnocení) 
+          schema:
+            type: string
+            enum: ["MIN", "MAX", "SUM"]
+        - in: query
+          name: id
+          required: true
+          description: ID discipliny, která má být upravena
+          schema:
+            type: integer
+
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Odpověd o stavu provedeného požadavku
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: string
+                    example: "success"
+
+  /remove:
+    delete:
+      summary: Odstraní disciplínu
+      description: Disciplínu nebude možne odstranit pokud ma přiřazené nejaké hřiště nebo registrované roboty.
+      parameters:
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže
+          schema:
+            type: integer
+        - in: query
+          name: id
+          required: true
+          description: ID disciplíny, která bude odstraněna
+          schema:
+            type: integer
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Odpověd o stavu provedeného požadavku
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: string
+                    example: "success"

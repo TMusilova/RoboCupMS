@@ -40,6 +40,7 @@ public class MatchGroupControler {
      * Navrti vsechny zapasove skupiny pro specifikovany identifikator tvurce
      * skupiny
      * 
+     * @param creatorID Identifikator tvurce skupiny
      * @return Seznam vsech skupin
      */
     @GetMapping("/getByCID")
@@ -98,6 +99,23 @@ public class MatchGroupControler {
     Response remove(@RequestParam Long id) {
         try {
             this.groupService.remove(id);
+            return ResponseHandler.response("success");
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
+    }
+
+    /**
+     * Odstrani vsechny skupiny s odpovidajicim ID tvurce skupiny
+     * 
+     * @param creatorid Identifikator tvurce skupiny
+     * @return Informace o stavu provedeneho requestu
+     */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
+    @DeleteMapping("/removeAll")
+    Response removeAll(@RequestParam Long creatorid) {
+        try {
+            this.groupService.removeAll(creatorid);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

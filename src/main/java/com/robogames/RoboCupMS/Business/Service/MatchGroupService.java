@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 import com.robogames.RoboCupMS.Entity.MatchGroup;
 import com.robogames.RoboCupMS.Repository.MatchGroupRepository;
+import com.robogames.RoboCupMS.Repository.RobotMatchRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class MatchGroupService {
 
     @Autowired
     private MatchGroupRepository repository;
+
+    @Autowired
+    private RobotMatchRepository matchRepository;
 
     /**
      * Navrati vsechny zapasove skupiny
@@ -34,6 +38,7 @@ public class MatchGroupService {
      * Navrti vsechny zapasove skupiny pro specifikovany identifikator tvurce
      * skupiny
      * 
+     * @param creatorID Identifikator tvurce skupiny
      * @return Seznam vsech skupin
      */
     public List<MatchGroup> getByCID(Long creatorID) {
@@ -67,7 +72,7 @@ public class MatchGroupService {
      * @param creatorid Identifikator tvurce skupiny
      * @return Informace o stavu provedeneho requestu
      */
-    public void create(Long creatorID) {
+    public void create(Long creatorID) throws Exception {
         MatchGroup g = new MatchGroup(creatorID);
         this.repository.save(g);
     }
@@ -78,8 +83,38 @@ public class MatchGroupService {
      * @param id ID skupiny
      * @return Informace o stavu provedeneho requestu
      */
-    public void remove(Long id) {
-        this.repository.deleteById(id);
+    public void remove(Long id) throws Exception {
+        // overi zda zapasova skupina existuje
+        Optional<MatchGroup> group = this.repository.findById(id);
+        if (!group.isPresent()) {
+            throw new Exception(String.format("failure, match group with ID [%d] not exists", id));
+        }
+
+        // odstrani vsechny zapasy skupiny
+        if (!group.get().getMatches().isEmpty()) {
+            this.matchRepository.deleteAll(group.get().getMatches());
+        }
+
+        // odstrani skupinu
+        this.repository.delete(group.get());
+    }
+
+    /**
+     * Odstrani vsechny skupiny s odpovidajicim ID tvurce skupiny
+     * 
+     * @param creatorid Identifikator tvurce skupiny
+     */
+    public void removeAll(Long creatorid) throws Exception {
+        this.repository.findAll().stream().filter((group) -> (group.getCreatorIdentifier() == creatorid))
+                .forEach((group) -> {
+                    // odstrani vsechny zapasy skupiny
+                    if (!group.getMatches().isEmpty()) {
+                        this.matchRepository.deleteAll(group.getMatches());
+                    }
+
+                    // odstrani skupinu
+                    this.repository.delete(group);
+                });
     }
 
 }

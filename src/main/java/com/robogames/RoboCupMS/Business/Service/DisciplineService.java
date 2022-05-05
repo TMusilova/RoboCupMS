@@ -59,11 +59,24 @@ public class DisciplineService {
      */
     public void remove(Long id) throws Exception {
         Optional<Discipline> d = this.disciplineRepository.findById(id);
-        if (d.isPresent()) {
-            this.disciplineRepository.deleteById(id);
-        } else {
-            throw new Exception(String.format("failure, dicipline with ID [%d] not found", id));
+
+        // overi zda disciplina existuje
+        if (!d.isPresent()) {
+            throw new Exception(String.format("failure, dicipline with ID [%d] not exists", id));
         }
+
+        // overi zda discipliny nema jiz prirazene nejake hriste
+        if (!d.get().getPlaygrounds().isEmpty()) {
+            throw new Exception(String.format("failure, dicipline with ID [%d] have created a playgrounds", id));
+        }
+
+        // overi zda discipliny nema jiz registrovane nejake roboty
+        if (!d.get().getRobots().isEmpty()) {
+            throw new Exception(String.format("failure, dicipline with ID [%d] already have registered robots", id));
+        }
+
+        // odstrani disciplinu
+        this.disciplineRepository.delete(d.get());
     }
 
     /**

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +41,7 @@ public class PlaygroundControler {
     /**
      * Navrati vsechny hriste pro urcitou disciplinu
      * 
+     * @param id ID discipliny
      * @return Seznam vsech souteznich hrist pro urcitou disciplinu
      */
     @GetMapping("/get")
@@ -58,6 +58,7 @@ public class PlaygroundControler {
     /**
      * Navrati vsechny zapasy odehrane na konkretnim hristi
      * 
+     * @param id ID hriste
      * @return Seznam zapasu
      */
     @GetMapping("/getMatches")
@@ -111,15 +112,18 @@ public class PlaygroundControler {
     /**
      * Upravi parametry souzezniho hriste
      * 
-     * @param id         ID hriste, ktere ma byt upraveno
-     * @param playground Nove parametry hriste
+     * @param id           ID hriste, ktere ma byt upraveno
+     * @param name         Nove jmeno hřiště
+     * @param number       Nove cislo hřiště
+     * @param disciplineID Nove id discipliny
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PutMapping("/edit")
-    Response edit(@RequestParam Long id, @RequestBody Playground playground) {
+    Response edit(@RequestParam Long id, @RequestParam String name, @RequestParam int number,
+            @RequestParam Long disciplineID) {
         try {
-            this.playgroundService.edit(id, playground);
+            this.playgroundService.edit(id, name, number, disciplineID);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

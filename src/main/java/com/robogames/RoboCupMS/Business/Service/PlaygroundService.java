@@ -37,6 +37,7 @@ public class PlaygroundService {
     /**
      * Navrati vsechny hriste pro urcitou disciplinu
      * 
+     * @param id ID discipliny
      * @return Seznam vsech souteznich hrist pro urcitou disciplinu
      */
     public List<Playground> get(Long id) throws Exception {
@@ -52,6 +53,7 @@ public class PlaygroundService {
     /**
      * Navrati vsechny zapasy odehrane na konkretnim hristi
      * 
+     * @param id ID hriste
      * @return Seznam zapasu
      */
     public List<RobotMatch> getMatches(Long id) throws Exception {
@@ -107,21 +109,24 @@ public class PlaygroundService {
     /**
      * Upravi parametry souzezniho hriste
      * 
-     * @param id         ID hriste, ktere ma byt upraveno
-     * @param playground Nove parametry hriste
+     * @param id           ID hriste, ktere ma byt upraveno
+     * @param name         Nove jmeno hriste
+     * @param number       Nove cislo hriste
+     * @param disciplineID Nove ID discipliny, pro ktere bude hriste urcene
+     * 
      */
-    public void edit(Long id, Playground playground) throws Exception {
+    public void edit(Long id, String name, int number, Long disciplineID) throws Exception {
         // overi zda disciplina existuje
-        Optional<Discipline> discipline = this.disciplineRepository.findById(playground.getID());
+        Optional<Discipline> discipline = this.disciplineRepository.findById(disciplineID);
         if (!discipline.isPresent()) {
-            throw new Exception(String.format("failure, discipline with ID [%d] not exists", playground.getID()));
+            throw new Exception(String.format("failure, discipline with ID [%d] not exists", disciplineID));
         }
 
         // provede zmeni
         Optional<Playground> map = this.playgroundRepository.findById(id)
                 .map(p -> {
-                    p.setName(playground.getName());
-                    p.setNumber(playground.getNumber());
+                    p.setName(name);
+                    p.setNumber(number);
                     p.setDiscipline(discipline.get());
                     return this.playgroundRepository.save(p);
                 });

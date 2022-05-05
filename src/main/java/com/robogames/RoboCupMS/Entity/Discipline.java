@@ -155,7 +155,7 @@ public class Discipline {
      * 
      * @param _scoreAggregation Nova agregacni funkce pro skore
      */
-    public void getScoreAggregation(ScoreAggregation _scoreAggregation) {
+    public void setScoreAggregation(ScoreAggregation _scoreAggregation) {
         this.scoreAggregation = _scoreAggregation;
     }
 

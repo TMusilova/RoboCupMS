@@ -259,7 +259,29 @@ paths:
   /add:
     post:
       summary: Přidá nového uživatele do databáze
-      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                birthDate:
+                  type: string
+              required:
+                - name
+                - surname
+                - email
+                - password
+                - birthDate
       security:
         - ApiKeyAuth: []
       responses:
@@ -291,7 +313,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
