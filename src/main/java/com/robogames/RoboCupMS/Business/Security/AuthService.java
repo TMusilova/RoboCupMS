@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import com.robogames.RoboCupMS.Business.Enum.ERole;
 import com.robogames.RoboCupMS.Entity.UserRC;
@@ -32,16 +33,43 @@ public class AuthService {
      * @return Pristupovy token
      */
     public String login(String email, String password) throws Exception {
+        // validace emailu
+        // https://mailtrap.io/blog/java-email-validation/
+        Pattern pattern = Pattern
+                .compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+        if(!pattern.matcher(email).matches()) {
+            throw new Exception("failure, email is invalid");
+        }
+
+        // autentizace uzivatele
         Optional<UserRC> user = repository.findByEmail(email);
         if (user.isPresent()) {
             if (user.get().passwordMatch(password)) {
-                String token = UUID.randomUUID().toString();
+
+                // vygenerovani unikatniho pristupoveho tokenu
+                String token = "";
+                boolean success = false;
+                for(int i = 0; i < 5000; ++i) {
+                    token = UUID.randomUUID().toString();
+                    if(!repository.findByToken(token).isPresent()) {
+                        success = true;
+                        break;
+                    }
+                }
+
+                // nepodarilo se vygenerovat pristupovy token
+                if(!success) {
+                    throw new Exception("failed to generate access token");
+                }
+
+                // ulozi token do databaze
                 UserRC u = user.get();
                 u.setToken(token);
                 repository.save(u);
                 return token;
             }
         }
+
         throw new Exception("Incorrect email or password");
     }
 
@@ -72,20 +100,30 @@ public class AuthService {
      * @return Nove vytvoreni uzivatel
      */
     public void register(UserRC newUser) throws Exception {
+        // overi zda uzivatel s timto email jiz neni registrovany
         if (this.repository.findByEmail(newUser.getEmail()).isPresent()) {
             throw new Exception("failure, user with this email already exists");
-        } else {
-            List<ERole> roles = new ArrayList<ERole>();
-            roles.add(ERole.COMPETITOR);
-            UserRC u = new UserRC(
-                    newUser.getName(),
-                    newUser.getSurname(),
-                    newUser.getEmail(),
-                    newUser.getPassword(),
-                    newUser.getBirthDate(),
-                    roles);
-            repository.save(u);
         }
+
+        // validace emailu
+        // https://mailtrap.io/blog/java-email-validation/
+        Pattern pattern = Pattern
+                .compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+        if(!pattern.matcher(newUser.getEmail()).matches()) {
+            throw new Exception("failure, email is invalid");
+        }
+
+        // registruje noveho uzivatele
+        List<ERole> roles = new ArrayList<ERole>();
+        roles.add(ERole.COMPETITOR);
+        UserRC u = new UserRC(
+                newUser.getName(),
+                newUser.getSurname(),
+                newUser.getEmail(),
+                newUser.getPassword(),
+                newUser.getBirthDate(),
+                roles);
+        repository.save(u);
     }
 
 }

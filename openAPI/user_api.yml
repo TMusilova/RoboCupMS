@@ -201,6 +201,7 @@ paths:
           description: Email uživatele
           schema:
             type: string
+            pattern: 
             example: user123@email.com
       security:
         - ApiKeyAuth: []

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import com.robogames.RoboCupMS.Business.Enum.ERole;
 import com.robogames.RoboCupMS.Entity.Role;
@@ -85,6 +86,15 @@ public class UserService {
      * @throws Exception
      */
     public void add(UserRC newUser) throws Exception {
+        // validace emailu
+        // https://mailtrap.io/blog/java-email-validation/
+        Pattern pattern = Pattern
+                .compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+        if (!pattern.matcher(newUser.getEmail()).matches()) {
+            throw new Exception("failure, email is invalid");
+        }
+
+        // vytvori noveho uzivatele
         List<ERole> roles = new ArrayList<ERole>();
         roles.add(ERole.COMPETITOR);
         UserRC user = new UserRC(
