@@ -65,7 +65,7 @@ public class MatchGroupService {
      * Vytvori novou zapasovou skupinu
      * 
      * @param creatorid Identifikator tvurce skupiny
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     public void create(Long creatorID) {
         MatchGroup g = new MatchGroup(creatorID);
@@ -76,7 +76,7 @@ public class MatchGroupService {
      * Odstrani skupinu
      * 
      * @param id ID skupiny
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     public void remove(Long id) {
         this.repository.deleteById(id);

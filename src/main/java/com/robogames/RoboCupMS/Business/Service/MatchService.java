@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.robogames.RoboCupMS.Communication;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Business.Enum.EMatchState;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
@@ -179,6 +180,8 @@ public class MatchService {
             MatchState state = matchStateRepository.findByName(EMatchState.DONE).get();
             m.get().setMatchState(state);
             this.robotMatchRepository.save(m.get());
+            // odesle do komunikacniho systemu zparavu o zapisu skore
+            Communication.getInstance().sendAll(this, "writeScore");
         } else {
             throw new Exception(String.format("failure, match with ID [%d] not exists", id));
         }

@@ -31,7 +31,7 @@ public class TeamRegistrationControler {
      * Registruje tym do souteze (registrovat muze pouze vedouci tymu!!!!!)
      * 
      * @param year Rocni souteze, do ktere se tym chce registrovate
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PostMapping("/register")
     Response register(@RequestParam int year, @RequestParam Boolean open) {
@@ -47,7 +47,7 @@ public class TeamRegistrationControler {
      * Zrusi registraci tymu
      * 
      * @param year Rocni souteze
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @DeleteMapping("/unregister")
     Response unregister(@RequestParam int year) {
@@ -83,7 +83,7 @@ public class TeamRegistrationControler {
      * @param id       ID tymu
      * @param year     Rocnik souteze
      * @param category Nova kategorie, ve ktere bude tym soutezit
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PutMapping("/changeCategory")
@@ -104,7 +104,7 @@ public class TeamRegistrationControler {
      * @param category    Aktualni kategorie
      * @param newCategory Kategorie, do ktere se presunou vsechny registrovane tymy
      *                    z jejich aktualni kategorie
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PutMapping("/joinCategory")

@@ -65,7 +65,7 @@ public class RobotControler {
      * konkretim rocniku souteze.
      * 
      * @param year Rocnik souteze
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PostMapping("/create")
     Response create(@RequestParam int year, @RequestParam String name) {
@@ -82,7 +82,7 @@ public class RobotControler {
      * 
      * @param year Rocnik souteze
      * @param id   ID robota
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @DeleteMapping("/remove")
     Response remove(@RequestParam int year, @RequestParam Long id) {
@@ -100,7 +100,7 @@ public class RobotControler {
      * @param year Rocnik souteze
      * @param id   ID robota
      * @param name Nove jmeno robota
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/rename")
     Response rename(@RequestParam int year, @RequestParam Long id, @RequestParam String name) {
@@ -117,7 +117,7 @@ public class RobotControler {
      * 
      * @param robotID      ID robota, ktereho registrujeme
      * @param disciplineID ID discipliny, do ktere chceme robota registrovat
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/register")
     Response register(@RequestParam Long robotID, @RequestParam Long disciplineID) {
@@ -133,7 +133,7 @@ public class RobotControler {
      * Zrusi registraci existujiciho robota
      * 
      * @param id ID robota
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/unregister")
     Response unregister(@RequestParam Long id) {
@@ -150,7 +150,7 @@ public class RobotControler {
      * 
      * @param id        ID robota
      * @param confirmed Registrace je nebo neni povrzena
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PutMapping("/confirmRegistration")

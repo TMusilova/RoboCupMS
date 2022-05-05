@@ -5,10 +5,12 @@ import java.util.List;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
+import com.robogames.RoboCupMS.Business.Enum.ERole;
 import com.robogames.RoboCupMS.Business.Service.MatchService;
 import com.robogames.RoboCupMS.Entity.RobotMatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,8 +62,9 @@ public class MatchControler {
      * @param groupID      ID zapasove skupiny. Jen v pripade pokud zapasi proti
      *                     sobe vice robotu. V opacnem pripade zadat neplatnou
      *                     zapornou hodnotu.
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @PostMapping("/create")
     Response create(@RequestParam long robotID, @RequestParam long playgroundID, @RequestParam long groupID) {
         try {
@@ -76,8 +79,9 @@ public class MatchControler {
      * Odstrani zapas
      * 
      * @param id ID zapasu
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @DeleteMapping("/remove")
     Response remove(@RequestParam long id) {
         try {
@@ -92,8 +96,9 @@ public class MatchControler {
      * Odstrani vsechny zapasy, ktere nalezi do urcite zkupiny
      * 
      * @param groudID ID skupiny, jejiz zapasy maji byt odstraneni
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @DeleteMapping("/removeAll")
     Response removeAll(@RequestParam long groupID) {
         try {
@@ -110,8 +115,9 @@ public class MatchControler {
      * 
      * @param id    ID zapasu
      * @param score Skore zapasu
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @PutMapping("/writeScore")
     Response writeScore(@RequestParam long id, @RequestParam float score) {
         try {
@@ -127,8 +133,9 @@ public class MatchControler {
      * tento pozadavek vyzada i u ostatnich zapasu.
      * 
      * @param id ID zapasu
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @PutMapping("/rematch")
     Response rematch(@RequestParam long id) {
         try {

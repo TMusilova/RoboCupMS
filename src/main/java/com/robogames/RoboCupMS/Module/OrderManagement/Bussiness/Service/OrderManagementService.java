@@ -1,25 +1,26 @@
 package com.robogames.RoboCupMS.Module.OrderManagement.Bussiness.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.robogames.RoboCupMS.Communication;
-import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Business.Enum.EMatchState;
+import com.robogames.RoboCupMS.Business.Service.MatchService;
 import com.robogames.RoboCupMS.Communication.CallBack;
-import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
 import com.robogames.RoboCupMS.Entity.MatchState;
 import com.robogames.RoboCupMS.Entity.Playground;
 import com.robogames.RoboCupMS.Entity.Robot;
 import com.robogames.RoboCupMS.Entity.RobotMatch;
+import com.robogames.RoboCupMS.Module.OrderManagement.Bussiness.Model.MatchQueue;
 import com.robogames.RoboCupMS.Repository.CompetitionRepository;
 import com.robogames.RoboCupMS.Repository.MatchGroupRepository;
 import com.robogames.RoboCupMS.Repository.MatchStateRepository;
@@ -55,21 +56,31 @@ public class OrderManagementService {
     @Autowired
     private MatchStateRepository matchStateRepository;
 
+    /**
+     * Fronty zapasu cekajicich na odehrani pro kazdou disciplinu
+     */
+    private final static Map<Long, MatchQueue> MATCH_GUEUES = Collections
+            .synchronizedMap(new HashMap<Long, MatchQueue>());
+
+    /**
+     * Rocnik souteze
+     */
+    private static int YEAR = -1;
+
     public OrderManagementService() {
         // bude naslouchat komunikacnimu systemu aplikace
         Communication.getInstance().getCallBacks().add(new CallBack() {
             @Override
             public void callBack(Object sender, Object data) {
-                logger.info(">>>>>>>>> " + data + ", " + Communication.getInstance().getCallBacks().size());
                 // pokud zachyti http request na endpoint "GlobalConfig.AUTH_PREFIX +
                 // /match/writeScore" -> zapas byl
                 // odehran -> dojde k obnoveni
-                if (data instanceof HttpServletRequest) {
-                    logger.info("=== " + ((HttpServletRequest) data).getRequestURI());
-                    if (((HttpServletRequest) data).getRequestURI()
-                            .equals(GlobalConfig.AUTH_PREFIX + "/match/writeScore")) {
-                        // refresh systemu pro rizeni poradi
-                        refreshSystem();
+                if (sender instanceof MatchService) {
+                    if (data instanceof String) {
+                        if (((String) data).equals("writeScore")) {
+                            // refresh systemu pro rizeni poradi
+                            refreshSystem();
+                        }
                     }
                 }
             }
@@ -77,17 +88,68 @@ public class OrderManagementService {
     }
 
     /**
-     * Navrati seznam vsech zapasu, ktere aktualne maji byt odehrany (vyzva k odjeti
-     * zapasu)
-     * 10
+     * Spusti servis pro rizeni poradi
      * 
-     * @param year     Rocnik souteze
-     * @param category Soutezni kategorie
-     * @return Seznam vsech robotu a hrist, na ktere se maji dostavit pro odehrani
-     *         zapasu
+     * @param year Rocnik souteze
+     * @throws Exception
      */
-    public void currentMatches(int year, ECategory category) throws Exception {
+    public void run(int year) throws Exception {
+        if (!this.competitionRepository.findByYear(year).isPresent()) {
+            throw new Exception(String.format("failure, compotition [%d] not exists", year));
+        }
 
+        // nastavi rocnik souteze
+        OrderManagementService.YEAR = year;
+
+        // refresh systemu
+        this.refreshSystem();
+    }
+
+    /**
+     * Stav systemu
+     * 
+     * @return Stav
+     */
+    public boolean isRunning() {
+        return OrderManagementService.YEAR != -1;
+    }
+
+    /**
+     * Vyzada refresh systemu, pokud dojde k zamrznuti
+     * 
+     * @throws Exception
+     */
+    public void requestRefresh() throws Exception {
+        if (OrderManagementService.YEAR == -1) {
+            throw new Exception("Order Management Service is not running!");
+        }
+
+        OrderManagementService.MATCH_GUEUES.clear();
+
+        this.refreshSystem();
+    }
+
+    /**
+     * Navrati seznam vsech zapasu, ktere maji byt nyni odehrany na prislusnych
+     * hristich
+     * 
+     * @return Vsechny zapasy, ktere maji byt nyni odehrany na prislusnych hristich
+     */
+    public List<RobotMatch> currentMatches() throws Exception {
+        if (OrderManagementService.YEAR == -1) {
+            throw new Exception("failure, order Management Service is not running!");
+        }
+
+        List<RobotMatch> matches = new ArrayList<RobotMatch>();
+
+        OrderManagementService.MATCH_GUEUES.forEach((p, queue) -> {
+            RobotMatch first = queue.getFirst();
+            if (first != null) {
+                matches.add(first);
+            }
+        });
+
+        return matches;
     }
 
     /**
@@ -95,27 +157,41 @@ public class OrderManagementService {
      * discipliny
      * 4
      * 
-     * @param year     Rocnik souteze
-     * @param id       ID dalsiho zapasu, ktery rozhodci chce, aby byl odehran
-     *                 (pokud
-     *                 bude zadana zaporna neplatna hodnota pak system vybere
-     *                 nahodne ze
-     *                 seznamu cekajicih zapasu)
-     * @param category Soutezni kategorie
+     * @param id ID dalsiho zapasu, ktery rozhodci chce, aby byl odehran
+     *           (pokud
+     *           bude zadana zaporna neplatna hodnota pak system vybere
+     *           nahodne ze
+     *           seznamu cekajicih zapasu)
      * @return
      */
-    public void requestAnotherMatch(int year, long id, ECategory category) throws Exception {
+    public void requestAnotherMatch(long id) throws Exception {
+        if (OrderManagementService.YEAR == -1) {
+            throw new Exception("failure, order Management Service is not running!");
+        }
 
+        Optional<RobotMatch> match = this.robotMatchRepository.findById(id);
+        if (!match.isPresent()) {
+            throw new Exception(String.format("failure, match with ID [%d] not exists", id));
+        }
+
+        MatchQueue matchQueue = OrderManagementService.MATCH_GUEUES.get(match.get().getPlayground().getID());
+
+        if (matchQueue == null) {
+            throw new Exception("match queue not exists");
+        }
+
+        // zapas presune na prvni misto ve fronte
+        matchQueue.setFirst(id);
     }
 
     /**
-     * Navrati pro robota seznam vsech zapasu, ktere cekaji na odehrani
+     * Navrati pro robota seznam vsech nadchazejicich zapasu
      * 
      * @param year Rocnik souteze
      * @param id   ID robota
-     * @return Seznam vsech zapasu robota, ktere prace cekaji na odehrani
+     * @return Seznam vsech zapasu robota, ktere jeste cekaji na odehrani
      */
-    public List<RobotMatch> waitingMatches(int year, long id) throws Exception {
+    public List<RobotMatch> upcommingMatches(long id) throws Exception {
         // overi zda robot existuje
         Optional<Robot> robot = this.robotRepository.findById(id);
         if (!robot.isPresent()) {
@@ -216,8 +292,41 @@ public class OrderManagementService {
      * Refresh systemu pro rizeni poradi (vola se automaticky pri kazdem http
      * reqestu na zapis skore nejakeho zapasu)
      */
-    private void refreshSystem() {
+    private synchronized void refreshSystem() {
+        // this.nextMatches
+        if (OrderManagementService.YEAR == -1) {
+            logger.error("Order Management Service is not running!");
+            return;
+        }
 
+        // seznam zapasu cekajicich na odehrani
+        Stream<RobotMatch> waiting = this.robotMatchRepository.findAll().stream()
+                .filter((m) -> (m.getRobot().getTeamRegistration().getCompatitionYear() == YEAR &&
+                        (m.getState().getName() == EMatchState.WAITING
+                                || m.getState().getName() == EMatchState.REMATCH)));
+
+        logger.info("OrderManagementService refresh");
+
+        // sychrnonizace a odstrani odehranych zapasu
+        OrderManagementService.MATCH_GUEUES.forEach((p, queue) -> {
+            // synchronizace
+            queue.synchronize(this.robotMatchRepository);
+            // odstraneni
+            int cnt = queue.removeAllDone();
+            logger.info(String.format("[Playground ID: %d] removed from queue: %d", p, cnt));
+        });
+
+        // prida vsechny zapasy, ktere cekaji na odehrani
+        waiting.forEach((m) -> {
+            MatchQueue queue = OrderManagementService.MATCH_GUEUES.get(m.getPlayground().getID());
+            if (queue == null) {
+                queue = new MatchQueue(m.getPlayground());
+                OrderManagementService.MATCH_GUEUES.put(m.getPlayground().getID(), queue);
+            }
+            queue.add(m);
+            logger.info(String.format("[Playground ID: %d] added new match with ID [%d]", m.getPlayground().getID(),
+                    m.getID()));
+        });
     }
 
 }

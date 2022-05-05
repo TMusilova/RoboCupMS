@@ -90,7 +90,7 @@ public class UserControler {
      * Prida do databaze noveho uzivatele
      * 
      * @param newUser Novy uzivatel
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/add")
@@ -108,7 +108,7 @@ public class UserControler {
      * 
      * @param newUser Nove atributy uzivatele
      * @param id      ID uzivatele jehoz atributy budou zmeneny
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/edit")
     Response edit(@RequestBody UserRC newUser, @RequestParam String uuid) {
@@ -125,7 +125,7 @@ public class UserControler {
      * 
      * @param oldPassword Stare heslo
      * @param newPasword  Nove heslo
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/changePassword")
     Response changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
@@ -141,7 +141,7 @@ public class UserControler {
      * Vygenerovat nove heslo
      * 
      * @param newPasword Nove heslo
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PutMapping("/generatePassword")
@@ -159,7 +159,7 @@ public class UserControler {
      * 
      * @param role Nova role, kterou prideli uzivateli
      * @param id   ID uzivatele jehoz atributy budou zmeneny
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN })
     @PutMapping("/addRole")
@@ -177,7 +177,7 @@ public class UserControler {
      * 
      * @param role Nova role, kterou prideli uzivateli
      * @param id   ID uzivatele jehoz atributy budou zmeneny
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN })
     @PutMapping("/removeRole")
@@ -194,7 +194,7 @@ public class UserControler {
      * Odebere uzivatele
      * 
      * @param id ID uzivatele, ktery ma byt odebran
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @DeleteMapping("/delete")

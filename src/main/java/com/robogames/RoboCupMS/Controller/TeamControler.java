@@ -28,7 +28,7 @@ public class TeamControler {
      * Navrati info o tymu, ve kterem se prihlaseny uzivatel nachazi
      * 
      * @param id ID tymu
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @GetMapping("/myTeam")
     Response myTeam() {
@@ -46,7 +46,7 @@ public class TeamControler {
      * 
      * @param id ID tymu
      * 
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @GetMapping("/findByID")
     Response findID(@RequestParam Long id) {
@@ -63,7 +63,7 @@ public class TeamControler {
      * Navrati info o tymu s konkretnim jmenem
      * 
      * @param name Jmeno tymu
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @GetMapping("/findByName")
     Response findName(@RequestParam String name) {
@@ -91,7 +91,7 @@ public class TeamControler {
      * Vytvori v databazi novy tym
      * 
      * @param name Jmeno tymu (unikatni!!)
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PostMapping("/create")
     Response create(@RequestParam String name) {
@@ -106,7 +106,7 @@ public class TeamControler {
     /**
      * Odstrani tym z databaze
      * 
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @DeleteMapping("/delete")
     Response delete() {
@@ -122,7 +122,7 @@ public class TeamControler {
      * Prejmenuje tym
      * 
      * @param name Nove jmeno tymu
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/rename")
     Response rename(@RequestParam String name) {
@@ -138,7 +138,7 @@ public class TeamControler {
      * Prida do tymu noveho clena
      * 
      * @param id ID clena, ktery ma byt pridat do tymu
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/addMember")
     Response addMember(@RequestParam String uuid) {
@@ -154,7 +154,7 @@ public class TeamControler {
      * Odebere z tymu jednoho clena
      * 
      * @param id ID clena, ktery ma byt odebran z tymu
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/removeMember")
     Response removeMember(@RequestParam String uuid) {
@@ -169,7 +169,7 @@ public class TeamControler {
     /**
      * Opusti tym, ve ktrem se prihlaseny uzivatel aktualne nachazi
      * 
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/leave")
     Response leave() {

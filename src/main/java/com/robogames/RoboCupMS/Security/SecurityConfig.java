@@ -21,6 +21,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         GlobalConfig.AUTH_PREFIX + "/login",
                         GlobalConfig.AUTH_PREFIX + "/register",
 
+                        // verejnosti umozni zobrazovat vytvorene souteze a registrovane tymy
+                        GlobalConfig.API_PREFIX + "/competition/all",
+                        GlobalConfig.API_PREFIX + "/competition/allRegistrations",
+
+                        // verejnosti umozni zobrazovat informace of vytvorenych disciplinach
+                        GlobalConfig.API_PREFIX + "/discipline/all",
+                        GlobalConfig.API_PREFIX + "/discipline/get",
+
+                        // verejnosti umozni zobrazovat informace o robotech
+                        GlobalConfig.API_PREFIX + "/robot/all",
+                        GlobalConfig.API_PREFIX + "/robot/get",
+
+                        // verejnisti umozni zobrazovat informace o hristich
+                        GlobalConfig.API_PREFIX + "/playground/all",
+                        GlobalConfig.API_PREFIX + "/playground/get",
+                        GlobalConfig.API_PREFIX + "/playground/getMatches",
+
                         // sekce vysledku souteze (dostupne i pro verejnost)
                         GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/scoreOfAll",
                         GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/scoreOfTeam",

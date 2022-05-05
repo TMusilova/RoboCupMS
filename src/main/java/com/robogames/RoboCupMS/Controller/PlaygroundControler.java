@@ -78,7 +78,7 @@ public class PlaygroundControler {
      * @param number       Cislo noveho hriste
      * @param disciplineID ID discipliny, pro ktere bude nove vytvorene hriste
      *                     urcene
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/create")
@@ -95,7 +95,7 @@ public class PlaygroundControler {
      * Odstrani soutezni hriste
      * 
      * @param id ID hriste, ktere ma byt odstraneno
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @DeleteMapping("/remove")
@@ -113,7 +113,7 @@ public class PlaygroundControler {
      * 
      * @param id         ID hriste, ktere ma byt upraveno
      * @param playground Nove parametry hriste
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PutMapping("/edit")

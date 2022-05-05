@@ -59,10 +59,10 @@ public class DisciplineControler {
      * Vytvori novou disciplinu
      * 
      * @param discipline Nova disciplina
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
-    @PostMapping("/create")
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @PostMapping("/create")
     Response create(@RequestBody Discipline discipline) {
         try {
             this.disciplineService.create(discipline);
@@ -76,10 +76,10 @@ public class DisciplineControler {
      * Z databaze odstrani disciplinu
      * 
      * @param id ID discipliny, ktera ma byt odstraneni
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
-    @DeleteMapping("/remove")
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @DeleteMapping("/remove")
     Response remove(@RequestParam Long id) {
         try {
             this.disciplineService.remove(id);
@@ -94,10 +94,10 @@ public class DisciplineControler {
      * 
      * @param id         ID discipliny jejiz data maji byt zmeneny
      * @param discipline Nove data discipliny
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
-    @PutMapping("/edit")
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @PutMapping("/edit")
     Response edit(@RequestBody Discipline discipline, @RequestParam Long id) {
         try {
             this.disciplineService.edit(discipline, id);

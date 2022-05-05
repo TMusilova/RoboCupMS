@@ -5,10 +5,12 @@ import java.util.List;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
+import com.robogames.RoboCupMS.Business.Enum.ERole;
 import com.robogames.RoboCupMS.Business.Service.MatchGroupService;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,8 +74,9 @@ public class MatchGroupControler {
      * Vytvori novou zapasovou skupinu
      * 
      * @param creatorid Identifikator tvurce skupiny
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @PostMapping("/create")
     Response create(@RequestParam Long creatorID) {
         try {
@@ -88,8 +91,9 @@ public class MatchGroupControler {
      * Odstrani skupinu
      * 
      * @param id ID skupiny
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @DeleteMapping("/remove")
     Response remove(@RequestParam Long id) {
         try {

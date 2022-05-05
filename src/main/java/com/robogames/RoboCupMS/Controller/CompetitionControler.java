@@ -60,7 +60,7 @@ public class CompetitionControler {
      * Vytvori novou soutez
      * 
      * @param compatition Nova soutez
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/create")
@@ -77,7 +77,7 @@ public class CompetitionControler {
      * Odstrani soutez z databaze a s ni i vsechny data
      * 
      * @param id ID souteze
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @DeleteMapping("/remove")
@@ -95,7 +95,7 @@ public class CompetitionControler {
      * 
      * @param id          ID souteze jejiz parametry maji byt upraveny
      * @param compatition Soutez
-     * @return Informace o stavu provedene operace
+     * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PutMapping("/edit")
