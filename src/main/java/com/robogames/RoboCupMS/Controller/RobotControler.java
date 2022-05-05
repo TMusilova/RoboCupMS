@@ -61,10 +61,29 @@ public class RobotControler {
     }
 
     /**
-     * Vytvori noveho robata. Robot je vytvaren na registraci tymu v urcitem
-     * konkretim rocniku souteze.
+     * Navrati vsehcny roboty s potvrzenou registraci
      * 
      * @param year Rocnik souteze
+     * @return Seznam robotu s potvrzenou registraci
+     */
+    @GetMapping("/allConfirmed")
+    Response getAllConfirmed(@RequestParam int year) {
+        List<Robot> robots;
+        try {
+            robots = this.robotService.getAllConfirmed(year);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
+        return ResponseHandler.response(robots);
+    }
+
+    /**
+     * Vytvori noveho robata. Robot je vytvaren na registraci tymu v urcitem
+     * rocniku souteze.
+     * 
+     * @param year Rocnik souteze
+     * @param name Jmeno noveho robota (jmeno musi byt unikatni v ramci rocniku
+     *             souteze)
      * @return Informace o stavu provedeneho requestu
      */
     @PostMapping("/create")

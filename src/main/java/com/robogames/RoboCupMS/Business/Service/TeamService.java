@@ -7,6 +7,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Entity.Team;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Entity.UserRC;
+import com.robogames.RoboCupMS.Repository.RobotRepository;
 import com.robogames.RoboCupMS.Repository.TeamRegistrationRepository;
 import com.robogames.RoboCupMS.Repository.TeamRepository;
 import com.robogames.RoboCupMS.Repository.UserRepository;
@@ -29,6 +30,9 @@ public class TeamService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RobotRepository robotRepository;
 
     /**
      * Navrati info o tymu, ve kterem se prihlaseny uzivatel nachazi
@@ -133,7 +137,11 @@ public class TeamService {
                 m.setTeam(null);
             });
             this.userRepository.saveAll(t.get().getMembers());
-            t.get().getMembers().clear();
+
+            // odstrani roboty
+            t.get().getRegistrations().stream().forEach((r) -> {
+                this.robotRepository.deleteAll(r.getRobots());
+            });
 
             // zrusi registrace
             this.registrationRepository.deleteAll(t.get().getRegistrations());

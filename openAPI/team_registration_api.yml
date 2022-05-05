@@ -72,9 +72,15 @@ paths:
                             teamRegistrationID:
                               type: integer
                               example: 10
+                            teamName:
+                              type: string
+                              example: "Myteam"
                             disciplineID:
                               type: integer
                               example: 4
+                            diciplineName:
+                              type: string
+                              example: "Mini Sumo"
 
   /register:
     post:
@@ -93,34 +99,6 @@ paths:
           description: Pokud je nastaven na "true", automaticky tým přihlási do kategorie OPEN
           schema:
             type: boolean
-      security:
-        - ApiKeyAuth: []
-      responses:
-        "200":
-          description: Odpověd o stavu provedeného požadavku
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  type:
-                    type: string
-                    example: "RESPONSE"
-                  data:
-                    type: string
-                    example: "success"
-
-  /unregister:
-    delete:
-      summary: Zruší registraci týmu
-      description: Registrovat tým může pouze vedoucí týmu
-      parameters:
-        - in: query
-          name: year
-          required: true
-          description: Ročník soutěže
-          schema:
-            type: integer
       security:
         - ApiKeyAuth: []
       responses:
@@ -205,6 +183,34 @@ paths:
             type: string
             enum: ["ELEMENTARY_SCHOOL", "HIGH_SCHOOL", "UNIVERSITY", "OPEN"]
             
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Odpověd o stavu provedeného požadavku
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: string
+                    example: "success"
+  
+  /unregister:
+    delete:
+      summary: Zruší registraci týmu
+      description: Registrovat tým může pouze vedoucí týmu
+      parameters:
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže
+          schema:
+            type: integer
       security:
         - ApiKeyAuth: []
       responses:

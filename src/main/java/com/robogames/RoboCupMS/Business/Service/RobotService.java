@@ -2,6 +2,8 @@ package com.robogames.RoboCupMS.Business.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Entity.Discipline;
@@ -10,6 +12,7 @@ import com.robogames.RoboCupMS.Entity.Team;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Entity.UserRC;
 import com.robogames.RoboCupMS.Repository.DisciplineRepository;
+import com.robogames.RoboCupMS.Repository.RobotMatchRepository;
 import com.robogames.RoboCupMS.Repository.RobotRepository;
 import com.robogames.RoboCupMS.Repository.TeamRepository;
 
@@ -25,6 +28,9 @@ public class RobotService {
 
     @Autowired
     private RobotRepository robotRepository;
+
+    @Autowired
+    private RobotMatchRepository robotMatchRepository;
 
     @Autowired
     private TeamRepository teamRepository;
@@ -81,10 +87,25 @@ public class RobotService {
     }
 
     /**
-     * Vytvori noveho robata. Robot je vytvaren na registraci tymu v urcitem
-     * konkretim rocniku souteze.
+     * Navrati vsehcny roboty s potvrzenou registraci
      * 
      * @param year Rocnik souteze
+     * @return Seznam robotu s potvrzenou registraci
+     */
+    public List<Robot> getAllConfirmed(int year) throws Exception {
+        Stream<Robot> robots = this.robotRepository.findAll().stream()
+                .filter((r) -> (r.getConfirmed() && r.getTeamRegistration().getCompatitionYear() == year));
+
+        return robots.collect(Collectors.toList());
+    }
+
+    /**
+     * Vytvori noveho robata. Robot je vytvaren na registraci tymu v urcitem
+     * rocniku souteze.
+     * 
+     * @param year Rocnik souteze
+     * @param name Jmeno noveho robota (jmeno musi byt unikatni v ramci rocniku
+     *             souteze)
      */
     public void create(int year, String name) throws Exception {
         // ziska registraci tymu v danem rocniku souteze pro prihlaseneho uzivatele
@@ -121,13 +142,23 @@ public class RobotService {
             throw new Exception(e.getMessage());
         }
 
-        // odstrani robota
+        // overi zda robot existuje v dane registraci tymu
         Optional<Robot> robot = registration.getRobots().stream().filter((r) -> (r.getID() == id)).findFirst();
-        if (robot.isPresent()) {
-            this.robotRepository.delete(robot.get());
-        } else {
-            throw new Exception(String.format("failure, robot with ID [%d] not exists", id));
+        if (!robot.isPresent()) {
+            throw new Exception(String.format("failure, robot with ID [%d] not found", id));
         }
+
+        // pokud registrace robota byla jiz potvrzena tak neumozni jeho odstraneni
+        if (robot.get().getConfirmed()) {
+            throw new Exception(String.format("failure, robot with ID [%d] has already been confirmed", id));
+        }
+
+        if (!robot.get().getMatches().isEmpty()) {
+            this.robotMatchRepository.deleteAll(robot.get().getMatches());
+        }
+
+        // odstrani robota
+        this.robotRepository.delete(robot.get());
     }
 
     /**
@@ -155,11 +186,17 @@ public class RobotService {
         Optional<Robot> robot = registration.getRobots().stream().filter((r) -> (r.getID()) == id).findFirst();
         // zmeni jmeno robota
         if (robot.isPresent()) {
-            robot.get().setName(name);
-            this.robotRepository.save(robot.get());
-        } else {
             throw new Exception(String.format("failure, robot with ID [%d] not found", id));
         }
+
+        // overi zda registrace robota jiz nebyla potvrzena
+        if (robot.get().getConfirmed()) {
+            throw new Exception(String.format("failure, robot with ID [%d] has already been confirmed", id));
+        }
+
+        // prejmenuje robota
+        robot.get().setName(name);
+        this.robotRepository.save(robot.get());
     }
 
     /**

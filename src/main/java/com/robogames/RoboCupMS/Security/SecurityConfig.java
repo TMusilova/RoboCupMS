@@ -31,6 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                         // verejnosti umozni zobrazovat informace o robotech
                         GlobalConfig.API_PREFIX + "/robot/all",
+                        GlobalConfig.API_PREFIX + "/robot/allConfirmed",
                         GlobalConfig.API_PREFIX + "/robot/get",
 
                         // verejnisti umozni zobrazovat informace o hristich
