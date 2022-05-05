@@ -27,8 +27,7 @@ public class TeamControler {
     /**
      * Navrati info o tymu, ve kterem se prihlaseny uzivatel nachazi
      * 
-     * @param id ID tymu
-     * @return Informace o stavu provedeneho requestu
+     * @return Tým, ve kterem se uzivatel nachazi
      */
     @GetMapping("/myTeam")
     Response myTeam() {
@@ -46,7 +45,7 @@ public class TeamControler {
      * 
      * @param id ID tymu
      * 
-     * @return Informace o stavu provedeneho requestu
+     * @return Hledany tym
      */
     @GetMapping("/findByID")
     Response findID(@RequestParam Long id) {
@@ -63,7 +62,7 @@ public class TeamControler {
      * Navrati info o tymu s konkretnim jmenem
      * 
      * @param name Jmeno tymu
-     * @return Informace o stavu provedeneho requestu
+     * @return Hledany tym
      */
     @GetMapping("/findByName")
     Response findName(@RequestParam String name) {
@@ -88,7 +87,7 @@ public class TeamControler {
     }
 
     /**
-     * Vytvori v databazi novy tym
+     * Vytvori novy tym. Uzivatel, ktery tym vytvari se stava jeho vedoucim.
      * 
      * @param name Jmeno tymu (unikatni!!)
      * @return Informace o stavu provedeneho requestu
@@ -108,10 +107,10 @@ public class TeamControler {
      * 
      * @return Informace o stavu provedeneho requestu
      */
-    @DeleteMapping("/delete")
-    Response delete() {
+    @DeleteMapping("/remove")
+    Response remove() {
         try {
-            this.teamService.delete();
+            this.teamService.remove();
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

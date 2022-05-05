@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
 
@@ -103,12 +104,16 @@ public class Team {
     }
 
     /**
-     * Navrati vsechny cleny tymu, vcetne vedouciho
+     * Navrati ID vsech clenu, vcetne vedouciho
      * 
      * @return Clenove tymu
      */
-    public List<UserRC> getMembers() {
-        return this.members;
+    public List<Long> getMembersID() {
+        List<Long> idList = new ArrayList<>();
+        this.members.stream().forEach((u) -> {
+            idList.add(u.getID());
+        });
+        return idList;
     }
 
     /**
@@ -125,10 +130,34 @@ public class Team {
     }
 
     /**
+     * Navrati ID vsech registraci
+     * 
+     * @return Registrace
+     */
+    public List<Long> getRegistrationsID() {
+        List<Long> idList = new ArrayList<>();
+        this.registrations.stream().forEach((r) -> {
+            idList.add(r.getID());
+        });
+        return idList;
+    }
+
+    /**
+     * Navrati vsechny cleny tymu, vcetne vedouciho
+     * 
+     * @return Clenove tymu
+     */
+    @JsonIgnore
+    public List<UserRC> getMembers() {
+        return this.members;
+    }
+
+    /**
      * Navrati vsechny registrace tymu
      * 
      * @return Registrace
      */
+    @JsonIgnore
     public List<TeamRegistration> getRegistrations() {
         return this.registrations;
     }

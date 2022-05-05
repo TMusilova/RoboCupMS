@@ -28,6 +28,23 @@ public class TeamRegistrationControler {
     private TeamRegistrationService registrationService;
 
     /**
+     * Navrati vsechny registrace tymu, ve kterem se uzivatel nachazi (vsehny
+     * rocniky, kterych se ucastnil)
+     * 
+     * @return Seznam vsech registraci
+     */
+    @GetMapping("/all")
+    Response getAll() {
+        List<TeamRegistration> all = null;
+        try {
+            all = this.registrationService.getAll();
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
+        return ResponseHandler.response(all);
+    }
+
+    /**
      * Registruje tym do souteze (registrovat muze pouze vedouci tymu!!!!!)
      * 
      * @param year Rocni souteze, do ktere se tym chce registrovate
@@ -60,23 +77,6 @@ public class TeamRegistrationControler {
     }
 
     /**
-     * Navrati vsechny registrace tymu, ve kterem se uzivatel nachazi (vsehny
-     * rocniky, kterych se ucastnil)
-     * 
-     * @return Seznam vsech registraci
-     */
-    @GetMapping("/all")
-    Response getAll() {
-        List<TeamRegistration> all = null;
-        try {
-            all = this.registrationService.getAll();
-        } catch (Exception ex) {
-            return ResponseHandler.error(ex.getMessage());
-        }
-        return ResponseHandler.response(all);
-    }
-
-    /**
      * Zmeni kategorii tymu. Jiz neni nijak omezovano vekem a tak je mozne zvolit
      * libovolnou.
      * 
@@ -97,11 +97,11 @@ public class TeamRegistrationControler {
     }
 
     /**
-     * Spoji kategorie dohromady. Vybere se jedna kategorie a vsichni, kteri jsou v
+     * Slouci dve ruzne kategorie dohromady. Vybere se jedna kategorie a vsichni, kteri jsou v
      * ni registrovani se pridaji k jine zvolene kategorii.
      * 
      * @param year        Rocnik souteze
-     * @param category    Aktualni kategorie
+     * @param category    Kategorie tymu, ktere se budou presouvat do jine
      * @param newCategory Kategorie, do ktere se presunou vsechny registrovane tymy
      *                    z jejich aktualni kategorie
      * @return Informace o stavu provedeneho requestu

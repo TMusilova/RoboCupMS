@@ -1,2 +1,0 @@
-server_response_enum:
-  enum: ["RESPONSE", "ERROR", "WARING"]

@@ -104,8 +104,8 @@ public class UserService {
      * @param id      ID uzivatele jehoz atributy budou zmeneny
      * @throws Exception
      */
-    public void edit(UserRC newUser, String uuid) throws Exception {
-        Optional<UserRC> map = repository.findByUuid(uuid)
+    public void edit(UserRC newUser, long id) throws Exception {
+        Optional<UserRC> map = repository.findById(id)
                 .map(user -> {
                     user.setName(newUser.getName());
                     user.setSurname(newUser.getSurname());
@@ -114,20 +114,20 @@ public class UserService {
                     return repository.save(user);
                 });
         if (!map.isPresent()) {
-            throw new Exception(String.format("failure, user with UUID [%s] not found", uuid));
+            throw new Exception(String.format("failure, user with UUID [%s] not found", id));
         }
     }
 
     /**
      * Zmena uzivatelskeho hesla
      * 
-     * @param oldPassword Stare heslo
-     * @param newPasword  Nove heslo
+     * @param currentPassword Aktualni heslo
+     * @param newPasword      Nove heslo
      * @throws Exception
      */
-    public void changePassword(String oldPassword, String newPassword) throws Exception {
+    public void changePassword(String currentPassword, String newPassword) throws Exception {
         UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (user.passwordMatch(oldPassword)) {
+        if (user.passwordMatch(currentPassword)) {
             user.setPassword(newPassword);
             this.repository.save(user);
         } else {
@@ -136,29 +136,30 @@ public class UserService {
     }
 
     /**
-     * Vygenerovat nove heslo
+     * Nastavi uzivateli nove heslo
      * 
      * @param newPasword Nove heslo
+     * @param id         ID uzivatele, pro ktereho chceme heslo vygenerovat
      * @throws Exception
      */
-    public void generatePassword(String newPassword, String uuid) throws Exception {
-        Optional<UserRC> user = repository.findByUuid(uuid);
+    public void setPassword(String newPassword, long id) throws Exception {
+        Optional<UserRC> user = repository.findById(id);
         if (user.isPresent()) {
             user.get().setPassword(newPassword);
             this.repository.save(user.get());
         } else {
-            throw new Exception(String.format("failure, user with UUID [%s] not found", uuid));
+            throw new Exception(String.format("failure, user with ID [%d] not found", id));
         }
     }
 
     /**
-     * Prida roli uzivateli
+     * Priradi roli uzivateli
      * 
      * @param role Nova role, kterou prideli uzivateli
-     * @param id   ID uzivatele jehoz atributy budou zmeneny
+     * @param id   ID uzivatele
      * @throws Exception
      */
-    public void addRole(ERole role, String uuid) throws Exception {
+    public void addRole(ERole role, long id) throws Exception {
         // overi zda role existuje
         Optional<Role> newRole = this.roleRepository.findByName(role);
         if (!newRole.isPresent()) {
@@ -166,7 +167,7 @@ public class UserService {
         }
 
         // provede zmeny
-        Optional<UserRC> map = repository.findByUuid(uuid)
+        Optional<UserRC> map = repository.findById(id)
                 .map(user -> {
                     Set<Role> roles = user.getRoles();
                     if (!roles.contains(newRole.get())) {
@@ -175,18 +176,18 @@ public class UserService {
                     return repository.save(user);
                 });
         if (!map.isPresent()) {
-            throw new Exception(String.format("failure, user with UUID [%s] not found", uuid));
+            throw new Exception(String.format("failure, user with ID [%d] not found", id));
         }
     }
 
     /**
-     * Prida roli uzivateli
+     * Odebere uzivateli zvolenou roli
      * 
      * @param role Nova role, kterou prideli uzivateli
      * @param id   ID uzivatele jehoz atributy budou zmeneny
      * @throws Exception
      */
-    public void removeRole(ERole role, String uuid) throws Exception {
+    public void removeRole(ERole role, long id) throws Exception {
         // overi zda role existuje
         Optional<Role> newRole = this.roleRepository.findByName(role);
         if (!newRole.isPresent()) {
@@ -194,7 +195,7 @@ public class UserService {
         }
 
         // provede zmeny
-        Optional<UserRC> map = repository.findByUuid(uuid)
+        Optional<UserRC> map = repository.findById(id)
                 .map(user -> {
                     Set<Role> roles = user.getRoles();
                     if (roles.contains(newRole.get())) {
@@ -203,7 +204,7 @@ public class UserService {
                     return repository.save(user);
                 });
         if (!map.isPresent()) {
-            throw new Exception(String.format("failure, user with UUID [%s] not found", uuid));
+            throw new Exception(String.format("failure, user with ID [%d] not found", id));
         }
     }
 
@@ -213,12 +214,12 @@ public class UserService {
      * @param id ID uzivatele, ktery ma byt odebran
      * @throws Exception
      */
-    public void delete(String uuid) throws Exception {
-        Optional<UserRC> user = repository.findByUuid(uuid);
+    public void remove(long id) throws Exception {
+        Optional<UserRC> user = repository.findById(id);
         if (user.isPresent()) {
             this.repository.delete(user.get());
         } else {
-            throw new Exception(String.format("failure, user with UUID [%s] not found", uuid));
+            throw new Exception(String.format("failure, user with ID [%d] not found", id));
         }
     }
 

@@ -1,0 +1,223 @@
+openapi: 3.0.2
+info:
+  title: RoboCupMS - Team Registration API
+  description: API zajištuje přihlášování týmů, do konkrétních ročníků soutěže
+  version: 1.0.0
+  contact:
+    email: m1_krcma@utb.cz
+servers:
+  - url: https://utb-robogames.com/api/teamRegistration
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-TOKEN
+paths:
+  /all:
+    get:
+      summary: Navrátí všechný registrace týmu, ve kterém se přihlášený uživatel nachází
+      parameters: []
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Všechný registrace týmu
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      teamID:
+                        type: integer
+                        example: 5
+                      teamName:
+                        type: string
+                        example: "MyTeam"
+                      compatitionYear:
+                        type: integer
+                        example: 2022
+                      category:
+                        type: string
+                        example: "OPEN"
+                      robots:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            number:
+                              type: integer
+                              example: 34
+                            name:
+                              type: string
+                              example: "Robot"
+                            confirmed:
+                              type: boolean
+                              example: false
+                            category:
+                              type: string
+                              example: "OPEN"
+                            teamRegistrationID:
+                              type: integer
+                              example: 10
+                            disciplineID:
+                              type: integer
+                              example: 4
+
+  /register:
+    post:
+      summary: Registruje tým do soutěže
+      description: Registrovat tým může pouze vedoucí týmu. System automaticky přiřadí tým do kategorie (podle věku členů týmu). Kategorie je volena podle nejstaršího člena týmu.
+      parameters:
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže, do kterého se tým chce registrovat
+          schema:
+            type: integer
+        - in: query
+          name: open
+          required: true
+          description: Pokud je nastaven na "true", automaticky tým přihlási do kategorie OPEN
+          schema:
+            type: boolean
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Odpověd o stavu provedeného požadavku
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: string
+                    example: "success"
+
+  /unregister:
+    delete:
+      summary: Zruší registraci týmu
+      description: Registrovat tým může pouze vedoucí týmu
+      parameters:
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže
+          schema:
+            type: integer
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Odpověd o stavu provedeného požadavku
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: string
+                    example: "success"
+    
+  /changeCategory:
+    put:
+      summary: Změní kategorii týmu
+      description: Změní kategorii týmu. Změna neni nijak omezovano věkem a tak je možné zvolit libovolnou.
+      parameters:
+        - in: query
+          name: id
+          required: true
+          description: ID týmu
+          schema:
+            type: integer
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže
+          schema:
+            type: integer
+        - in: query
+          name: category
+          required: true
+          description: Nová kategorie, ve které bude tým soutežit
+          schema:
+            type: string
+            
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Odpověd o stavu provedeného požadavku
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: string
+                    example: "success"
+
+  /joinCategory:
+    put:
+      summary: Slouci dvě různé kategorie dohromady
+      description: Všechny týmy registrované v jedné kategorii se přesunou do jiné zvolené kategorie.
+      parameters:
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže
+          schema:
+            type: integer
+        - in: query
+          name: category
+          required: true
+          description: Kategorie týmu, které se budou přesouvat do jiné
+          schema:
+            type: string
+            enum: ["ELEMENTARY_SCHOOL", "HIGH_SCHOOL", "UNIVERSITY", "OPEN"]
+        - in: query
+          name: newCategory
+          required: true
+          description: Kategorie, do které se týmy přesunou
+          schema:
+            type: string
+            enum: ["ELEMENTARY_SCHOOL", "HIGH_SCHOOL", "UNIVERSITY", "OPEN"]
+            
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Odpověd o stavu provedeného požadavku
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: string
+                    example: "success"

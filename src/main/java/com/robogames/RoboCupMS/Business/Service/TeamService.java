@@ -7,6 +7,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Entity.Team;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Entity.UserRC;
+import com.robogames.RoboCupMS.Repository.TeamRegistrationRepository;
 import com.robogames.RoboCupMS.Repository.TeamRepository;
 import com.robogames.RoboCupMS.Repository.UserRepository;
 
@@ -22,6 +23,9 @@ public class TeamService {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private TeamRegistrationRepository registrationRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -87,7 +91,7 @@ public class TeamService {
     }
 
     /**
-     * Vytvori v databazi novy tym
+     * Vytvori novy tym. Uzivatel, ktery tym vytvari se stava jeho vedoucim.
      * 
      * @param name Jmeno tymu (unikatni!!)
      * @throws Exception
@@ -100,7 +104,7 @@ public class TeamService {
             this.teamRepository.save(t);
             this.userRepository.save(leader);
         } else {
-            throw new Exception("failure, you already have team");
+            throw new Exception("failure, you are already a member of the team");
         }
     }
 
@@ -109,7 +113,7 @@ public class TeamService {
      * 
      * @throws Exception
      */
-    public void delete() throws Exception {
+    public void remove() throws Exception {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Optional<Team> t = this.teamRepository.findByLeader(leader);
@@ -130,6 +134,9 @@ public class TeamService {
             });
             this.userRepository.saveAll(t.get().getMembers());
             t.get().getMembers().clear();
+
+            // zrusi registrace
+            this.registrationRepository.deleteAll(t.get().getRegistrations());
 
             // odstrani tym
             this.teamRepository.delete(t.get());

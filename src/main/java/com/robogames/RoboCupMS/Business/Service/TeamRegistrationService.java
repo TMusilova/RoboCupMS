@@ -197,11 +197,11 @@ public class TeamRegistrationService {
     }
 
     /**
-     * Spoji kategorie dohromady. Vybere se jedna kategorie a vsichni, kteri jsou v
+     * Slouci dve ruzne kategorie dohromady. Vybere se jedna kategorie a vsichni, kteri jsou v
      * ni registrovani se pridaji k jine zvolene kategorii.
      * 
      * @param year        Rocnik souteze
-     * @param category    Aktualni kategorie
+     * @param category    Kategorie tymu, ktere se budou presouvat do jine
      * @param newCategory Kategorie, do ktere se presunou vsechny registrovane tymy
      *                    z jejich aktualni kategorie
      * @throws Exception

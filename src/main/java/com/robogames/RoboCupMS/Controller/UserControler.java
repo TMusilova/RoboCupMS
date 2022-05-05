@@ -111,9 +111,9 @@ public class UserControler {
      * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/edit")
-    Response edit(@RequestBody UserRC newUser, @RequestParam String uuid) {
+    Response edit(@RequestBody UserRC newUser, @RequestParam long id) {
         try {
-            this.userService.edit(newUser, uuid);
+            this.userService.edit(newUser, id);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -123,14 +123,14 @@ public class UserControler {
     /**
      * Zmena uzivatelskeho hesla
      * 
-     * @param oldPassword Stare heslo
-     * @param newPasword  Nove heslo
+     * @param currentPassword Aktualni heslo
+     * @param newPasword      Nove heslo
      * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/changePassword")
-    Response changePassword(@RequestParam String oldPassword, @RequestParam String newPassword) {
+    Response changePassword(@RequestParam String currentPassword, @RequestParam String newPassword) {
         try {
-            this.userService.changePassword(oldPassword, newPassword);
+            this.userService.changePassword(currentPassword, newPassword);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -138,16 +138,17 @@ public class UserControler {
     }
 
     /**
-     * Vygenerovat nove heslo
+     * Nastavi uzivateli nove heslo
      * 
      * @param newPasword Nove heslo
+     * @param id         ID uzivatele, pro ktereho chceme heslo vygenerovat
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
-    @PutMapping("/generatePassword")
-    Response generatePassword(@RequestParam String newPassword, @RequestParam String uuid) {
+    @PutMapping("/setPassword")
+    Response setPassword(@RequestParam String newPassword, @RequestParam long id) {
         try {
-            this.userService.generatePassword(newPassword, uuid);
+            this.userService.setPassword(newPassword, id);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -155,7 +156,7 @@ public class UserControler {
     }
 
     /**
-     * Prida roli uzivateli
+     * Priradi roli uzivateli
      * 
      * @param role Nova role, kterou prideli uzivateli
      * @param id   ID uzivatele jehoz atributy budou zmeneny
@@ -163,9 +164,9 @@ public class UserControler {
      */
     @Secured({ ERole.Names.ADMIN })
     @PutMapping("/addRole")
-    Response addRole(@RequestParam ERole role, @RequestParam String uuid) {
+    Response addRole(@RequestParam ERole role, @RequestParam long id) {
         try {
-            this.userService.addRole(role, uuid);
+            this.userService.addRole(role, id);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -173,7 +174,7 @@ public class UserControler {
     }
 
     /**
-     * Prida roli uzivateli
+     * Odebere uzivateli zvolenou roli
      * 
      * @param role Nova role, kterou prideli uzivateli
      * @param id   ID uzivatele jehoz atributy budou zmeneny
@@ -181,9 +182,9 @@ public class UserControler {
      */
     @Secured({ ERole.Names.ADMIN })
     @PutMapping("/removeRole")
-    Response removeRole(@RequestParam ERole role, @RequestParam String uuid) {
+    Response removeRole(@RequestParam ERole role, @RequestParam long id) {
         try {
-            this.userService.removeRole(role, uuid);
+            this.userService.removeRole(role, id);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -191,16 +192,16 @@ public class UserControler {
     }
 
     /**
-     * Odebere uzivatele
+     * Odstrani uzivatele z databaze
      * 
      * @param id ID uzivatele, ktery ma byt odebran
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
-    @DeleteMapping("/delete")
-    Response delete(@RequestParam String uuid) {
+    @DeleteMapping("/remove")
+    Response remove(@RequestParam long id) {
         try {
-            this.userService.delete(uuid);
+            this.userService.remove(id);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
