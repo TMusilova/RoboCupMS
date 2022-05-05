@@ -30,7 +30,7 @@ public class CompetitionService {
     }
 
     /**
-     * Navrati vsechny registrace tymu pro dany rocnik
+     * Navrati vsechny registrace tymu pro dany rocnik souteze
      * 
      * @param year Rocnik souteze
      * @return List vsech registraci
@@ -45,7 +45,7 @@ public class CompetitionService {
     }
 
     /**
-     * Vytvori novou soutez
+     * Vytvori novy rocnik souteze
      * 
      * @param compatition Nova soutez
      */
@@ -83,18 +83,22 @@ public class CompetitionService {
      * @param compatition Soutez
      */
     public void edit(Long id, Competition compatition) throws Exception {
-        Optional<Competition> map = repository.findById(id)
-                .map(c -> {
-                    c.setYear(compatition.getYear());
-                    c.setDate(compatition.getDate());
-                    c.setStartTime(compatition.getStartTime());
-                    c.setEndTime(compatition.getEndTime());
-                    c.setStarted(compatition.getStarted());
-                    return repository.save(c);
-                });
-        if (!map.isPresent()) {
+        Optional<Competition> c = repository.findById(id);
+        if (!c.isPresent()) {
             throw new Exception(String.format("failure, compatition with ID [%d] not exists", id));
         }
+
+        if (c.get().getStarted()) {
+            throw new Exception(String.format("failure, compatition with ID [%d] has already begun", id));
+        }
+
+        // provede zmeny
+        c.get().setYear(compatition.getYear());
+        c.get().setDate(compatition.getDate());
+        c.get().setStartTime(compatition.getStartTime());
+        c.get().setEndTime(compatition.getEndTime());
+        c.get().setStarted(compatition.getStarted());
+        repository.save(c.get());
     }
 
     /**

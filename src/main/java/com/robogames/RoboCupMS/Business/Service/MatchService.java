@@ -146,7 +146,7 @@ public class MatchService {
     }
 
     /**
-     * Odstrani vsechny zapasy, ktere nalezi do urcite zkupiny
+     * Odstrani vsechny zapasy, ktere nalezi do urcite skupiny
      * 
      * @param groudID ID skupiny, jejiz zapasy maji byt odstraneni
      * @return Pocet odstranenych zapasu
@@ -188,7 +188,7 @@ public class MatchService {
     }
 
     /**
-     * Vyzada, aby zapas byl odehran znovu. Pokud jde o skupinovy zapas automaticky
+     * Vyzada opetovne odegrani zapasu. Pokud jde o skupinovy zapas automaticky
      * tento pozadavek vyzada i u ostatnich zapasu.
      * 
      * @param id ID zapasu

@@ -32,55 +32,25 @@ paths:
                     type: string
                     example: "RESPONSE"
                   data:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 1
-                      teamID:
-                        type: integer
-                        example: 5
-                      teamName:
-                        type: string
-                        example: "MyTeam"
-                      compatitionYear:
-                        type: integer
-                        example: 2022
-                      category:
-                        type: string
-                        example: "OPEN"
-                      robots:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                              example: 1
-                            number:
-                              type: integer
-                              example: 34
-                            name:
-                              type: string
-                              example: "Robot"
-                            confirmed:
-                              type: boolean
-                              example: false
-                            category:
-                              type: string
-                              example: "OPEN"
-                            teamRegistrationID:
-                              type: integer
-                              example: 10
-                            teamName:
-                              type: string
-                              example: "Myteam"
-                            disciplineID:
-                              type: integer
-                              example: 4
-                            diciplineName:
-                              type: string
-                              example: "Mini Sumo"
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        teamID:
+                          type: integer
+                          example: 5
+                        teamName:
+                          type: string
+                          example: "MyTeam"
+                        compatitionYear:
+                          type: integer
+                          example: 2022
+                        category:
+                          type: string
+                          example: "OPEN"
 
   /register:
     post:

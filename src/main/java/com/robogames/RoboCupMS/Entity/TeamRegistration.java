@@ -140,6 +140,7 @@ public class TeamRegistration {
      * 
      * @return Seznam vsech vytvorenych robotu
      */
+    @JsonIgnore
     public List<Robot> getRobots() {
         return this.robots;
     }

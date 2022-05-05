@@ -40,7 +40,7 @@ public class CompetitionControler {
     }
 
     /**
-     * Navrati vsechny registrace tymu pro dany rocnik
+     * Navrati vsechny registrace tymu pro dany rocnik souteze
      * 
      * @param year Rocnik souteze
      * @return List vsech registraci
@@ -57,7 +57,7 @@ public class CompetitionControler {
     }
 
     /**
-     * Vytvori novou soutez
+     * Vytvori novy rocnik souteze
      * 
      * @param compatition Nova soutez
      * @return Informace o stavu provedeneho requestu
@@ -108,6 +108,12 @@ public class CompetitionControler {
         }
     }
 
+    /**
+     * Zahaji soutez
+     * 
+     * @param id ID souteze, ktera ma byt zahajena
+     * @return Informace o stavu provedeneho requestu
+     */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PutMapping("/start")
     Response start(@RequestParam Long id) {
