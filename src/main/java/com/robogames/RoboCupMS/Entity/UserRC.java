@@ -102,6 +102,13 @@ public class UserRC {
     private String token;
 
     /**
+     * Cas posledniho pristupu uzivatele na server (pouziva se pro zneplatneni
+     * pristupoveho tokenu po uplinuti prednastaveneho casu)
+     */
+    @Column(name = "last_access_time", nullable = true, unique = false)
+    private Date lastAccessTime;
+
+    /**
      * Vytvori noveho uzivatele robosouteze
      */
     public UserRC() {
@@ -203,6 +210,25 @@ public class UserRC {
      */
     public void setEmail(String _email) {
         this.email = _email;
+    }
+
+    /**
+     * Navrati cas posledniho pristupu
+     * 
+     * @return
+     */
+    @JsonIgnore
+    public Date getLastAccessTime() {
+        return this.lastAccessTime;
+    }
+
+    /**
+     * Nastavi cas posledniho pristupu uzivatele na server
+     * 
+     * @param _time Cas
+     */
+    public void setLastAccessTime(Date _time) {
+        this.lastAccessTime = _time;
     }
 
     /**

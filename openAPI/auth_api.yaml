@@ -18,7 +18,10 @@ paths:
   /login:
     get:
       summary: Přihlásí uživatele do systemu
-      description: Uživatel, který se chce přihlásit do systemu odešle svůj email a heslo. Pokud jsou přihlašovací údaje platné pak vygeneruje přistupový token. Token je platný do doby dokud se uživatel znovů nepřihlási z jíneho zařízeni nebo se neodhlásí.
+      description: 
+        Uživatel, který se chce přihlásit do systemu odešle svůj email a heslo. Pokud jsou přihlašovací údaje platné pak vygeneruje přistupový token.
+        Token je platný do doby dokud se uživatel znovů nepřihlási z jíneho zařízeni nebo se neodhlásí. 
+        Token se stavá automaticky neplatným po uplynutí definovaneho casu.
       parameters:
         - in: query
           name: email

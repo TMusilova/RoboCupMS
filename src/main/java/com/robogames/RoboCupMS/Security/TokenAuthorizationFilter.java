@@ -2,6 +2,8 @@ package com.robogames.RoboCupMS.Security;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +13,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.Role;
 import com.robogames.RoboCupMS.Entity.UserRC;
@@ -65,6 +68,7 @@ public class TokenAuthorizationFilter extends OncePerRequestFilter {
 		UserRC user = null;
 		if ((user = validateToken(request)) != null) {
 			setUpSpringAuthentication(user, request.getHeader(this.x_token));
+			chain.doFilter(request, response);
 		} else {
 			SecurityContextHolder.clearContext();
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -72,8 +76,6 @@ public class TokenAuthorizationFilter extends OncePerRequestFilter {
 			outputStream.println(ResponseHandler.error("Access token is invalid").toString());
 			outputStream.flush();
 		}
-
-		chain.doFilter(request, response);
 	}
 
 	/**
@@ -96,8 +98,10 @@ public class TokenAuthorizationFilter extends OncePerRequestFilter {
 
 	/**
 	 * Validuje token a nejde v databazi uzivatele, kteremu nalezi a chce
-	 * pristupovat k chranemu endpointu (uzivatel musi byt prihlasen => jeho TOKEN
-	 * je zapsan v databazi)
+	 * pristupovat k endpointu vyzadujicimu autorizaci (uzivatel musi byt prihlasen
+	 * => jeho TOKEN je zapsan v databazi).
+	 * Token se stava automaticky neplatnym po uplynuti
+	 * definovaneho casu "GlobalConfig.TOKEN_VALIDITY_DURATION"
 	 * 
 	 * @param request HttpServletRequest
 	 * @return UserRC
@@ -107,8 +111,10 @@ public class TokenAuthorizationFilter extends OncePerRequestFilter {
 			return null;
 		}
 
+		// pristopovy token
 		String accessToken = request.getHeader(this.x_token);
 
+		// token neni definova
 		if (accessToken == null) {
 			return null;
 		}
@@ -116,12 +122,29 @@ public class TokenAuthorizationFilter extends OncePerRequestFilter {
 			return null;
 		}
 
+		// najde uzivatele podle pristupoveho tokenu
 		Optional<UserRC> user = this.repository.findByToken(accessToken);
-		if (user.isPresent()) {
-			return user.get();
+		if (!user.isPresent()) {
+			return null;
 		}
 
-		return null;
+		// overi casovou platnost
+		Date now = new java.util.Date(Calendar.getInstance().getTime().getTime());
+
+		if (user.get().getLastAccessTime() != null) {
+			long diff = now.getTime() - user.get().getLastAccessTime().getTime();
+			if (diff / (60 * 1000) > GlobalConfig.TOKEN_VALIDITY_DURATION) {
+				user.get().setToken(null);
+				this.repository.save(user.get());
+				return null;
+			}
+		}
+
+		// refresh casu
+		user.get().setLastAccessTime(now);
+		this.repository.save(user.get());
+
+		return user.get();
 	}
 
 }

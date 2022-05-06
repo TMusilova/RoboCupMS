@@ -61,7 +61,7 @@ public class TeamRegistrationService {
         // overi zda soutez jiz nezacala (registrace je mozna jen pokud soutez jeste
         // nezacala)
         if (c.get().getStarted()) {
-            throw new Exception(String.format("failure, competition has already begun", year));
+            throw new Exception(String.format("failure, competition has already begin", year));
         }
 
         // overi zda tym jiz neni prihlasen do tohoto rocniku

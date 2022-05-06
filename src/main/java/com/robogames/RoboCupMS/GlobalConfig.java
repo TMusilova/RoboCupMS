@@ -28,6 +28,11 @@ public class GlobalConfig {
     public static String HEADER_FIELD_TOKEN = "X-TOKEN";
 
     /**
+     * Doba platnosti pristupoveho tokenu [min]
+     */
+    public static int TOKEN_VALIDITY_DURATION = 30;
+
+    /**
      * Minimalni vek uzivatele
      */
     public static int USER_MIN_AGE = 6;

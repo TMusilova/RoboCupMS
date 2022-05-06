@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 /**
  * Zajistuje inicializaci aplikace
  */
@@ -63,6 +64,11 @@ public class AppInit {
             String HEADER_FIELD_TOKEN = (String) obj.get("HEADER_FIELD_TOKEN");
             GlobalConfig.HEADER_FIELD_TOKEN = HEADER_FIELD_TOKEN;
             logger.info("HEADER_FIELD_TOKEN set on: " + HEADER_FIELD_TOKEN);
+
+            // maximalni mocet robotu v kategorii na jeden tym
+            long TOKEN_VALIDITY_DURATION = (Long) obj.get("TOKEN_VALIDITY_DURATION");
+            GlobalConfig.TOKEN_VALIDITY_DURATION = (int) TOKEN_VALIDITY_DURATION;
+            logger.info("MAX_TEAM_MEMBERS set on: " + TOKEN_VALIDITY_DURATION);
 
             // minimalni vek uzivatele
             long USER_MIN_AGE = (Long) obj.get("USER_MIN_AGE");

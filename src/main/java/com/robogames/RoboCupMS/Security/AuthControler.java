@@ -24,7 +24,8 @@ public class AuthControler {
     /**
      * Prihlaseni uzivatele do systemu (pokud je email a heslo spravne tak
      * vygeneruje, navrati a zapise do databaze pristupovy token pro tohoto
-     * uzivatele)
+     * uzivatele). Token se stava automaticky neplatnym po uplynuti
+     * definovaneho casu "GlobalConfig.TOKEN_VALIDITY_DURATION".
      * 
      * @param email    Email uzivatele
      * @param password Heslo uzivatele

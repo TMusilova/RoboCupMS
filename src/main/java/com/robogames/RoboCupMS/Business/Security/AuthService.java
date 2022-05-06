@@ -1,6 +1,7 @@
 package com.robogames.RoboCupMS.Business.Security;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,7 +38,7 @@ public class AuthService {
         // https://mailtrap.io/blog/java-email-validation/
         Pattern pattern = Pattern
                 .compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
-        if(!pattern.matcher(email).matches()) {
+        if (!pattern.matcher(email).matches()) {
             throw new Exception("failure, email is invalid");
         }
 
@@ -45,27 +46,26 @@ public class AuthService {
         Optional<UserRC> user = repository.findByEmail(email);
         if (user.isPresent()) {
             if (user.get().passwordMatch(password)) {
-
                 // vygenerovani unikatniho pristupoveho tokenu
                 String token = "";
                 boolean success = false;
-                for(int i = 0; i < 5000; ++i) {
+                for (int i = 0; i < 1000; ++i) {
                     token = UUID.randomUUID().toString();
-                    if(!repository.findByToken(token).isPresent()) {
+                    if (!repository.findByToken(token).isPresent()) {
                         success = true;
                         break;
                     }
                 }
 
                 // nepodarilo se vygenerovat pristupovy token
-                if(!success) {
+                if (!success) {
                     throw new Exception("failed to generate access token");
                 }
 
-                // ulozi token do databaze
-                UserRC u = user.get();
-                u.setToken(token);
-                repository.save(u);
+                // ulozi token a cas do databaze
+                user.get().setToken(token);
+                user.get().setLastAccessTime(new java.util.Date(Calendar.getInstance().getTime().getTime()));
+                this.repository.save(user.get());
                 return token;
             }
         }
@@ -109,7 +109,7 @@ public class AuthService {
         // https://mailtrap.io/blog/java-email-validation/
         Pattern pattern = Pattern
                 .compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
-        if(!pattern.matcher(newUser.getEmail()).matches()) {
+        if (!pattern.matcher(newUser.getEmail()).matches()) {
             throw new Exception("failure, email is invalid");
         }
 
