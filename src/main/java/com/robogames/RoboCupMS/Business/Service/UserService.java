@@ -141,7 +141,7 @@ public class UserService {
             user.setPassword(newPassword);
             this.repository.save(user);
         } else {
-            throw new Exception("failure, your old password is invalid");
+            throw new Exception("failure, your current password is invalid");
         }
     }
 

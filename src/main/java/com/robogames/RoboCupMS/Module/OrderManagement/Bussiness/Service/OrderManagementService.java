@@ -145,7 +145,14 @@ public class OrderManagementService {
         OrderManagementService.MATCH_GUEUES.forEach((p, queue) -> {
             RobotMatch first = queue.getFirst();
             if (first != null) {
+                // prida zapas
                 matches.add(first);
+
+                // pokud jde o skupinovy zapas tak prida i ostatni zapasy skupiny
+                MatchGroup matchGroup = first.getMatchGroup();
+                if (matchGroup != null) {
+                    matches.addAll(matchGroup.getMatches());
+                }
             }
         });
 
@@ -183,7 +190,7 @@ public class OrderManagementService {
     /**
      * Navrati pro robota seznam vsech nadchazejicich zapasu
      * 
-     * @param id   ID robota
+     * @param id ID robota
      * @return Seznam vsech zapasu robota, ktere jeste cekaji na odehrani
      */
     public List<RobotMatch> upcommingMatches(long id) throws Exception {
@@ -247,12 +254,13 @@ public class OrderManagementService {
             if (first) {
                 mainCategory = robot.get().getCategory();
                 mainDiscipline = robot.get().getDiscipline();
+                first = false;
             }
             // overeni stejne kategorie a discipliny
             if (robot.get().getCategory() != mainCategory) {
                 throw new Exception(String.format("failure, robot with ID [%d] is from different category", id));
             }
-            if (robot.get().getDiscipline() != mainDiscipline) {
+            if (robot.get().getDiscipline().getID() != mainDiscipline.getID()) {
                 throw new Exception(String.format("failure, robot with ID [%d] is from different discipline", id));
             }
         }

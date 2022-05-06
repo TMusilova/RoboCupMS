@@ -142,6 +142,7 @@ public class MatchService {
             throw new Exception(String.format("failure, match with ID [%d] not exists", id));
         }
 
+        // odstrani zapas
         this.robotMatchRepository.deleteById(id);
     }
 

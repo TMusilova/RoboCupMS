@@ -70,6 +70,7 @@ public class CompetitionService {
     public void remove(Long id) throws Exception {
         Optional<Competition> c = this.repository.findById(id);
         if (c.isPresent()) {
+            // odstrani soutez
             this.repository.delete(c.get());
         } else {
             throw new Exception(String.format("compatition with ID [%d] not exists", id));

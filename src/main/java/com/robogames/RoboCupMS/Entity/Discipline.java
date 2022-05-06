@@ -3,6 +3,7 @@ package com.robogames.RoboCupMS.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -53,13 +54,13 @@ public class Discipline {
     /**
      * Seznam vsech hrist pro tuto disciplinu
      */
-    @OneToMany(mappedBy = "discipline")
+    @OneToMany(mappedBy = "discipline", cascade = CascadeType.REMOVE)
     private List<Playground> playgrounds;
 
     /**
      * Seznam vsech robotu, kteri jsou registrovani v teto discipline
      */
-    @OneToMany(mappedBy = "discipline")
+    @OneToMany(mappedBy = "discipline", cascade = CascadeType.REMOVE)
     private List<Robot> robots;
 
     /**

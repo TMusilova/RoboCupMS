@@ -50,7 +50,7 @@ public class Team {
     private UserRC leader;
 
     /**
-     * Clenove tymu
+     * Clenove tymu (pokud je tym mazan neni mozne odstrani uzivatele)
      */
     @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private List<UserRC> members;
@@ -58,7 +58,7 @@ public class Team {
     /**
      * Registrace tymu do jednotlivych rocniku souteze
      */
-    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<TeamRegistration> registrations;
 
     /**

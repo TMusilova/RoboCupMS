@@ -58,7 +58,7 @@ public class Competition {
     /**
      * Registrace tymu do tohoto rocniku souteze
      */
-    @OneToMany(mappedBy = "competition", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "competition", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<TeamRegistration> registrations;
 
     /**

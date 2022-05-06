@@ -90,11 +90,6 @@ public class MatchGroupService {
             throw new Exception(String.format("failure, match group with ID [%d] not exists", id));
         }
 
-        // odstrani vsechny zapasy skupiny
-        if (!group.get().getMatches().isEmpty()) {
-            this.matchRepository.deleteAll(group.get().getMatches());
-        }
-
         // odstrani skupinu
         this.repository.delete(group.get());
     }

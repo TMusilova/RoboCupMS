@@ -3,6 +3,7 @@ package com.robogames.RoboCupMS.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -69,7 +70,7 @@ public class Robot {
     /**
      * Seznam vsech odehranych zapasu
      */
-    @OneToMany(mappedBy = "robot", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "robot", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private List<RobotMatch> matches;
 
     /**

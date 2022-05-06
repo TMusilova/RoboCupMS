@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Entity.Category;
 import com.robogames.RoboCupMS.Entity.Competition;
+import com.robogames.RoboCupMS.Entity.Robot;
 import com.robogames.RoboCupMS.Entity.Team;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Entity.UserRC;
@@ -114,7 +115,7 @@ public class TeamRegistrationService {
         // overi zda soutez jiz nezacala (registrace je mozna jen pokud soutez jeste
         // nezacala)
         if (c.get().getStarted()) {
-            throw new Exception("failure, competition has already begun");
+            throw new Exception("failure, competition has already begin");
         }
 
         // najde registraci tymu v seznamu registraci daneho tymu
@@ -123,6 +124,13 @@ public class TeamRegistrationService {
                 .findFirst();
         if (!registration.isPresent()) {
             throw new Exception("failure, team registration not exists");
+        }
+
+        // overi zda jiz tym nema potvrzen registrace robotu
+        for (Robot r : registration.get().getRobots()) {
+            if (r.getConfirmed()) {
+                throw new Exception("failure, team have a robot that is already confirmed");
+            }
         }
 
         // odstrani registraci
@@ -197,7 +205,8 @@ public class TeamRegistrationService {
     }
 
     /**
-     * Slouci dve ruzne kategorie dohromady. Vybere se jedna kategorie a vsichni, kteri jsou v
+     * Slouci dve ruzne kategorie dohromady. Vybere se jedna kategorie a vsichni,
+     * kteri jsou v
      * ni registrovani se pridaji k jine zvolene kategorii.
      * 
      * @param year        Rocnik souteze

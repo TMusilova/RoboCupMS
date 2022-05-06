@@ -4,11 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import com.robogames.RoboCupMS.GlobalConfig;
+import com.robogames.RoboCupMS.Entity.Robot;
 import com.robogames.RoboCupMS.Entity.Team;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Entity.UserRC;
-import com.robogames.RoboCupMS.Repository.RobotRepository;
-import com.robogames.RoboCupMS.Repository.TeamRegistrationRepository;
 import com.robogames.RoboCupMS.Repository.TeamRepository;
 import com.robogames.RoboCupMS.Repository.UserRepository;
 
@@ -26,13 +25,7 @@ public class TeamService {
     private TeamRepository teamRepository;
 
     @Autowired
-    private TeamRegistrationRepository registrationRepository;
-
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private RobotRepository robotRepository;
 
     /**
      * Navrati info o tymu, ve kterem se prihlaseny uzivatel nachazi
@@ -122,13 +115,20 @@ public class TeamService {
 
         Optional<Team> t = this.teamRepository.findByLeader(leader);
         if (t.isPresent()) {
-            // overi zda jiz tento tym neni registrovan v nejakem rocnik, ktery jit zacal.
-            // Pak v tom pripade neni mozne jiz tym odstranit, jelikoz system zaznamenava i
-            // zapasy z minulych rocniku
             for (TeamRegistration reg : t.get().getRegistrations()) {
+                // overi zda jiz tento tym neni registrovan v nejakem rocnik, ktery jit zacal.
+                // Pak v tom pripade neni mozne jiz tym odstranit, jelikoz system zaznamenava i
+                // zapasy z minulych rocniku
                 if (reg.getCompatition().getStarted()) {
                     throw new Exception(
                             "failure, it is not possible to remove the team because it is already registred in a competition that has already started");
+                }
+                // overi zda jiz tym nema nejakeho robota, ktery ma jiz potvrzenou registraci
+                for (Robot r : reg.getRobots()) {
+                    if (r.getConfirmed()) {
+                        throw new Exception(
+                                "failure, it is not possible to remove the team because it already have confirmed robot");
+                    }
                 }
             }
 
@@ -137,14 +137,6 @@ public class TeamService {
                 m.setTeam(null);
             });
             this.userRepository.saveAll(t.get().getMembers());
-
-            // odstrani roboty
-            t.get().getRegistrations().stream().forEach((r) -> {
-                this.robotRepository.deleteAll(r.getRobots());
-            });
-
-            // zrusi registrace
-            this.registrationRepository.deleteAll(t.get().getRegistrations());
 
             // odstrani tym
             this.teamRepository.delete(t.get());

@@ -3,6 +3,7 @@ package com.robogames.RoboCupMS.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -44,7 +45,7 @@ public class TeamRegistration {
     /**
      * Roboti, kteri jsou vytvoreni na tuto registraci tymu
      */
-    @OneToMany(mappedBy = "teamRegistration")
+    @OneToMany(mappedBy = "teamRegistration", cascade = CascadeType.REMOVE)
     private List<Robot> robots;
 
     /**

@@ -14,7 +14,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -140,7 +139,7 @@ public class OrderManagement {
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @PostMapping("/generateMatches")
-    Response generateMatches(@RequestParam int year, @RequestBody Long[] robots, @RequestBody Long playgroundID) {
+    Response generateMatches(@RequestParam int year, @RequestParam Long[] robots, @RequestParam Long playgroundID) {
         long creatorIdentifier;
         try {
             creatorIdentifier = this.competitionEvaluationService.generateMatches(year, robots, playgroundID);
