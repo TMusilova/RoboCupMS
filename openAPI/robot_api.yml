@@ -286,6 +286,7 @@ paths:
   /confirmRegistration:
     put:
       summary: Povrdí/nepovrdí registraci robota v disciplíně
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, ASSISTANT].
       parameters:
         - in: query
           name: id

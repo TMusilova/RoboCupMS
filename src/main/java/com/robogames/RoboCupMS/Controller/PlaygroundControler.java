@@ -81,7 +81,7 @@ public class PlaygroundControler {
      *                     urcene
      * @return Informace o stavu provedeneho requestu
      */
-    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PostMapping("/create")
     Response create(@RequestParam String name, @RequestParam int number, @RequestParam Long disciplineID) {
         try {

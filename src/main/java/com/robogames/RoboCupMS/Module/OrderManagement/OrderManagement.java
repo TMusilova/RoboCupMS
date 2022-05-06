@@ -47,11 +47,11 @@ public class OrderManagement {
     }
 
     /**
-     * Stav systemu
+     * Navrati informaci o tom zda je servis spusten
      * 
      * @return Stav
      */
-    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT, ERole.Names.REFEREE })
     @GetMapping("/isRunning")
     Response isRunning() {
         return ResponseHandler.response(this.competitionEvaluationService.isRunning());
@@ -63,7 +63,7 @@ public class OrderManagement {
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
-    @GetMapping("/requestRefresh")
+    @PutMapping("/requestRefresh")
     Response requestRefresh() {
         try {
             this.competitionEvaluationService.requestRefresh();
@@ -93,14 +93,12 @@ public class OrderManagement {
     }
 
     /**
-     * Vyzada zmenu zapasu, ktery ma byt aktulane odehran na nekterem z hrist dane
-     * discipliny
+     * Vyzada zmenu poradi zapasu ve fronte
      * 
-     * @param id ID dalsiho zapasu, ktery rozhodci chce, aby byl odehran
-     *           (pokud
-     *           bude zadana zaporna neplatna hodnota pak system vybere
-     *           nahodne ze
-     *           seznamu cekajicih zapasu)
+     * @param id ID zapasu, o kterem rozhodci rozhodne, aby byl odehran v danou
+     *           chvili. Zapas s timto ID bude presunut na prvni misto ve fronte.
+     *           (pokud bude zadana zaporna neplatna hodnota pak system vybere
+     *           náhodne ze seznamu cekajicich zapasu)
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
@@ -117,7 +115,6 @@ public class OrderManagement {
     /**
      * Navrati pro robota seznam vsech nadchazejicich zapasu
      * 
-     * @param year Rocnik souteze
      * @param id   ID robota
      * @return Seznam vsech zapasu robota, ktere jeste cekaji na odehrani
      */

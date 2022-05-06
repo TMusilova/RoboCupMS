@@ -47,8 +47,8 @@ public class CompetitionEvaluationService {
      * Navrati skore vsech robotu, kteri soutezili v danem rocniku
      * 
      * @param year     Rocnik souteze
-     * @param category Soutezni kategorie
-     * @return Seznam vsech roboku a jejich skore v soutezi
+     * @param category Kategorie, pro kterou má zobrazit výsledky
+     * @return Seznam vsech robotu a jejich skore v soutezi
      */
     public List<RobotScore> getScoreOfAll(int year, ECategory category) throws Exception {
         // overi zda rocnik souteze existuje
@@ -129,9 +129,9 @@ public class CompetitionEvaluationService {
     }
 
     /**
-     * Navrati skore robota
+     * Navrati skore jednoho konkreniho robota
      * 
-     * @param year Rocnik
+     * @param year Rocnik souteze
      * @param id   ID robota
      * @return Navrati skore robota
      */
@@ -169,8 +169,7 @@ public class CompetitionEvaluationService {
      * @param year     Rocnik souteze
      * @param category Soutezni kategorie
      * @param id       ID discipliny
-     * @return Sezname vsech robotu, kteri soutezili v dane discipline a jejich
-     *         poradi
+     * @return Poradi vsech robotu, kteri soutezili v dane discipline + kategorii
      */
     public List<OrderObj> getOrder(int year, ECategory category, long id) throws Exception {
         // overi zda rocnik souteze existuje
@@ -228,7 +227,7 @@ public class CompetitionEvaluationService {
 
         List<OrderObj> order = new LinkedList<OrderObj>();
         int place = 1;
-        for(RobotScore scoreObj : all) {
+        for (RobotScore scoreObj : all) {
             order.add(new OrderObj(place++, scoreObj));
         }
 

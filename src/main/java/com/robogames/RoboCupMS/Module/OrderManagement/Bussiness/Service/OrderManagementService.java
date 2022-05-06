@@ -106,7 +106,7 @@ public class OrderManagementService {
     }
 
     /**
-     * Stav systemu
+     * Navrati informaci o tom zda je servis spusten
      * 
      * @return Stav
      */
@@ -153,16 +153,12 @@ public class OrderManagementService {
     }
 
     /**
-     * Vyzada zmenu zapasu, ktery ma byt aktulane odehran na nekterem z hrist dane
-     * discipliny
-     * 4
+     * Vyzada zmenu poradi zapasu ve fronte
      * 
-     * @param id ID dalsiho zapasu, ktery rozhodci chce, aby byl odehran
-     *           (pokud
-     *           bude zadana zaporna neplatna hodnota pak system vybere
-     *           nahodne ze
-     *           seznamu cekajicih zapasu)
-     * @return
+     * @param id ID zápasu, o kterém rozhodčí rozhodne, aby byl odehrán v dánou
+     *           chvíli. Zápas s tímto ID bude přesunut na první místo ve frontě.
+     *           (pokud bude zadána záporná neplatná hodnota pak systém vybere
+     *           náhodně ze seznamu čekajících zápasů)
      */
     public void requestAnotherMatch(long id) throws Exception {
         if (OrderManagementService.YEAR == -1) {
@@ -187,7 +183,6 @@ public class OrderManagementService {
     /**
      * Navrati pro robota seznam vsech nadchazejicich zapasu
      * 
-     * @param year Rocnik souteze
      * @param id   ID robota
      * @return Seznam vsech zapasu robota, ktere jeste cekaji na odehrani
      */

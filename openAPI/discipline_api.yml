@@ -99,6 +99,7 @@ paths:
   /create:
     post:
       summary: Vytvoří novou disciplínu
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
       parameters:
         - in: query
           name: name
@@ -140,7 +141,7 @@ paths:
   /edit:
     put:
       summary: Upravi disciplínu
-      description: Umužnuje upravit jmeno, popis nebo typ agregacni funkce skore
+      description: Umožnuje upravit jmeno, popis nebo typ agregacni funkce skore. Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
       parameters:
         - in: query
           name: name
@@ -188,7 +189,7 @@ paths:
   /remove:
     delete:
       summary: Odstraní disciplínu
-      description: Disciplínu nebude možne odstranit pokud ma přiřazené nejaké hřiště nebo registrované roboty.
+      description: Disciplínu nebude možne odstranit pokud ma přiřazené nejaké hřiště nebo registrované roboty. Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
       parameters:
         - in: query
           name: year

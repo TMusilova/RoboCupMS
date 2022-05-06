@@ -1,0 +1,229 @@
+openapi: 3.0.2
+info:
+  title: RoboCupMS - Competition Evaluation Module
+  description: Tento modul ulehčuje práci s výsledky soutěže. Automaticky vypočitá skoré a určí umístění robotů.
+  version: 1.0.0
+  contact:
+    email: m1_krcma@utb.cz
+servers:
+  - url: https://utb-robogames.com/module/competitionEvaluation
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-TOKEN
+paths:
+  /scoreOfAll:
+    get:
+      summary: Navratí skóre a pořadí všech robotů, kteří soutěžili v daném ročníku
+      parameters:
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže
+          schema:
+            type: integer
+        - in: query
+          name: category
+          required: true
+          description: Kategorie, pro kterou zobrazi výsledky
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Seznam všech robotu a jejich skore v souteži
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        score:
+                          type: number
+                          example: 14.5
+                        category:
+                          type: string
+                          example: "UNIVERITY"
+                        robotID:
+                          type: integer
+                          example: 3
+                        robotName:
+                          type: string
+                          example: "Pan Robotek"
+                        disciplindeID:
+                          type: integer
+                          example: 11
+                        disciplindeName:
+                          type: string
+                          example: "Robot uklízeč"
+
+  /scoreOfTeam:
+    get:
+      summary: Navratí skóre všech robotů určitého týmu
+      parameters:
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže
+          schema:
+            type: integer
+        - in: query
+          name: id
+          required: true
+          description: ID týmu
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Seznam všech robotu a jejich skore v souteži
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        score:
+                          type: number
+                          example: 14.5
+                        category:
+                          type: string
+                          example: "UNIVERITY"
+                        robotID:
+                          type: integer
+                          example: 3
+                        robotName:
+                          type: string
+                          example: "Pan Robotek"
+                        disciplindeID:
+                          type: integer
+                          example: 11
+                        disciplindeName:
+                          type: string
+                          example: "Robot uklízeč"
+
+  /scoreOfRobot:
+    get:
+      summary: Navratí skóre jednoho konkréního robota
+      parameters:
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže
+          schema:
+            type: integer
+        - in: query
+          name: id
+          required: true
+          description: ID robota
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Seznam všech robotu a jejich skore v souteži
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: object
+                    properties:
+                      score:
+                        type: number
+                        example: 14.5
+                      category:
+                        type: string
+                        example: "UNIVERITY"
+                      robotID:
+                        type: integer
+                        example: 3
+                      robotName:
+                        type: string
+                        example: "Pan Robotek"
+                      disciplindeID:
+                        type: integer
+                        example: 11
+                      disciplindeName:
+                        type: string
+                        example: "Robot uklízeč"
+
+  /getOrder:
+    get:
+      summary: Navratí skóre všech robotů určitého týmu
+      parameters:
+        - in: query
+          name: year
+          required: true
+          description: Ročník soutěže
+          schema:
+            type: integer
+        - in: query
+          name: category
+          required: true
+          description: Kategorie, pro kterou zobrazi výsledky
+          schema:
+            type: string
+        - in: query
+          name: id
+          required: true
+          description: ID soutěžní disciplíny, pro kterou zobrazi výsledky
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Pořadí všech robotů, kteří soutěžili v dané disciplíně + kategorii
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        place:
+                          type: integer
+                          example: 1
+                        data:
+                          type: object
+                          properties:
+                            score:
+                              type: number
+                              example: 14.5
+                            category:
+                              type: string
+                              example: "UNIVERITY"
+                            robotID:
+                              type: integer
+                              example: 3
+                            robotName:
+                              type: string
+                              example: "Pan Robotek"
+                            disciplindeID:
+                              type: integer
+                              example: 11
+                            disciplindeName:
+                              type: string
+                              example: "Robot uklízeč"

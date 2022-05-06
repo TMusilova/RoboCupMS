@@ -108,6 +108,7 @@ paths:
   /create:
     post:
       summary: Vytvoří novou zápasovou skupinu
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, REFEREE].
       parameters:
         - in: query
           name: creatorID
@@ -135,7 +136,7 @@ paths:
   /remove:
     delete:
       summary: Odstraní zápasovou skupinu
-      description: Při mazání zapasové skupiny i automaticky odstraní jeji zápasy.
+      description: Při mazání zapasové skupiny i automaticky odstraní jeji zápasy. Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, REFEREE].
       parameters:
         - in: query
           name: id
@@ -163,7 +164,7 @@ paths:
   /removeAll:
     delete:
       summary: Odstraní všechny skupiny s odpovídajícím ID tvůrce skupiny
-      description: Při mazání každé zapasové skupiny i automaticky odstraní jeji zápasy.
+      description: Při mazání každé zapasové skupiny i automaticky odstraní jeji zápasy. Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, REFEREE].
       parameters:
         - in: query
           name: creatorid

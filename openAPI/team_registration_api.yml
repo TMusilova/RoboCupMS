@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: RoboCupMS - Team Registration API
-  description: API zajištuje přihlášování týmů, do konkrétních ročníků soutěže
+  description: API zajištuje přihlášování týmů, do konkrétních ročníků soutěže.
   version: 1.0.0
   contact:
     email: m1_krcma@utb.cz
@@ -55,7 +55,9 @@ paths:
   /register:
     post:
       summary: Registruje tým do soutěže
-      description: Registrovat tým může pouze vedoucí týmu. System automaticky přiřadí tým do kategorie (podle věku členů týmu). Kategorie je volena podle nejstaršího člena týmu.
+      description:
+        Registrovat tým může pouze vedoucí týmu. System automaticky přiřadí tým do kategorie (podle věku členů týmu).
+        Kategorie je volena podle nejstaršího člena týmu. Registrovat tým je možne jen v případě, že daný ročník soutěže ještě nezačal.
       parameters:
         - in: query
           name: year
@@ -85,11 +87,11 @@ paths:
                   data:
                     type: string
                     example: "success"
-    
+
   /changeCategory:
     put:
       summary: Změní kategorii týmu
-      description: Změní kategorii týmu. Změna neni nijak omezovano věkem a tak je možné zvolit libovolnou.
+      description: Změní kategorii týmu. Změna neni nijak omezovano věkem a tak je možné zvolit libovolnou. Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, ASSISTANT].
       parameters:
         - in: query
           name: id
@@ -109,7 +111,7 @@ paths:
           description: Nová kategorie, ve které bude tým soutežit
           schema:
             type: string
-            
+
       security:
         - ApiKeyAuth: []
       responses:
@@ -130,7 +132,7 @@ paths:
   /joinCategory:
     put:
       summary: Slouci dvě různé kategorie dohromady
-      description: Všechny týmy registrované v jedné kategorii se přesunou do jiné zvolené kategorie.
+      description: Všechny týmy registrované v jedné kategorii se přesunou do jiné zvolené kategorie. Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
       parameters:
         - in: query
           name: year
@@ -152,7 +154,7 @@ paths:
           schema:
             type: string
             enum: ["ELEMENTARY_SCHOOL", "HIGH_SCHOOL", "UNIVERSITY", "OPEN"]
-            
+
       security:
         - ApiKeyAuth: []
       responses:
@@ -169,16 +171,16 @@ paths:
                   data:
                     type: string
                     example: "success"
-  
+
   /unregister:
     delete:
       summary: Zruší registraci týmu
-      description: Registrovat tým může pouze vedoucí týmu
+      description: Zrušit registraci tým může pouze vedoucí týmu. Zrušení nebude možne v případě, že soutěž již začala.
       parameters:
         - in: query
           name: year
           required: true
-          description: Ročník soutěže
+          description: Ročník soutěže, pro který tým ruší registraci
           schema:
             type: integer
       security:

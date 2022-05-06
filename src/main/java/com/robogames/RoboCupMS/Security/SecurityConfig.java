@@ -39,11 +39,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         GlobalConfig.API_PREFIX + "/playground/get",
                         GlobalConfig.API_PREFIX + "/playground/getMatches",
 
-                        // sekce vysledku souteze (dostupne i pro verejnost)
+                        // vysledky souteze (dostupne i pro verejnost)
                         GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/scoreOfAll",
                         GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/scoreOfTeam",
                         GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/scoreOfRobot",
-                        GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/getOrder"
+                        GlobalConfig.MODULE_PREFIX + "/competitionEvaluation/getOrder",
+
+                        // vysledky souteze (dostupne i pro verejnost)
+                        GlobalConfig.MODULE_PREFIX + "/orderManagement/currentMatches",
+                        GlobalConfig.MODULE_PREFIX + "/orderManagement/upcommingMatches"
         };
 
         @Autowired

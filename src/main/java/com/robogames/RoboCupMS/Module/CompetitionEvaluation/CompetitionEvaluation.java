@@ -31,8 +31,8 @@ public class CompetitionEvaluation {
      * Navrati skore a poradi vsech robotu, kteri soutezili v danem rocniku
      * 
      * @param year     Rocnik souteze
-     * @param category Soutezni kategorie
-     * @return Seznam vsech roboku a jejich skore v soutezi
+     * @param category Kategorie, pro kterou má zobrazit výsledky
+     * @return Seznam vsech robotu a jejich skore v soutezi
      */
     @GetMapping("/scoreOfAll")
     Response getScoreOfAll(@RequestParam int year, @RequestParam ECategory category) {
@@ -64,9 +64,9 @@ public class CompetitionEvaluation {
     }
 
     /**
-     * Navrati skore robota
+     * Navrati skore jednoho konkreniho robota
      * 
-     * @param year Rocnik
+     * @param year Rocnik souteze
      * @param id   ID robota
      * @return Navrati skore robota
      */
@@ -87,8 +87,7 @@ public class CompetitionEvaluation {
      * @param year     Rocnik souteze
      * @param category Soutezni kategorie
      * @param id       ID discipliny
-     * @return Sezname vsech robotu, kteri soutezili v dane discipline a jejich
-     *         poradi
+     * @return Poradi vsech robotu, kteri soutezili v dane discipline + kategorii
      */
     @GetMapping("/getOrder")
     Response getOrder(@RequestParam int year, @RequestParam ECategory category, @RequestParam long id) {

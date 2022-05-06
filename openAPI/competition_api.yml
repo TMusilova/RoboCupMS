@@ -99,6 +99,7 @@ paths:
   /create:
     post:
       summary: Vytvoří nový ročník soutěže
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
       parameters: []
       requestBody:
         required: true
@@ -141,7 +142,7 @@ paths:
   /edit:
     put:
       summary: Upraví parametry soutěže
-      description: Změny lze provést jen v případě, že soutěž ještě nezačala.
+      description: Změny lze provést jen v případě, že soutěž ještě nezačala. Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
       parameters:
         - in: query
           name: id
@@ -190,7 +191,7 @@ paths:
   /start:
     put:
       summary: Zahájí soutěž
-      description: Po zahájení soutěže již není možne registrovat dalši tym a registrovat roboty do disciplín.
+      description: Po zahájení soutěže již není možne registrovat dalši tym a registrovat roboty do disciplín. Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
       parameters:
         - in: query
           name: id
@@ -218,6 +219,7 @@ paths:
   /remove:
     delete:
       summary: Odstraní soutez z databaze
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
       parameters:
         - in: query
           name: id

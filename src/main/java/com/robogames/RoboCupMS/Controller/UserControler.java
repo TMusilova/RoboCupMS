@@ -110,6 +110,7 @@ public class UserControler {
      * @param id      ID uzivatele jehoz atributy budou zmeneny
      * @return Informace o stavu provedeneho requestu
      */
+    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PutMapping("/edit")
     Response edit(@RequestBody UserRC newUser, @RequestParam long id) {
         try {

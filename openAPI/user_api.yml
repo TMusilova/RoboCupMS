@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: RoboCupMS - User API
-  description: API slouži pro spravů uživatelů na serveru. Umožnuje zakladní operace (info o uživateli, vyhledavání, modifikace, odstranění)
+  description: API slouži pro spravů uživatelů na serveru. Umožnuje zakladní operace (informace o uživateli, vyhledavání, modifikace, odstranění).
   version: 1.0.0
   contact:
     email: m1_krcma@utb.cz
@@ -17,7 +17,8 @@ paths:
   /info:
     get:
       summary: Navrátí všechny dostupné informace o uživateli
-      description: Podle přistupového tokenu najde v databazi, kterému přihlášenému uživateli patří a informace o něm navrátí
+      description: 
+        Podle přistupového tokenu najde v databazi, kterému přihlášenému uživateli patří a informace o něm navrátí.
       parameters: []
       security:
         - ApiKeyAuth: []
@@ -73,6 +74,7 @@ paths:
   /all:
     get:
       summary: Navrátí všechny dostupné informace o všech uživatelích
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, ASSISTANT]
       parameters: []
       security:
         - ApiKeyAuth: []
@@ -130,6 +132,7 @@ paths:
   /getByID:
     get:
       summary: Navrátí všechny dostupné informace o uživateli s konkrétním ID
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, ASSISTANT]
       parameters:
         - in: query
           name: id
@@ -194,6 +197,7 @@ paths:
   /getByEmail:
     get:
       summary: Navrátí všechny dostupné informace o uživateli s konkrétním emailem
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, ASSISTANT]
       parameters:
         - in: query
           name: email
@@ -259,6 +263,7 @@ paths:
   /add:
     post:
       summary: Přidá nového uživatele do databáze
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER]
       requestBody:
         required: true
         content:
@@ -302,6 +307,7 @@ paths:
   /edit:
     put:
       summary: Změní atributy uživatele s konktretním ID
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, ASSISTANT]
       parameters: 
         - in: query
           name: id
@@ -386,6 +392,7 @@ paths:
   /setPassword:
     put:
       summary: Nastaví uživateli nové heslo
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER]
       parameters:
         - in: query
           name: newPassword
@@ -419,6 +426,7 @@ paths:
   /addRole:
     put:
       summary: Přiřadí uživateli roli
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN]
       parameters:
         - in: query
           name: role
@@ -453,6 +461,7 @@ paths:
   /removeRole:
     put:
       summary: Odebere uživateli zvolenou roli
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN]
       parameters:
         - in: query
           name: role
@@ -487,6 +496,7 @@ paths:
   /remove:
     delete:
       summary: Změní atributy uživatele s konktretním ID
+      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER]
       parameters: 
         - in: query
           name: id
