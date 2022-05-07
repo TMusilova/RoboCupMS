@@ -11,6 +11,7 @@ import com.robogames.RoboCupMS.Module.OrderManagement.Bussiness.Service.OrderMan
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Zajistuje zobrazovani aktualniho poradi zapasu a jejich generovani
  */
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(GlobalConfig.MODULE_PREFIX + "/orderManagement")
 public class OrderManagement {
 

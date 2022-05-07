@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
+import com.robogames.RoboCupMS.Business.Enum.EMatchState;
 import com.robogames.RoboCupMS.Business.Enum.EScoreAggregation;
 import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.Discipline;
@@ -74,7 +75,9 @@ public class CompetitionEvaluationService {
                 float totalScore = ag.getTotalScoreInitValue();
                 List<RobotMatch> matches = r.getMatches();
                 for (RobotMatch m : matches) {
-                    totalScore = ag.proccess(totalScore, m.getScore());
+                    if (m.getState().getName() == EMatchState.DONE) {
+                        totalScore = ag.proccess(totalScore, m.getScore());
+                    }
                 }
 
                 // score s robotem zapise do listu
@@ -119,7 +122,9 @@ public class CompetitionEvaluationService {
                 float totalScore = ag.getTotalScoreInitValue();
                 List<RobotMatch> matches = r.getMatches();
                 for (RobotMatch m : matches) {
-                    totalScore = ag.proccess(totalScore, m.getScore());
+                    if (m.getState().getName() == EMatchState.DONE) {
+                        totalScore = ag.proccess(totalScore, m.getScore());
+                    }
                 }
                 scoreList.add(new RobotScore(r, totalScore));
             }
@@ -157,7 +162,9 @@ public class CompetitionEvaluationService {
         float totalScore = ag.getTotalScoreInitValue();
         List<RobotMatch> matches = robot.get().getMatches();
         for (RobotMatch m : matches) {
-            totalScore = ag.proccess(totalScore, m.getScore());
+            if (m.getState().getName() == EMatchState.DONE) {
+                totalScore = ag.proccess(totalScore, m.getScore());
+            }
         }
 
         return new RobotScore(robot.get(), totalScore);
@@ -197,7 +204,9 @@ public class CompetitionEvaluationService {
                 float totalScore = ag.getTotalScoreInitValue();
                 List<RobotMatch> matches = r.getMatches();
                 for (RobotMatch m : matches) {
-                    totalScore = ag.proccess(totalScore, m.getScore());
+                    if (m.getState().getName() == EMatchState.DONE) {
+                        totalScore = ag.proccess(totalScore, m.getScore());
+                    }
                 }
 
                 // score s robotem zapise do listu
