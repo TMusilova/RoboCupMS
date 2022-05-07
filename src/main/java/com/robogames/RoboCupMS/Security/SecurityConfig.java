@@ -56,6 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
                 http.csrf().disable()
+                                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                                 .addFilterAfter(
                                                 new TokenAuthorizationFilter(GlobalConfig.HEADER_FIELD_TOKEN,
                                                                 repository, NOT_SECURED),

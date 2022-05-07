@@ -6,7 +6,7 @@ info:
   contact:
     email: m1_krcma@utb.cz
 servers:
-  - url: https://utb-robogames.com/api/discipline
+  - url: https://utb-robogames.com:8080/api/discipline
 components:
   securitySchemes:
     ApiKeyAuth:
