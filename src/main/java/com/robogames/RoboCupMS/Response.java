@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Response {
 
     /**
-     * Type
+     * Typ odezvy (enum)
      */
     public static enum Type {
         RESPONSE,
@@ -18,7 +18,7 @@ public class Response {
     }
 
     /**
-     * Type odezvy
+     * Typ odezvy
      */
     public Response.Type type;
 

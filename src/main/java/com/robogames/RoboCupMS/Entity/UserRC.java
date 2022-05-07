@@ -96,9 +96,9 @@ public class UserRC {
     private Team team;
 
     /**
-     * Pristupovy token
+     * Pristupovy token uzivatele
      */
-    @Column(name = "token", nullable = true, unique = false)
+    @Column(name = "token", nullable = true, unique = true)
     private String token;
 
     /**

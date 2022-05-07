@@ -62,48 +62,66 @@ public class AppInit {
 
             // nazev pristupoveho tokenu v headeru requestu
             String HEADER_FIELD_TOKEN = (String) obj.get("HEADER_FIELD_TOKEN");
-            GlobalConfig.HEADER_FIELD_TOKEN = HEADER_FIELD_TOKEN;
-            logger.info("HEADER_FIELD_TOKEN set on: " + HEADER_FIELD_TOKEN);
+            if (HEADER_FIELD_TOKEN != null) {
+                GlobalConfig.HEADER_FIELD_TOKEN = HEADER_FIELD_TOKEN;
+                logger.info("HEADER_FIELD_TOKEN set on: " + HEADER_FIELD_TOKEN);
+            }
 
             // maximalni mocet robotu v kategorii na jeden tym
-            long TOKEN_VALIDITY_DURATION = (Long) obj.get("TOKEN_VALIDITY_DURATION");
-            GlobalConfig.TOKEN_VALIDITY_DURATION = (int) TOKEN_VALIDITY_DURATION;
-            logger.info("MAX_TEAM_MEMBERS set on: " + TOKEN_VALIDITY_DURATION);
+            Long TOKEN_VALIDITY_DURATION = (Long) obj.get("TOKEN_VALIDITY_DURATION");
+            if (TOKEN_VALIDITY_DURATION != null) {
+                GlobalConfig.TOKEN_VALIDITY_DURATION = (int) TOKEN_VALIDITY_DURATION.longValue();
+                logger.info("MAX_TEAM_MEMBERS set on: " + TOKEN_VALIDITY_DURATION);
+            }
 
             // minimalni vek uzivatele
-            long USER_MIN_AGE = (Long) obj.get("USER_MIN_AGE");
-            GlobalConfig.USER_MIN_AGE = (int) USER_MIN_AGE;
-            logger.info("USER_MIN_AGE set on: " + USER_MIN_AGE);
+            Long USER_MIN_AGE = (Long) obj.get("USER_MIN_AGE");
+            if (USER_MIN_AGE != null) {
+                GlobalConfig.USER_MIN_AGE = (int) USER_MIN_AGE.longValue();
+                logger.info("USER_MIN_AGE set on: " + USER_MIN_AGE);
+            }
 
             // maximalni vek uzivatel
-            long USER_MAX_AGE = (Long) obj.get("USER_MAX_AGE");
-            GlobalConfig.USER_MAX_AGE = (int) USER_MAX_AGE;
-            logger.info("USER_MAX_AGE set on: " + USER_MAX_AGE);
+            Long USER_MAX_AGE = (Long) obj.get("USER_MAX_AGE");
+            if (USER_MAX_AGE != null) {
+                GlobalConfig.USER_MAX_AGE = (int) USER_MAX_AGE.longValue();
+                logger.info("USER_MAX_AGE set on: " + USER_MAX_AGE);
+            }
 
             // maximalni vek pro kategorii zakladni skoly
-            long ELEMENTARY_SCHOOL_MAX_AGE = (Long) obj.get("ELEMENTARY_SCHOOL_MAX_AGE");
-            GlobalConfig.ELEMENTARY_SCHOOL_MAX_AGE = (int) ELEMENTARY_SCHOOL_MAX_AGE;
-            logger.info("ELEMENTARY_SCHOOL_MAX_AGE set on: " + ELEMENTARY_SCHOOL_MAX_AGE);
+            Long ELEMENTARY_SCHOOL_MAX_AGE = (Long) obj.get("ELEMENTARY_SCHOOL_MAX_AGE");
+            if (ELEMENTARY_SCHOOL_MAX_AGE != null) {
+                GlobalConfig.ELEMENTARY_SCHOOL_MAX_AGE = (int) ELEMENTARY_SCHOOL_MAX_AGE.longValue();
+                logger.info("ELEMENTARY_SCHOOL_MAX_AGE set on: " + ELEMENTARY_SCHOOL_MAX_AGE);
+            }
 
             // maximalni vek pro kategorii stredni skoly
-            long HIGH_SCHOOL_MAX_AGE = (Long) obj.get("HIGH_SCHOOL_MAX_AGE");
-            GlobalConfig.HIGH_SCHOOL_MAX_AGE = (int) HIGH_SCHOOL_MAX_AGE;
-            logger.info("HIGH_SCHOOL_MAX_AGE set on: " + HIGH_SCHOOL_MAX_AGE);
+            Long HIGH_SCHOOL_MAX_AGE = (Long) obj.get("HIGH_SCHOOL_MAX_AGE");
+            if (HIGH_SCHOOL_MAX_AGE != null) {
+                GlobalConfig.HIGH_SCHOOL_MAX_AGE = (int) HIGH_SCHOOL_MAX_AGE.longValue();
+                logger.info("HIGH_SCHOOL_MAX_AGE set on: " + HIGH_SCHOOL_MAX_AGE);
+            }
 
             // maximalni vek pro kategorii vysoke skoly
-            long UNIVERSITY_MAX_AGE = (Long) obj.get("UNIVERSITY_MAX_AGE");
-            GlobalConfig.UNIVERSITY_MAX_AGE = (int) UNIVERSITY_MAX_AGE;
-            logger.info("UNIVERSITY_MAX_AGE set on: " + UNIVERSITY_MAX_AGE);
+            Long UNIVERSITY_MAX_AGE = (Long) obj.get("UNIVERSITY_MAX_AGE");
+            if (UNIVERSITY_MAX_AGE != null) {
+                GlobalConfig.UNIVERSITY_MAX_AGE = (int) UNIVERSITY_MAX_AGE.longValue();
+                logger.info("UNIVERSITY_MAX_AGE set on: " + UNIVERSITY_MAX_AGE);
+            }
 
             // maximalni mocet robotu v kategorii na jeden tym
-            long MAX_ROBOTS_IN_CATEGORY = (Long) obj.get("MAX_ROBOTS_IN_CATEGORY");
-            GlobalConfig.MAX_ROBOTS_IN_CATEGORY = (int) MAX_ROBOTS_IN_CATEGORY;
-            logger.info("MAX_ROBOTS_IN_CATEGORY set on: " + MAX_ROBOTS_IN_CATEGORY);
+            Long MAX_ROBOTS_IN_CATEGORY = (Long) obj.get("MAX_ROBOTS_IN_CATEGORY");
+            if (MAX_ROBOTS_IN_CATEGORY != null) {
+                GlobalConfig.MAX_ROBOTS_IN_CATEGORY = (int) MAX_ROBOTS_IN_CATEGORY.longValue();
+                logger.info("MAX_ROBOTS_IN_CATEGORY set on: " + MAX_ROBOTS_IN_CATEGORY);
+            }
 
             // maximalni mocet robotu v kategorii na jeden tym
-            long MAX_TEAM_MEMBERS = (Long) obj.get("MAX_TEAM_MEMBERS");
-            GlobalConfig.MAX_TEAM_MEMBERS = (int) MAX_TEAM_MEMBERS;
-            logger.info("MAX_TEAM_MEMBERS set on: " + MAX_TEAM_MEMBERS);
+            Long MAX_TEAM_MEMBERS = (Long) obj.get("MAX_TEAM_MEMBERS");
+            if (MAX_TEAM_MEMBERS != null) {
+                GlobalConfig.MAX_TEAM_MEMBERS = (int) MAX_TEAM_MEMBERS.longValue();
+                logger.info("MAX_TEAM_MEMBERS set on: " + MAX_TEAM_MEMBERS);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
