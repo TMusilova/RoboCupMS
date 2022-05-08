@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Zajistuje zobrazovani aktualniho poradi zapasu a jejich generovani
  */
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = RequestMethod.GET)
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(GlobalConfig.MODULE_PREFIX + "/orderManagement")
 public class OrderManagement {
 
@@ -117,7 +116,7 @@ public class OrderManagement {
     /**
      * Navrati pro robota seznam vsech nadchazejicich zapasu
      * 
-     * @param id   ID robota
+     * @param id ID robota
      * @return Seznam vsech zapasu robota, ktere jeste cekaji na odehrani
      */
     @GetMapping("/upcommingMatches")

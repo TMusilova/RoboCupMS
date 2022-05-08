@@ -30,7 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         GlobalConfig.API_PREFIX + "/discipline/get",
 
                         // verejnosti umozni zobrazovat informace o robotech
-                        GlobalConfig.API_PREFIX + "/robot/all",
                         GlobalConfig.API_PREFIX + "/robot/allConfirmed",
                         GlobalConfig.API_PREFIX + "/robot/get",
 
@@ -64,7 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 .authorizeRequests()
                                 .antMatchers(NOT_SECURED)
                                 .permitAll()
-                                .anyRequest().authenticated();
+                                .anyRequest().authenticated()
+                                .and()
+                                .oauth2Login();
         }
 
 }

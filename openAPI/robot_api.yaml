@@ -70,6 +70,8 @@ paths:
     get:
       summary: Navrátí všechny roboty vytvořene pro registraci tymu v určitem ročniku soutěže
       description: Navrátí všechny vytvořene roboty pro danou registracu týmu, ve kterém se přihlášený uživatel nachází.
+      security:
+        - ApiKeyAuth: []
       parameters:
         - in: query
           name: year
