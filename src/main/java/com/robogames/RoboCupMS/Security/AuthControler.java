@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,10 +35,42 @@ public class AuthControler {
      * @return Pristupovy token
      */
     @GetMapping("/login")
-    public Response login(@RequestParam String email, @RequestParam String password) {
+    public Response login(@RequestHeader("USER-EMAIL") String email, @RequestHeader("USER-PASSWORD") String password) {
         try {
             String token = this.authService.login(email, password);
             return ResponseHandler.response(token);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
+    }
+
+    /**
+     * 
+     * @param redirectURI
+     * @return
+     */
+    @GetMapping("/getOAuth2URI")
+    public Response getOAuth2URI(String redirectURI) {
+        try {
+            String url = this.authService.getOAuth2URI(redirectURI);
+            return ResponseHandler.response(url);
+        } catch (Exception ex) {
+            return ResponseHandler.error(ex.getMessage());
+        }
+    }
+
+    /**
+     * 
+     * @param state
+     * @param code
+     * @return
+     */
+    @GetMapping("/oauth2/code")
+    public Response oauth2Code(@RequestParam(defaultValue = "") String state, @RequestParam String code,
+            @RequestParam String scope) {
+        try {
+            String url = this.authService.oauth2Code(state, code, scope);
+            return ResponseHandler.response(url);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
         }
