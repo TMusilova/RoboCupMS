@@ -1,17 +1,13 @@
 package com.robogames.RoboCupMS.Business.Security;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import com.robogames.RoboCupMS.Business.Enum.ERole;
 import com.robogames.RoboCupMS.Entity.UserRC;
-import com.robogames.RoboCupMS.Repository.UserRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +15,7 @@ import org.springframework.stereotype.Service;
  * Zajistuje autentizaci a registraci uzivatelu
  */
 @Service
-public class AuthService {
-
-    @Autowired
-    private UserRepository repository;
+public class AuthService extends OAuth2Service {
 
     /**
      * Prihlaseni uzivatele do systemu (pokud je email a heslo spravne tak
@@ -46,27 +39,7 @@ public class AuthService {
         Optional<UserRC> user = repository.findByEmail(email);
         if (user.isPresent()) {
             if (user.get().passwordMatch(password)) {
-                // vygenerovani unikatniho pristupoveho tokenu
-                String token = "";
-                boolean success = false;
-                for (int i = 0; i < 1000; ++i) {
-                    token = UUID.randomUUID().toString();
-                    if (!repository.findByToken(token).isPresent()) {
-                        success = true;
-                        break;
-                    }
-                }
-
-                // nepodarilo se vygenerovat pristupovy token
-                if (!success) {
-                    throw new Exception("failed to generate access token");
-                }
-
-                // ulozi token a cas do databaze
-                user.get().setToken(token);
-                user.get().setLastAccessTime(new java.util.Date(Calendar.getInstance().getTime().getTime()));
-                this.repository.save(user.get());
-                return token;
+                return TokenAuthorization.generateAccessTokenForUser(user.get(), this.repository);
             }
         }
 

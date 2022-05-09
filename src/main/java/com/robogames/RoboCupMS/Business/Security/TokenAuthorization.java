@@ -1,11 +1,15 @@
-package com.robogames.RoboCupMS.Security;
+package com.robogames.RoboCupMS.Business.Security;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.Base64.Encoder;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -27,7 +31,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 /**
  * Filter pro autorizaci uzivatelu (pomoci tokenu)
  */
-public class TokenAuthorizationFilter extends OncePerRequestFilter {
+public class TokenAuthorization extends OncePerRequestFilter {
 
 	private final String x_token;
 
@@ -43,7 +47,7 @@ public class TokenAuthorizationFilter extends OncePerRequestFilter {
 	 * @param _repository       Repozitar z uzivately
 	 * @param _ignoredEndpoints Endpointy, ktery bude filter ignorovat
 	 */
-	public TokenAuthorizationFilter(String _x_token, UserRepository _repository, String[] _ignoredEndpoints) {
+	public TokenAuthorization(String _x_token, UserRepository _repository, String[] _ignoredEndpoints) {
 		this.x_token = _x_token;
 		this.repository = _repository;
 		this.ignoredEndpoints = _ignoredEndpoints;
@@ -145,6 +149,54 @@ public class TokenAuthorizationFilter extends OncePerRequestFilter {
 		this.repository.save(user.get());
 
 		return user.get();
+	}
+
+	/**
+	 * Vygeneruje pristupovy token pro uzivatele
+	 * 
+	 * @param _user       Uzivatel, pro ktereho se ma vygenerovat token
+	 * @param _repository Repozitar uzivatelu
+	 * @return Pristupovy token
+	 * @throws Exception
+	 */
+	public static String generateAccessTokenForUser(UserRC _user, UserRepository _repository) throws Exception {
+		if (_user == null) {
+			throw new Exception("failure, user is null");
+		}
+		if (_repository == null) {
+			throw new Exception("failure, user repository is null");
+		}
+
+		// vygenerovani unikatniho pristupoveho tokenu
+		String token = "";
+		boolean success = false;
+		for (int i = 0; i < 1000; ++i) {
+			token = TokenAuthorization.generateToken();
+			if (!_repository.findByToken(token).isPresent()) {
+				success = true;
+				break;
+			}
+		}
+
+		// nepodarilo se vygenerovat pristupovy token
+		if (!success) {
+			throw new Exception("failed to generate access token");
+		}
+
+		// ulozi token a cas do databaze
+		_user.setToken(token);
+		_user.setLastAccessTime(new java.util.Date(Calendar.getInstance().getTime().getTime()));
+		_repository.save(_user);
+		return token;
+	}
+
+	private static final SecureRandom secureRandom = new SecureRandom();
+	private static final Encoder base64Encoder = Base64.getUrlEncoder();
+
+	public static String generateToken() {
+		byte bytes[] = new byte[64];
+		secureRandom.nextBytes(bytes);
+		return base64Encoder.encodeToString(bytes);
 	}
 
 }

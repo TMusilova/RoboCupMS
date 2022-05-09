@@ -64,6 +64,12 @@ paths:
                         disciplindeName:
                           type: string
                           example: "Robot uklízeč"
+                        teamID:
+                          type: integer
+                          example: 12
+                        teamName:
+                          type: string
+                          example: MyTeam
 
   /scoreOfTeam:
     get:
@@ -115,6 +121,12 @@ paths:
                         disciplindeName:
                           type: string
                           example: "Robot uklízeč"
+                        teamID:
+                          type: integer
+                          example: 12
+                        teamName:
+                          type: string
+                          example: MyTeam
 
   /scoreOfRobot:
     get:
@@ -164,6 +176,12 @@ paths:
                       disciplindeName:
                         type: string
                         example: "Robot uklízeč"
+                      teamID:
+                          type: integer
+                          example: 12
+                      teamName:
+                          type: string
+                          example: MyTeam
 
   /getOrder:
     get:
@@ -227,3 +245,9 @@ paths:
                             disciplindeName:
                               type: string
                               example: "Robot uklízeč"
+                            teamID:
+                              type: integer
+                              example: 12
+                            teamName:
+                              type: string
+                              example: MyTeam

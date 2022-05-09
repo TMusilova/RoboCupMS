@@ -45,14 +45,18 @@ public class AuthControler {
     }
 
     /**
+     * Vygeneruje odkaz pro autorizaci uzivatele. Po uspesne autorizaci je uzivatel
+     * presmerovan na adresu "OAuth2Service.REDIRECT_URI" (frond-end). Zde musi byt
+     * odeslan POST request na endpoint serveru "/auth/oAuth2GenerateToken" s
+     * parametrem "code" jehoz hodnutu ziska aktualni URL.
      * 
-     * @param redirectURI
-     * @return
+     * @return URL
+     * @throws Exception
      */
-    @GetMapping("/getOAuth2URI")
-    public Response getOAuth2URI(String redirectURI) {
+    @GetMapping("/oAuth2")
+    public Response getOAuth2URI() {
         try {
-            String url = this.authService.getOAuth2URI(redirectURI);
+            String url = this.authService.getOAuth2URI();
             return ResponseHandler.response(url);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -60,16 +64,16 @@ public class AuthControler {
     }
 
     /**
+     * Vygeneruje pristupovy token pro uzivatele s vyuzitim oAuth2 autorizace.
      * 
-     * @param state
-     * @param code
-     * @return
+     * @param code Pristupovy kod ziskany po uspesne autorizaci uzivatele
+     * @return Pristupovy token uzivatele
+     * @throws Exception
      */
-    @GetMapping("/oauth2/code")
-    public Response oauth2Code(@RequestParam(defaultValue = "") String state, @RequestParam String code,
-            @RequestParam String scope) {
+    @PostMapping("/oAuth2GenerateToken")
+    public Response oAuth2GenerateToken(@RequestParam String code) {
         try {
-            String url = this.authService.oauth2Code(state, code, scope);
+            String url = this.authService.oAuth2GenerateToken(code);
             return ResponseHandler.response(url);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

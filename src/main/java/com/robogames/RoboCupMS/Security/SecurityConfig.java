@@ -1,7 +1,7 @@
 package com.robogames.RoboCupMS.Security;
 
 import com.robogames.RoboCupMS.GlobalConfig;
-import com.robogames.RoboCupMS.Business.Security.TokenAuthorizationFilter;
+import com.robogames.RoboCupMS.Business.Security.TokenAuthorization;
 import com.robogames.RoboCupMS.Repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +21,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         // sekce prihlasovani a registrace
                         GlobalConfig.AUTH_PREFIX + "/login",
                         GlobalConfig.AUTH_PREFIX + "/register",
-                        GlobalConfig.AUTH_PREFIX + "/getOAuth2URI",
-                        GlobalConfig.AUTH_PREFIX + "/oauth2/code",
+                        GlobalConfig.AUTH_PREFIX + "/oAuth2",
+                        GlobalConfig.AUTH_PREFIX + "/oAuth2GenerateToken",
 
                         // verejnosti umozni zobrazovat vytvorene souteze a registrovane tymy
                         GlobalConfig.API_PREFIX + "/competition/all",
@@ -58,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
 
-                TokenAuthorizationFilter tokenAuthorizationFilter = new TokenAuthorizationFilter(
+                TokenAuthorization tokenAuthorizationFilter = new TokenAuthorization(
                                 GlobalConfig.HEADER_FIELD_TOKEN,
                                 repository, NOT_SECURED);
 

@@ -23,14 +23,14 @@ paths:
         Token je platný do doby dokud se uživatel znovů nepřihlási z jíneho zařízeni nebo se neodhlásí. 
         Token se stavá automaticky neplatným po uplynutí definovaneho casu.
       parameters:
-        - in: query
-          name: email
+        - in: header
+          name: USER-EMAIL
           required: true
           schema:
             type: string
             example: user123@email.com
-        - in: query
-          name: password
+        - in: header
+          name: USER-PASSWORD
           required: true
           schema:
             type: string

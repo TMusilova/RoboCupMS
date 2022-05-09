@@ -86,6 +86,22 @@ public class RobotScore {
     }
 
     /**
+     * Navrati id tymu, ktery vlastni robota
+     * @return ID tymu
+     */
+    public long getTeamID() {
+        return this.robot.getTeamRegistration().getTeamID();
+    }
+
+    /**
+     * Navrati jmeno tymu, ktery vlastni robota
+     * @return Jmeno tymu
+     */
+    public String getTeamName() {
+        return this.robot.getTeamName();
+    }
+
+    /**
      * Navrati celkove skore
      * 
      * @return Celkove skore
