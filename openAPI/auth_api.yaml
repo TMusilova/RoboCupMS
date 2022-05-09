@@ -6,7 +6,7 @@ info:
   contact:
     email: m1_krcma@utb.cz
 servers:
-  - url: https://utb-robogames.com:8080/auth
+  - url: https://iob04.vas-server.cz:8080/auth
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -15,27 +15,26 @@ components:
       name: X-TOKEN
 paths:
   /login:
-    get:
+    post:
       summary: Přihlásí uživatele do systemu
       description:
         Uživatel, který se chce přihlásit do systemu odešle svůj email a heslo. Pokud jsou přihlašovací údaje platné pak vygeneruje přistupový token.
         Token je platný do doby dokud se uživatel znovů nepřihlási z jíneho zařízeni nebo se neodhlásí.
         Token se stavá automaticky neplatným po uplynutí definovaneho casu.
-      parameters:
-        - in: header
-          name: USER-EMAIL
-          description: Email uživatele
-          required: true
-          schema:
-            type: string
-            example: user123@email.com
-        - in: header
-          name: USER-PASSWORD
-          description: Heslo uživatele
-          required: true
-          schema:
-            type: string
-            example: abcd1234
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
       responses:
         "200":
           description: Uživatel je přihlášen a získa přistupový token. V opačné připadě je typ odpovědi "ERROR"

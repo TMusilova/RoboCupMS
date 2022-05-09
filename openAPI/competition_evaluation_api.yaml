@@ -6,7 +6,7 @@ info:
   contact:
     email: m1_krcma@utb.cz
 servers:
-  - url: https://utb-robogames.com:8080/module/competitionEvaluation
+  - url: https://iob04.vas-server.cz:8080/module/competitionEvaluation
 components:
   securitySchemes:
     ApiKeyAuth:

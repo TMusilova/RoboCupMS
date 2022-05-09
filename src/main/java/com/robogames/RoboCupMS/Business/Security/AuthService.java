@@ -26,19 +26,19 @@ public class AuthService extends OAuth2Service {
      * @param password Heslo uzivatele
      * @return Pristupovy token
      */
-    public String login(String email, String password) throws Exception {
+    public String login(LoginObj login) throws Exception {
         // validace emailu
         // https://mailtrap.io/blog/java-email-validation/
         Pattern pattern = Pattern
                 .compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
-        if (!pattern.matcher(email).matches()) {
+        if (!pattern.matcher(login.getEmail()).matches()) {
             throw new Exception("failure, email is invalid");
         }
 
         // autentizace uzivatele
-        Optional<UserRC> user = repository.findByEmail(email);
+        Optional<UserRC> user = repository.findByEmail(login.getEmail());
         if (user.isPresent()) {
-            if (user.get().passwordMatch(password)) {
+            if (user.get().passwordMatch(login.getPassword())) {
                 return TokenAuthorization.generateAccessTokenForUser(user.get(), this.repository);
             }
         }

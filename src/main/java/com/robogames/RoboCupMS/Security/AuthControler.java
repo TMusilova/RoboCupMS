@@ -5,13 +5,13 @@ import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Entity.UserRC;
 import com.robogames.RoboCupMS.Business.Security.AuthService;
+import com.robogames.RoboCupMS.Business.Security.LoginObj;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,10 +34,10 @@ public class AuthControler {
      * @param password Heslo uzivatele
      * @return Pristupovy token
      */
-    @GetMapping("/login")
-    public Response login(@RequestHeader("USER-EMAIL") String email, @RequestHeader("USER-PASSWORD") String password) {
+    @PostMapping("/login")
+    public Response login(@RequestBody LoginObj loginObj) {
         try {
-            String token = this.authService.login(email, password);
+            String token = this.authService.login(loginObj);
             return ResponseHandler.response(token);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -46,7 +46,9 @@ public class AuthControler {
 
     /**
      * Vygeneruje odkaz pro autorizaci uzivatele. Po uspesne autorizaci je uzivatel
-     * presmerovan na adresu "com.robogames.RoboCupMS.Business.Security.OAuth2Service.REDIRECT_URI" (frond-end). Zde musi byt
+     * presmerovan na adresu
+     * "com.robogames.RoboCupMS.Business.Security.OAuth2Service.REDIRECT_URI"
+     * (frond-end). Zde musi byt
      * odeslan POST request na endpoint serveru "/auth/oAuth2GenerateToken" s
      * parametrem "code" jehoz hodnutu ziska aktualni URL.
      * 
