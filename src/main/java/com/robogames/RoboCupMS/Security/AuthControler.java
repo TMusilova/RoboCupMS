@@ -46,11 +46,11 @@ public class AuthControler {
 
     /**
      * Vygeneruje odkaz pro autorizaci uzivatele. Po uspesne autorizaci je uzivatel
-     * presmerovan na adresu "OAuth2Service.REDIRECT_URI" (frond-end). Zde musi byt
+     * presmerovan na adresu "com.robogames.RoboCupMS.Business.Security.OAuth2Service.REDIRECT_URI" (frond-end). Zde musi byt
      * odeslan POST request na endpoint serveru "/auth/oAuth2GenerateToken" s
      * parametrem "code" jehoz hodnutu ziska aktualni URL.
      * 
-     * @return URL
+     * @return URL odkaz pro autorizaci uzivatele pomoci oAuth2
      * @throws Exception
      */
     @GetMapping("/oAuth2")
