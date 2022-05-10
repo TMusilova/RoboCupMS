@@ -98,6 +98,14 @@ public class MatchService {
             throw new Exception(String.format("failure, robot with ID [%d] is not confirmed", robotID));
         }
 
+        // overi zda jiz nebyl prekrocen maximalni pocet zapasu "pokusu"
+        int maxRounds = robot.get().getDiscipline().getMaxRounds();
+        if (maxRounds >= 0) {
+            if (robot.get().getMatches().size() >= maxRounds) {
+                throw new Exception(String.format("failure, robot with ID [%d] exceeded the maximum number of matches", robotID));
+            }
+        }
+
         // overi zda zapasova skupina existuje, pokud je id skupiny zaporne pak jde o
         // zapas jen jednoho robota (line follower, micromouse, ...)
         MatchGroup group = null;

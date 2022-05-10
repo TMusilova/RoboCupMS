@@ -27,6 +27,11 @@ public class Discipline {
     public static final int NOT_REGISTRED = -1;
 
     /**
+     * Hodnota parametru "maxRounds" pokud nema byt robot limitovat pocetem zapasu
+     */
+    public static final int NOT_LIMITED_NUMBER_OF_ROUNDS = -1;
+
+    /**
      * ID discipliny
      */
     @Id
@@ -44,6 +49,19 @@ public class Discipline {
      */
     @ManyToOne(optional = false)
     private ScoreAggregation scoreAggregation;
+
+    /**
+     * Casový limit na jeden zapas (v sekundách)
+     */
+    @Column(name = "time", length = 8192, nullable = false, unique = false)
+    private int time;
+
+    /**
+     * Maximalni pocet zapasu odehranych robotem (hodnota bude ignorovana v pripada
+     * zaporneho cisla)
+     */
+    @Column(name = "maxRounds", nullable = false, unique = false)
+    private int maxRounds;
 
     /**
      * Popis discipliny
@@ -73,17 +91,25 @@ public class Discipline {
     /**
      * Disciplina, ve ktere muzou roboti soutezit
      * 
-     * @param _name        Nazev discipliny
-     * @param _description Popis discipliny (max 8192 znaku)
+     * @param _name             Nazev discipliny
+     * @param _description      Popis discipliny (max 8192 znaku)
+     * @param _scoreAggregation Agregacni funkce skore (pouziva se pro automaticke
+     *                          vyhodnoceni skore)
+     * @param _time             Casový limit na jeden zapas (v sekundách)
+     * @param _maxRounds        Maximalni pocet zapasu odehranych robotem (hodnota
+     *                          bude ignorovana v pripada zaporneho cisla)
      */
-    public Discipline(String _name, String _description, EScoreAggregation _scoreAggregation) {
+    public Discipline(String _name, String _description, EScoreAggregation _scoreAggregation, int _time,
+            int _maxRounds) {
         this.name = _name;
         ScoreAggregationRepository repository = (ScoreAggregationRepository) AppInit.contextProvider()
                 .getApplicationContext()
                 .getBean("scoreAggregationRepository");
         this.scoreAggregation = repository.findByName(_scoreAggregation).get();
         this.description = _description;
+        this.time = _time;
         this.playgrounds = new ArrayList<Playground>();
+        this.maxRounds = _maxRounds;
     }
 
     /**
@@ -111,6 +137,25 @@ public class Discipline {
      */
     public ScoreAggregation getScoreAggregation() {
         return this.scoreAggregation;
+    }
+
+    /**
+     * Navrati casovy limit na odehrani jednoho zapasu
+     * 
+     * @return Casovy limit (sekundy)
+     */
+    public int getTime() {
+        return this.time;
+    }
+
+    /**
+     * Navrati maximalni pocet zapasu, ktere robot muze v teto discipline odehrat. V
+     * pripade pokud pocet neni nijak omezen navrati neplatnou zapornou hodnotu
+     * 
+     * @return Pocet zapasu
+     */
+    public int getMaxRounds() {
+        return this.maxRounds;
     }
 
     /**
@@ -167,6 +212,15 @@ public class Discipline {
      */
     public void setDescription(String _description) {
         this.description = _description;
+    }
+
+    /**
+     * Nastavi casovy limit na odehráni jednoto zapasu
+     * 
+     * @param _time Cas v sekundach
+     */
+    public void setTime(int _time) {
+        this.time = _time;
     }
 
 }

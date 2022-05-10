@@ -82,8 +82,14 @@ public class DisciplineService {
     /**
      * Upravi disciplinu (nazev nebo popis)
      * 
-     * @param id         ID discipliny jejiz data maji byt zmeneny
-     * @param discipline Nove data discipliny
+     * @param id                ID discipliny jejiz data maji byt zmeneny
+     * @param _name             Nazev discipliny
+     * @param _description      Popis discipliny (max 8192 znaku)
+     * @param _scoreAggregation Agregacni funkce skore (pouziva se pro automaticke
+     *                          vyhodnoceni skore)
+     * @param _time             Casový limit na jeden zapas (v sekundách)
+     * @param _maxRounds        Maximalni pocet zapasu odehranych robotem (hodnota
+     *                          bude ignorovana v pripada zaporneho cisla)u
      */
     public void edit(Discipline discipline, Long id) throws Exception {
         Optional<Discipline> map = this.disciplineRepository.findById(id)

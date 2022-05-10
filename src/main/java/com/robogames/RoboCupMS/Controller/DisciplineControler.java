@@ -60,16 +60,22 @@ public class DisciplineControler {
     /**
      * Vytvori novou disciplinu
      * 
-     * @param discipline Nova disciplina
+     * @param _name             Nazev discipliny
+     * @param _description      Popis discipliny (max 8192 znaku)
+     * @param _scoreAggregation Agregacni funkce skore (pouziva se pro automaticke
+     *                          vyhodnoceni skore)
+     * @param _time             Casový limit na jeden zapas (v sekundách)
+     * @param _maxRounds        Maximalni pocet zapasu odehranych robotem (hodnota
+     *                          bude ignorovana v pripada zaporneho cisla)
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/create")
     Response create(@RequestParam String name, @RequestParam String description,
-            @RequestParam EScoreAggregation scoreAggregation) {
+            @RequestParam EScoreAggregation scoreAggregation, @RequestParam int time, @RequestParam int maxRounds) {
         try {
             this.disciplineService
-                    .create(new Discipline(name, description, scoreAggregation));
+                    .create(new Discipline(name, description, scoreAggregation, time, maxRounds));
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -96,16 +102,23 @@ public class DisciplineControler {
     /**
      * Upravi disciplinu (nazev nebo popis)
      * 
-     * @param id         ID discipliny jejiz data maji byt zmeneny
-     * @param discipline Nove data discipliny
+     * @param id                ID discipliny jejiz data maji byt zmeneny
+     * @param _name             Nazev discipliny
+     * @param _description      Popis discipliny (max 8192 znaku)
+     * @param _scoreAggregation Agregacni funkce skore (pouziva se pro automaticke
+     *                          vyhodnoceni skore)
+     * @param _time             Casový limit na jeden zapas (v sekundách)
+     * @param _maxRounds        Maximalni pocet zapasu odehranych robotem (hodnota
+     *                          bude ignorovana v pripada zaporneho cisla)
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PutMapping("/edit")
     Response edit(@RequestParam String name, @RequestParam String description,
-            @RequestParam EScoreAggregation scoreAggregation, @RequestParam Long id) {
+            @RequestParam EScoreAggregation scoreAggregation, @RequestParam int time, @RequestParam int maxRounds,
+            @RequestParam Long id) {
         try {
-            this.disciplineService.edit(new Discipline(name, description, scoreAggregation),
+            this.disciplineService.edit(new Discipline(name, description, scoreAggregation, time, maxRounds),
                     id);
             return ResponseHandler.response("success");
         } catch (Exception ex) {

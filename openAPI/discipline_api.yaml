@@ -56,6 +56,12 @@ paths:
                       description:
                         type: string
                         example: "Popis discipliny"
+                      time:
+                        type: integer
+                        example: 180
+                      maxRounds:
+                        type: integer
+                        example: -1
 
   /all:
     get:
@@ -120,6 +126,18 @@ paths:
           schema:
             type: string
             enum: ["MIN", "MAX", "SUM"]
+        - in: query
+          name: time
+          required: true
+          description: Časový limit jednoho zápasu
+          schema:
+            type: integer
+        - in: query
+          name: maxRounds
+          required: true
+          description: Omezení počtů zápasu, odehraných robotem v teto disciplině
+          schema:
+            type: integer
 
       security:
         - ApiKeyAuth: []
@@ -144,6 +162,12 @@ paths:
       description: Umožnuje upravit jmeno, popis nebo typ agregacni funkce skore. Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
       parameters:
         - in: query
+          name: id
+          required: true
+          description: ID discipliny, která má být upravena
+          schema:
+            type: integer
+        - in: query
           name: name
           required: true
           description: Nazev nové discipliny
@@ -163,9 +187,15 @@ paths:
             type: string
             enum: ["MIN", "MAX", "SUM"]
         - in: query
-          name: id
+          name: time
           required: true
-          description: ID discipliny, která má být upravena
+          description: Časový limit jednoho zápasu
+          schema:
+            type: integer
+        - in: query
+          name: maxRounds
+          required: true
+          description: Omezení počtů zápasu, odehraných robotem v teto disciplině
           schema:
             type: integer
 

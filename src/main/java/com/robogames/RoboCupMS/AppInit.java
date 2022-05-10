@@ -246,14 +246,36 @@ public class AppInit {
             ScoreAggregationRepository aggregationRepository) {
         if (repository.count() == 0) {
             return args -> repository.saveAll(Arrays.asList(
-                    new Discipline("Robosumo", "Maximální rozměry robota jsou 25x25 cm, výška neomezena",
-                            EScoreAggregation.SUM),
-                    new Discipline("Mini robosumo", "Maximální rozměry robota jsou 15x15 cm, výška neomezena",
-                            EScoreAggregation.SUM),
-                    new Discipline("Sledování čáry", "Maximální rozměry robota jsou 25x25 cm, výška neomezena",
-                            EScoreAggregation.MIN),
-                    new Discipline("Robot uklízeč", "Maximální rozměry robota jsou 25x25 cm, výška neomezena",
-                            EScoreAggregation.MIN)));
+                    new Discipline(
+                            "Robosumo",
+                            "Vítězí ten robot, který svého protivníka vytlačí ven. Rožmer: 25x25cm, Hmotnost: 1kg",
+                            EScoreAggregation.SUM,
+                            9 * 60,
+                            Discipline.NOT_LIMITED_NUMBER_OF_ROUNDS),
+                    new Discipline(
+                            "Mini robosumo",
+                            "Vítězí ten robot, který svého protivníka vytlačí ven. Rožmer: 15x15cm, Hmotnost: 1kg",
+                            EScoreAggregation.SUM,
+                            9 * 60,
+                            Discipline.NOT_LIMITED_NUMBER_OF_ROUNDS),
+                    new Discipline(
+                            "Sledování čáry",
+                            "Soutěž vyhrává robot, který nejrychleji projede dráhu, realizovanou jako černá čára na bílém podkladu.",
+                            EScoreAggregation.MIN,
+                            3 * 60,
+                            Discipline.NOT_LIMITED_NUMBER_OF_ROUNDS),
+                    new Discipline(
+                            "Robot uklízeč",
+                            "Smyslem této disciplíny je posbírat kostky rozmístěné na soutěžní ploše a přivést je do určené oblasti.",
+                            EScoreAggregation.MIN,
+                            3 * 60,
+                            3),
+                    new Discipline(
+                            "Micromouse",
+                            "Robot projíždí bludiště ze startu do cíle.",
+                            EScoreAggregation.MIN,
+                            10 * 60,
+                            Discipline.NOT_LIMITED_NUMBER_OF_ROUNDS)));
         } else {
             return null;
         }
