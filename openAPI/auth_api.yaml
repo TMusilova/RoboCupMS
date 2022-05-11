@@ -55,10 +55,16 @@ paths:
       summary: Vygeneruje odkaz pro autorizaci uživatele
       description:
         Vygeneruje odkaz pro autorizaci uživatele. Po uspěšné autorizaci je uživatel
-        přesměrován na adresu specifikovanou serverem "com.robogames.RoboCupMS.Business.Security.OAuth2Service.REDIRECT_URI". Zde musí být
+        přesměrován na specifikovanou adresu. Zde musí být
         odeslán POST request na endpoint serveru "/auth/oAuth2GenerateToken" s
-        parametrem "code" jehož hodnutu získá z aktualní URL.
-      parameters: []
+        parametrem "code" a "redirectURI" jejihž hodnutu získá z aktualní URL. "redirectURI" bude předan parametrem "state".
+      parameters:
+        - in: query
+          name: redirectURI
+          required: true
+          description: Andresa, na kterou bude uživatel přesmerovan z autorizacniho serveru
+          schema:
+            type: integer
       responses:
         "200":
           description: URL odkaz pro autorizaci uzivatele pomoci oAuth2
@@ -98,9 +104,21 @@ paths:
 
   /oAuth2GenerateToken:
     post:
-      summary: Vygeneruje přístupový token pro uživatele s využitím oAuth2 kodů
+      summary: Vygeneruje přístupový token pro uživatele s využitím OAuth2 autorizačního kódu
       description: Pokud uživatel v systemu neexistuje, pak ho zaregistruje.
-      parameters: []
+      parameters:
+        - in: query
+          name: redirectURI
+          required: true
+          description: Andresa, na kterou bude uživatel přesmerovan z autorizacniho serveru
+          schema:
+            type: integer
+        - in: query
+          name: code
+          required: true
+          description: Autorizační kód
+          schema:
+            type: integer
       requestBody:
         required: true
         content:

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -44,20 +45,22 @@ public class AuthControler {
     }
 
     /**
-     * Vygeneruje odkaz pro autorizaci a autentizaci uzivatele. Po uspesne autorizaci je uzivatel
-     * presmerovan na adresu
-     * "com.robogames.RoboCupMS.Business.Security.OAuth2Service.REDIRECT_URI"
-     * (frond-end). Zde musi byt
+     * Vygeneruje odkaz pro autorizaci a autentizaci uzivatele. Po uspesne
+     * autorizaci je uzivatel presmerovan na specifikovanou adresu. Zde musi byt
      * odeslan POST request na endpoint serveru "/auth/oAuth2GenerateToken" s
-     * parametrem "code" jehoz hodnutu ziska aktualni URL.
+     * parametrem "code" a "redirectURI" jejihz hodnuty ziska aktualni URL.
+     * "redirectURI" bude predan parametrem "state".
      * 
-     * @return URL odkaz pro autorizaci uzivatele pomoci oAuth2
+     * @param redirectURI Presmerovani na URL "frond-end" -> pres JS predat
+     *                    autorizacni kod serveru "oAuth2GenerateToken
+     * @return URL odkaz pro autorizaci a autentizaci uzivatele
      * @throws Exception
      */
     @GetMapping("/oAuth2")
-    public Response getOAuth2URI() {
+    public Response getOAuth2URI(
+            @RequestParam(defaultValue = "https://localhost/auth/oauth2/code") String redirectURI) {
         try {
-            String url = this.authService.getOAuth2URI();
+            String url = this.authService.getOAuth2URI(redirectURI);
             return ResponseHandler.response(url);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -65,16 +68,18 @@ public class AuthControler {
     }
 
     /**
-     * Vygeneruje pristupovy token pro uzivatele s vyuzitim oAuth2 kodu.
+     * Vygeneruje pristupovy token pro uzivatele s vyuzitim OAuth2 autorizacniho
+     * kodu
      * 
-     * @param code Pristupovy kod ziskany po uspesne autorizaci uzivatele
+     * @param redirectURI URI presmerovani, zistka paramatru state spolu s
+     *                    autorizacnim kodem
+     * @param code        Autorizacni kod pro klienta
      * @return Pristupovy token uzivatele
-     * @throws Exception
      */
     @PostMapping("/oAuth2GenerateToken")
-    public Response oAuth2GenerateToken(@RequestBody String code) {
+    public Response oAuth2GenerateToken(@RequestParam String redirectURI, @RequestParam String code) {
         try {
-            String url = this.authService.oAuth2GenerateToken(code);
+            String url = this.authService.oAuth2GenerateToken(redirectURI, code);
             return ResponseHandler.response(url);
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

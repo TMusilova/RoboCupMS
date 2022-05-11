@@ -32,25 +32,22 @@ public class OAuth2Service {
     @Value("${oauth2.google.client-secret}")
     private String client_secret;
 
-    /**
-     * Presmerovani na URL "frond-end" -> pres JS predat parametry a predat je
-     * serveru "oAuth2GenerateToken"
-     */
-    public static final String REDIRECT_URI = "https://localhost/auth/oauth2/code";
-
     @Autowired
     protected UserRepository repository;
 
     /**
-     * Vygeneruje odkaz pro autorizaci a autentizaci uzivatele. Po uspesne autorizaci je uzivatel
-     * presmerovan na adresu "com.robogames.RoboCupMS.Business.Security.OAuth2Service.REDIRECT_URI" (frond-end). Zde musi byt
+     * Vygeneruje odkaz pro autorizaci a autentizaci uzivatele. Po uspesne
+     * autorizaci je uzivatel presmerovan na specifikovanou adresu. Zde musi byt
      * odeslan POST request na endpoint serveru "/auth/oAuth2GenerateToken" s
-     * parametrem "code" jehoz hodnutu ziska aktualni URL.
+     * parametrem "code" a "redirectURI" jejihz hodnuty ziska aktualni URL.
+     * "redirectURI" bude predan parametrem "state".
      * 
-     * @return URL odkaz pro autorizaci uzivatele pomoci oAuth2
+     * @param redirectURI Presmerovani na URL "frond-end" -> pres JS predat
+     *                    autorizacni kod serveru "oAuth2GenerateToken
+     * @return URL odkaz pro autorizaci a autentizaci uzivatele
      * @throws Exception
      */
-    public String getOAuth2URI() throws Exception {
+    public String getOAuth2URI(String redirectURI) throws Exception {
         StringBuilder str = new StringBuilder();
         str.append("https://accounts.google.com/o/oauth2/v2/auth?");
         str.append("scope=https://www.googleapis.com/auth/userinfo.profile%20");
@@ -58,20 +55,24 @@ public class OAuth2Service {
         str.append("access_type=offline&");
         str.append("include_granted_scopes=true&");
         str.append("response_type=code&");
-        str.append(String.format("redirect_uri=%s&", OAuth2Service.REDIRECT_URI));
+        str.append(String.format("state=%s&", redirectURI));
+        str.append(String.format("redirect_uri=%s&", redirectURI));
         str.append(String.format("client_id=%s", this.client_id));
         URI uri = new URI(str.toString());
         return uri.toString();
     }
 
     /**
-     * Vygeneruje pristupovy token pro uzivatele s vyuzitim oAuth2 kodu.
+     * Vygeneruje pristupovy token pro uzivatele s vyuzitim OAuth2 autorizacniho
+     * kodu
      * 
-     * @param code Pristupovy kod ziskany po uspesne autorizaci uzivatele
+     * @param redirectURI URI presmerovani, zistka paramatru state spolu s
+     *                    autorizacnim kodem
+     * @param code        Autorizacni kod pro klienta
      * @return Pristupovy token uzivatele
      * @throws Exception
      */
-    public String oAuth2GenerateToken(String code) throws Exception {
+    public String oAuth2GenerateToken(String redirectURI, String code) throws Exception {
         JSONObject response;
         HttpURLConnection http;
         StringBuilder stringBuilder = new StringBuilder();
@@ -81,7 +82,7 @@ public class OAuth2Service {
         stringBuilder.append(String.format("code=%s&", code));
         stringBuilder.append(String.format("client_id=%s&", this.client_id));
         stringBuilder.append(String.format("client_secret=%s&", this.client_secret));
-        stringBuilder.append(String.format("redirect_uri=%s&", OAuth2Service.REDIRECT_URI));
+        stringBuilder.append(String.format("redirect_uri=%s&", redirectURI));
         stringBuilder.append("grant_type=authorization_code");
 
         // sestaveni requestu
