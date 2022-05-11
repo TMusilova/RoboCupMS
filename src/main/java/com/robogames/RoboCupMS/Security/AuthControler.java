@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -45,7 +44,7 @@ public class AuthControler {
     }
 
     /**
-     * Vygeneruje odkaz pro autorizaci uzivatele. Po uspesne autorizaci je uzivatel
+     * Vygeneruje odkaz pro autorizaci a autentizaci uzivatele. Po uspesne autorizaci je uzivatel
      * presmerovan na adresu
      * "com.robogames.RoboCupMS.Business.Security.OAuth2Service.REDIRECT_URI"
      * (frond-end). Zde musi byt
@@ -66,14 +65,14 @@ public class AuthControler {
     }
 
     /**
-     * Vygeneruje pristupovy token pro uzivatele s vyuzitim oAuth2 autorizace.
+     * Vygeneruje pristupovy token pro uzivatele s vyuzitim oAuth2 kodu.
      * 
      * @param code Pristupovy kod ziskany po uspesne autorizaci uzivatele
      * @return Pristupovy token uzivatele
      * @throws Exception
      */
     @PostMapping("/oAuth2GenerateToken")
-    public Response oAuth2GenerateToken(@RequestParam String code) {
+    public Response oAuth2GenerateToken(@RequestBody String code) {
         try {
             String url = this.authService.oAuth2GenerateToken(code);
             return ResponseHandler.response(url);

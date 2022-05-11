@@ -98,15 +98,16 @@ paths:
 
   /oAuth2GenerateToken:
     post:
-      summary: Vygeneruje přístupový token pro uživatele s využitím oAuth2
+      summary: Vygeneruje přístupový token pro uživatele s využitím oAuth2 kodů
       description: Pokud uživatel v systemu neexistuje, pak ho zaregistruje.
-      parameters:
-        - in: query
-          name: code
-          required: true
-          schema:
-            type: string
-            example: abcd1234
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              description: Pristupovy kod ziskany po uspesne autorizaci uzivatele
       responses:
         "200":
           description: Přistupový token uživatele

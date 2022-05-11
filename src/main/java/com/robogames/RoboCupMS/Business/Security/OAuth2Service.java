@@ -42,7 +42,7 @@ public class OAuth2Service {
     protected UserRepository repository;
 
     /**
-     * Vygeneruje odkaz pro autorizaci uzivatele. Po uspesne autorizaci je uzivatel
+     * Vygeneruje odkaz pro autorizaci a autentizaci uzivatele. Po uspesne autorizaci je uzivatel
      * presmerovan na adresu "com.robogames.RoboCupMS.Business.Security.OAuth2Service.REDIRECT_URI" (frond-end). Zde musi byt
      * odeslan POST request na endpoint serveru "/auth/oAuth2GenerateToken" s
      * parametrem "code" jehoz hodnutu ziska aktualni URL.
@@ -65,7 +65,7 @@ public class OAuth2Service {
     }
 
     /**
-     * Vygeneruje pristupovy token pro uzivatele s vyuzitim oAuth2 autorizace.
+     * Vygeneruje pristupovy token pro uzivatele s vyuzitim oAuth2 kodu.
      * 
      * @param code Pristupovy kod ziskany po uspesne autorizaci uzivatele
      * @return Pristupovy token uzivatele
