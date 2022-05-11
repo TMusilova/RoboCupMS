@@ -61,8 +61,8 @@ paths:
       parameters:
         - in: query
           name: redirectURI
-          required: true
-          description: Andresa, na kterou bude uživatel přesmerovan z autorizacniho serveru
+          required: false
+          description: URL andresa, na kterou bude uživatel přesmerovan z autorizacniho serveru. (default https://localhost/auth/oauth2/code)
           schema:
             type: integer
       responses:

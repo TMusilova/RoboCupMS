@@ -1,6 +1,7 @@
 package com.robogames.RoboCupMS.Business.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -110,17 +111,18 @@ public class UserService {
     /**
      * Editace atributu uzivatele s konktretnim ID
      * 
-     * @param newUser Nove atributy uzivatele
-     * @param id      ID uzivatele jehoz atributy budou zmeneny
+     * @param id        ID uzivatele jehoz atributy budou zmeneny
+     * @param jmeno     Nove jmeno uzivatle
+     * @param prijmeni  Nove prijmeni uzivatele
+     * @param birthDate Datum narozeni uzivatele
      * @throws Exception
      */
-    public void edit(UserRC newUser, long id) throws Exception {
+    public void edit(long id, String name, String surname, Date birthDate) throws Exception {
         Optional<UserRC> map = repository.findById(id)
                 .map(user -> {
-                    user.setName(newUser.getName());
-                    user.setSurname(newUser.getSurname());
-                    user.setEmail(newUser.getEmail());
-                    user.setBirthDate(newUser.getBirthDate());
+                    user.setName(name);
+                    user.setSurname(surname);
+                    user.setBirthDate(birthDate);
                     return repository.save(user);
                 });
         if (!map.isPresent()) {

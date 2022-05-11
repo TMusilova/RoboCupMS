@@ -1,5 +1,6 @@
 package com.robogames.RoboCupMS.Controller;
 
+import java.util.Date;
 import java.util.List;
 
 import com.robogames.RoboCupMS.GlobalConfig;
@@ -108,15 +109,17 @@ public class UserControler {
     /**
      * Editace atributu uzivatele s konktretnim ID
      * 
-     * @param newUser Nove atributy uzivatele
-     * @param id      ID uzivatele jehoz atributy budou zmeneny
+     * @param id        ID uzivatele jehoz atributy budou zmeneny
+     * @param jmeno     Nove jmeno uzivatle
+     * @param prijmeni  Nove prijmeni uzivatele
+     * @param birthDate Datum narozeni uzivatele
      * @return Informace o stavu provedeneho requestu
      */
-    @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PutMapping("/edit")
-    Response edit(@RequestBody UserRC newUser, @RequestParam long id) {
+    Response edit(@RequestParam String name, @RequestParam String surname, @RequestParam Date birthDate,
+            @RequestParam long id) {
         try {
-            this.userService.edit(newUser, id);
+            this.userService.edit(id, name, surname, birthDate);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

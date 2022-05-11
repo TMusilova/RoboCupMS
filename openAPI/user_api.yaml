@@ -205,7 +205,6 @@ paths:
           description: Email uživatele
           schema:
             type: string
-            pattern: 
             example: user123@email.com
       security:
         - ApiKeyAuth: []
@@ -307,7 +306,6 @@ paths:
   /edit:
     put:
       summary: Změní atributy uživatele s konktretním ID
-      description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, ASSISTANT]
       parameters: 
         - in: query
           name: id
@@ -316,29 +314,25 @@ paths:
           schema:
             type: integer
             example: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                surname:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
-                birthDate:
-                  type: string
-              required:
-                - name
-                - surname
-                - email
-                - password
-                - birthDate
+        - in: query
+          name: name
+          required: true
+          description: Nové jméno uživatele
+          schema:
+            type: string
+        - in: query
+          name: surname
+          required: true
+          description: Nové příjmení uživatele
+          schema:
+            type: string
+        - in: query
+          name: birthDate
+          required: true
+          description: Nový datum narození uživatele
+          schema:
+            type: string
+            format: date
       security:
         - ApiKeyAuth: []
       responses:
