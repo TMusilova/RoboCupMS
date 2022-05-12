@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Konfigurace zabazepeceni serveru
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true, jsr250Enabled = true)
@@ -61,7 +64,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 TokenAuthorization tokenAuthorizationFilter = new TokenAuthorization(
                                 GlobalConfig.HEADER_FIELD_TOKEN,
                                 repository, NOT_SECURED);
-                http.cors();
+                // povoli Pre-flight Request
+                http.cors(); 
+
+                // konfigurace zabezpeceni
                 http.csrf().disable()
                                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                                 .addFilterAfter(tokenAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
