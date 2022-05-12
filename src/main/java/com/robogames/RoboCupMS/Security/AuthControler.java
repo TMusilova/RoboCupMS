@@ -3,9 +3,9 @@ package com.robogames.RoboCupMS.Security;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
-import com.robogames.RoboCupMS.Entity.UserRC;
 import com.robogames.RoboCupMS.Business.Security.AuthService;
 import com.robogames.RoboCupMS.Business.Security.LoginObj;
+import com.robogames.RoboCupMS.Business.Security.RegistrationObj;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -105,11 +105,11 @@ public class AuthControler {
     /**
      * Registruje noveho uzivatele
      * 
-     * @param newUser Novy uzivatel
+     * @param newUser Registracni udaje noveho uzivatele
      * @return Nove vytvoreni uzivatel
      */
     @PostMapping("/register")
-    public Response register(@RequestBody UserRC newUser) {
+    public Response register(@RequestBody RegistrationObj newUser) {
         try {
             this.authService.register(newUser);
             return ResponseHandler.response("success");

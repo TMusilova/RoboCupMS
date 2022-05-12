@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Security.RegistrationObj;
 import com.robogames.RoboCupMS.Entity.Role;
 import com.robogames.RoboCupMS.Entity.UserRC;
 import com.robogames.RoboCupMS.Repository.RoleRepository;
@@ -83,15 +84,15 @@ public class UserService {
     /**
      * Prida do databaze noveho uzivatele
      * 
-     * @param newUser Novy uzivatel
+     * @param reg Registracni udaje noveho uzivatele
      * @throws Exception
      */
-    public void add(UserRC newUser) throws Exception {
+    public void add(RegistrationObj reg) throws Exception {
         // validace emailu
         // https://mailtrap.io/blog/java-email-validation/
         Pattern pattern = Pattern
                 .compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
-        if (!pattern.matcher(newUser.getEmail()).matches()) {
+        if (!pattern.matcher(reg.getEmail()).matches()) {
             throw new Exception("failure, email is invalid");
         }
 
@@ -99,11 +100,11 @@ public class UserService {
         List<ERole> roles = new ArrayList<ERole>();
         roles.add(ERole.COMPETITOR);
         UserRC user = new UserRC(
-                newUser.getName(),
-                newUser.getSurname(),
-                newUser.getEmail(),
-                newUser.getPassword(),
-                newUser.getBirthDate(),
+                reg.getName(),
+                reg.getSurname(),
+                reg.getEmail(),
+                reg.getPassword(),
+                reg.getBirthDate(),
                 roles);
         this.repository.save(user);
     }

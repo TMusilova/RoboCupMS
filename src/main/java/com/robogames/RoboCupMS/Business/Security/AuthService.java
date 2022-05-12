@@ -69,12 +69,12 @@ public class AuthService extends OAuth2Service {
     /**
      * Registruje noveho uzivatele
      * 
-     * @param newUser Novy uzivatel
+     * @param reg Registracni udaje noveho uzivatele
      * @return Nove vytvoreni uzivatel
      */
-    public void register(UserRC newUser) throws Exception {
+    public void register(RegistrationObj reg) throws Exception {
         // overi zda uzivatel s timto email jiz neni registrovany
-        if (this.repository.findByEmail(newUser.getEmail()).isPresent()) {
+        if (this.repository.findByEmail(reg.getEmail()).isPresent()) {
             throw new Exception("failure, user with this email already exists");
         }
 
@@ -82,7 +82,7 @@ public class AuthService extends OAuth2Service {
         // https://mailtrap.io/blog/java-email-validation/
         Pattern pattern = Pattern
                 .compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
-        if (!pattern.matcher(newUser.getEmail()).matches()) {
+        if (!pattern.matcher(reg.getEmail()).matches()) {
             throw new Exception("failure, email is invalid");
         }
 
@@ -90,11 +90,11 @@ public class AuthService extends OAuth2Service {
         List<ERole> roles = new ArrayList<ERole>();
         roles.add(ERole.COMPETITOR);
         UserRC u = new UserRC(
-                newUser.getName(),
-                newUser.getSurname(),
-                newUser.getEmail(),
-                newUser.getPassword(),
-                newUser.getBirthDate(),
+                reg.getName(),
+                reg.getSurname(),
+                reg.getEmail(),
+                reg.getPassword(),
+                reg.getBirthDate(),
                 roles);
         repository.save(u);
     }

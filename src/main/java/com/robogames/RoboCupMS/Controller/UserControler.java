@@ -7,6 +7,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Security.RegistrationObj;
 import com.robogames.RoboCupMS.Business.Service.UserService;
 import com.robogames.RoboCupMS.Entity.UserRC;
 
@@ -92,12 +93,12 @@ public class UserControler {
     /**
      * Prida do databaze noveho uzivatele
      * 
-     * @param newUser Novy uzivatel
+     * @param newUser Registracni udaje noveho uzivatele
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/add")
-    Response add(@RequestBody UserRC newUser) {
+    Response add(@RequestBody RegistrationObj newUser) {
         try {
             this.userService.add(newUser);
             return ResponseHandler.response("success");
