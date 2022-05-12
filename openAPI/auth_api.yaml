@@ -82,7 +82,7 @@ paths:
                     example: https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.profile&access_type=offline&include_granted_scopes=true&response_type=code&state=state_parameter_passthrough_value&redirect_uri=https://localhost/auth/oauth2/code&client_id=XX
 
   /logout:
-    get:
+    post:
       summary: Odhlásí uživatele ze systemu
       description: Pro odhlášení využije přistupový token, podle kterého určí jakého uživatele ma odhlásit. Následně se přístupový token stáva neplatným.
       security:

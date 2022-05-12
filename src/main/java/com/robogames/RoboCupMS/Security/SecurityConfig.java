@@ -61,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 TokenAuthorization tokenAuthorizationFilter = new TokenAuthorization(
                                 GlobalConfig.HEADER_FIELD_TOKEN,
                                 repository, NOT_SECURED);
-
+                http.cors();
                 http.csrf().disable()
                                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                                 .addFilterAfter(tokenAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

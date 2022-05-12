@@ -1,6 +1,8 @@
 package com.robogames.RoboCupMS;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Stara se odpovedi ve vsech kontrolerech
@@ -35,6 +37,7 @@ public class ResponseHandler {
      * @param data Zprava
      * @return Response
      */
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     public static Response error(Object data) {
         return new Response(Response.Type.ERROR, data);
     }

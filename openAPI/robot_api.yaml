@@ -321,7 +321,7 @@ paths:
 
 
   /unregister:
-    delete:
+    put:
       summary: Zruší registraci existujícího robota
       description: Zrušit registraci robota může jakýkoli člen týmu. Zrušení registrace nebude možne pokud již byla povrzena.
       parameters:

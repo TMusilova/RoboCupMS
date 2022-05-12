@@ -92,7 +92,7 @@ public class AuthControler {
      * @param email Email uzivatele
      * @return Status
      */
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public Response logout() {
         try {
             this.authService.logout();
