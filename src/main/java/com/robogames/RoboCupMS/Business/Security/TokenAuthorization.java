@@ -127,6 +127,11 @@ public class TokenAuthorization extends OncePerRequestFilter {
 			return null;
 		}
 
+		// prefix check
+		accessToken = accessToken.trim();
+		if (!accessToken.startsWith(PREFIX)) {
+			return null;
+		}
 		accessToken = accessToken.replace(PREFIX, "").trim();
 
 		// najde uzivatele podle pristupoveho tokenu
