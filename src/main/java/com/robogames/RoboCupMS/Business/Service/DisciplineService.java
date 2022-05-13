@@ -70,10 +70,10 @@ public class DisciplineService {
             throw new Exception(String.format("failure, dicipline with ID [%d] have created a playgrounds", id));
         }
 
-        // overi zda discipliny nema jiz registrovane nejake roboty
-        if (!d.get().getRobots().isEmpty()) {
-            throw new Exception(String.format("failure, dicipline with ID [%d] already have registered robots", id));
-        }
+        // vsem robotum odebere tuto disciplinu
+        d.get().getRobots().stream().forEach((r) -> {
+            r.setDicipline(null);
+        });
 
         // odstrani disciplinu
         this.disciplineRepository.delete(d.get());

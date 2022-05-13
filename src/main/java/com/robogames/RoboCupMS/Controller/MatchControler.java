@@ -7,6 +7,7 @@ import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
 import com.robogames.RoboCupMS.Business.Service.MatchService;
+import com.robogames.RoboCupMS.Entity.MatchGroup;
 import com.robogames.RoboCupMS.Entity.RobotMatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,8 @@ public class MatchControler {
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @PostMapping("/create")
-    Response create(@RequestParam long robotID, @RequestParam long playgroundID, @RequestParam long groupID) {
+    Response create(@RequestParam long robotID, @RequestParam long playgroundID,
+            @RequestParam(defaultValue = MatchGroup.NOT_IN_GROUP + "") long groupID) {
         try {
             this.matchService.create(robotID, playgroundID, groupID);
             return ResponseHandler.response("success");

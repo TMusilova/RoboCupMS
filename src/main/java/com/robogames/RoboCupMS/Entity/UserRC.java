@@ -339,6 +339,16 @@ public class UserRC {
     }
 
     /**
+     * Navrati tym, ve kterem se uzivatel nachazi
+     * 
+     * @return Tym
+     */
+    @JsonIgnore
+    public Team getTeam() {
+        return this.team;
+    }
+
+    /**
      * Priradi uzivateli tym, ve kterem se nachazi
      * 
      * @param _team Novy tym

@@ -275,7 +275,7 @@ paths:
 
   /leave:
     put:
-      summary: Opustit tým, ve kterém se přihlášený uživatel nachází
+      summary: Opustit tým, ve kterém se přihlášený uživatel nachází. Nový vedoucí je určen v případě kdy tým opouští jeho vedoucí.
       parameters: []
       security:
         - ApiKeyAuth: []

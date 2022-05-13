@@ -47,7 +47,7 @@ public class TeamRegistrationService {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // overi zda uzivatel je vedoucim nejakeho tymu
-        Optional<Team> t = this.teamRepository.findByLeader(leader);
+        Optional<Team> t = this.teamRepository.findAllByLeader(leader).stream().findFirst();
         if (!t.isPresent()) {
             throw new Exception("failure, you are not the leader of any existing team");
         }
@@ -101,7 +101,7 @@ public class TeamRegistrationService {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // overi zda uzivatel je vedoucim nejakeho tymu
-        Optional<Team> t = this.teamRepository.findByLeader(leader);
+        Optional<Team> t = this.teamRepository.findAllByLeader(leader).stream().findFirst();
         if (!t.isPresent()) {
             throw new Exception("failure, you are not the leader of any existing team");
         }

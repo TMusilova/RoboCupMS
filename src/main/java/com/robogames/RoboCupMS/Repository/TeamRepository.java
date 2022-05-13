@@ -1,5 +1,6 @@
 package com.robogames.RoboCupMS.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.robogames.RoboCupMS.Entity.Team;
@@ -16,6 +17,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     Optional<Team> findByName(String name);
 
-    Optional<Team> findByLeader(UserRC leader);
+    List<Team> findAllByLeader(UserRC leader);
 
 }

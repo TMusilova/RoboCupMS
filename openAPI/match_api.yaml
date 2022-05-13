@@ -146,7 +146,7 @@ paths:
             type: integer
         - in: query
           name: groupID
-          required: true
+          required: false
           description: ID zápasové skupiny. Jen v případě pokud zápasí proti
             sobě více robotů. V opačném případě zadat neplatnou
             zápornou hodnotu.

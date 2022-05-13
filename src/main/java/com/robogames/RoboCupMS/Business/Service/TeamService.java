@@ -96,13 +96,19 @@ public class TeamService {
     public void create(String name) throws Exception {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (leader.getTeamID() == Team.NOT_IN_TEAM) {
-            Team t = new Team(name, leader);
-            this.teamRepository.save(t);
-            this.userRepository.save(leader);
-        } else {
+        // overi zda uzivatel jiz neni clenem tymu
+        if (leader.getTeamID() != Team.NOT_IN_TEAM) {
             throw new Exception("failure, you are already a member of the team");
         }
+
+        // overeni unikatnosti jmena
+        if (this.teamRepository.findByName(name).isPresent()) {
+            throw new Exception("failure, team with this name already exists");
+        }
+
+        Team t = new Team(name, leader);
+        this.teamRepository.save(t);
+        this.userRepository.save(leader);
     }
 
     /**
@@ -113,7 +119,7 @@ public class TeamService {
     public void remove() throws Exception {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Optional<Team> t = this.teamRepository.findByLeader(leader);
+        Optional<Team> t = this.teamRepository.findAllByLeader(leader).stream().findFirst();
         if (t.isPresent()) {
             for (TeamRegistration reg : t.get().getRegistrations()) {
                 // overi zda jiz tento tym neni registrovan v nejakem rocnik, ktery jit zacal.
@@ -154,7 +160,7 @@ public class TeamService {
     public void rename(String name) throws Exception {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Optional<Team> t = this.teamRepository.findByLeader(leader);
+        Optional<Team> t = this.teamRepository.findAllByLeader(leader).stream().findFirst();
         if (t.isPresent()) {
             t.get().setName(name);
             this.teamRepository.save(t.get());
@@ -172,7 +178,7 @@ public class TeamService {
     public void addMember(String uuid) throws Exception {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Optional<Team> t = this.teamRepository.findByLeader(leader);
+        Optional<Team> t = this.teamRepository.findAllByLeader(leader).stream().findFirst();
         if (t.isPresent()) {
             // overi zda nebyl jiz prekrocen pocet clenu v tymu
             if (t.get().getMembers().size() >= GlobalConfig.MAX_TEAM_MEMBERS) {
@@ -208,7 +214,7 @@ public class TeamService {
     public void removeMember(String uuid) throws Exception {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Optional<Team> t = this.teamRepository.findByLeader(leader);
+        Optional<Team> t = this.teamRepository.findAllByLeader(leader).stream().findFirst();
         if (t.isPresent()) {
             Optional<UserRC> u = this.userRepository.findByUuid(uuid);
             if (u.isPresent()) {
@@ -225,7 +231,8 @@ public class TeamService {
     }
 
     /**
-     * Opusti tym, ve ktrem se prihlaseny uzivatel aktualne nachazi
+     * Opusti tym, ve ktrem se prihlaseny uzivatel aktualne nachazi. Pokud tim kdo
+     * opousti tym je jeho vedouci pak se automaticky urci novy vedouci.
      */
     public void leaveTeam() throws Exception {
         UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -233,6 +240,19 @@ public class TeamService {
         // overi zda se v nejakem tymu nachazi
         if (user.getTeamID() == Team.NOT_IN_TEAM) {
             throw new Exception("failure, you are not member of any team");
+        }
+
+        // pokud je uzivatel vedoucim tymu, pak se vedouci musi zmeni na jineho z clenu.
+        // pokud zde jis clen neni bude nastaven na null.
+        Team team = user.getTeam();
+        if (team.getLeaderID() == user.getID()) {
+            team.getMembers().remove(user);
+            if (team.getMembers().isEmpty()) {
+                team.setLeader(null);
+            } else {
+                team.setLeader(team.getMembers().get(0));
+            }
+            this.teamRepository.save(team);
         }
 
         user.setTeam(null);

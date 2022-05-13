@@ -172,6 +172,15 @@ public class Team {
     }
 
     /**
+     * Zmeni vedouciho tymu
+     * 
+     * @param _leader Novy vedouci tymu
+     */
+    public void setLeader(UserRC _leader) {
+        this.leader = _leader;
+    }
+
+    /**
      * Do tymu prida noveho clena
      * 
      * @param _member Novy clen
