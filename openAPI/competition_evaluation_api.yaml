@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   title: RoboCupMS - Competition Evaluation Module
-  description: Tento modul usnadňuje práci s výsledky soutěže. Automaticky vypočitá skoré a určí umístění robotů.
+  description: Tento modul usnadňuje práci s výsledky soutěže. Automatizovaně vypočitá skoré a určí umístění robotů.
   version: 1.0.0
   contact:
     email: m1_krcma@utb.cz
@@ -15,7 +15,7 @@ components:
 paths:
   /scoreOfAll:
     get:
-      summary: Navratí skóre a pořadí všech robotů, kteří soutěžili v daném ročníku
+      summary: Navratí skóre všech robotů, kteří soutěžili v daném ročníku
       parameters:
         - in: query
           name: year
@@ -184,7 +184,7 @@ paths:
 
   /getOrder:
     get:
-      summary: Navratí skóre všech robotů určitého týmu
+      summary: Navratí umístění robotu v konkrétní disciplíně v ramci soutěžní kategorie.
       parameters:
         - in: query
           name: year

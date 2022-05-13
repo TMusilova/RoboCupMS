@@ -30,7 +30,7 @@ public class CompetitionEvaluation {
     private CompetitionEvaluationService competitionEvaluationService;
 
     /**
-     * Navrati skore a poradi vsech robotu, kteri soutezili v danem rocniku
+     * Navrati skore vsech robotu, kteri soutezili v danem rocniku
      * 
      * @param year     Rocnik souteze
      * @param category Kategorie, pro kterou má zobrazit výsledky
