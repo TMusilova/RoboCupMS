@@ -25,7 +25,7 @@ public class GlobalConfig {
     /**
      * Nazev promenne v headeru requestu pro pristupovy token
      */
-    public static String HEADER_FIELD_TOKEN = "X-TOKEN";
+    public static String HEADER_FIELD_TOKEN = "Authorization";
 
     /**
      * Doba platnosti pristupoveho tokenu [min]

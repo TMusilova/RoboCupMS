@@ -32,6 +32,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
  */
 public class TokenAuthorization extends OncePerRequestFilter {
 
+	private final String PREFIX = "Bearer";
+
 	private final String x_token;
 
 	private final UserRepository repository;
@@ -117,13 +119,15 @@ public class TokenAuthorization extends OncePerRequestFilter {
 		// pristopovy token
 		String accessToken = request.getHeader(this.x_token);
 
-		// token neni definova
+		// token neni definovan
 		if (accessToken == null) {
 			return null;
 		}
 		if (accessToken.length() == 0) {
 			return null;
 		}
+
+		accessToken = accessToken.replace(PREFIX, "").trim();
 
 		// najde uzivatele podle pristupoveho tokenu
 		Optional<UserRC> user = this.repository.findByToken(accessToken);
@@ -192,6 +196,11 @@ public class TokenAuthorization extends OncePerRequestFilter {
 	private static final SecureRandom secureRandom = new SecureRandom();
 	private static final Encoder base64Encoder = Base64.getUrlEncoder();
 
+	/**
+	 * Nahodne vygeneruje token
+	 * 
+	 * @return Novy teoken
+	 */
 	public static String generateToken() {
 		byte bytes[] = new byte[64];
 		secureRandom.nextBytes(bytes);
