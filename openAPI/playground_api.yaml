@@ -9,10 +9,9 @@ servers:
   - url: https://iob04.vas-server.cz:8080/api/playground
 components:
   securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: X-TOKEN
+    bearerAuth:
+      type: http
+      scheme: bearer
 paths:
 
   /get:
