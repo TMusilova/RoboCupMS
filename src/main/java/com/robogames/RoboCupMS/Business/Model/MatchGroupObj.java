@@ -2,6 +2,9 @@ package com.robogames.RoboCupMS.Business.Model;
 
 public class MatchGroupObj {
 
+    /**
+     * Identifikator tvurce zapasove skupiny
+     */
     private Long creatorID;
 
     public MatchGroupObj() {

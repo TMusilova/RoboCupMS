@@ -4,8 +4,19 @@ import java.util.Date;
 
 public class UserEditObj {
 
+    /**
+     * Nove jmeno uzivatele
+     */
     private String name;
+
+    /**
+     * Nove prijmeni uzivatele
+     */
     private String surname;
+
+    /**
+     * Novy datum narozeni
+     */
     private Date birthDate;
 
     public UserEditObj() {

@@ -2,10 +2,20 @@ package com.robogames.RoboCupMS.Business.Model;
 
 public class PlaygroundObj {
 
+    /**
+     * Nazev hriste
+     */
     private String name;
-    private int number;
-    private Long disciplineID;
 
+    /**
+     * Cislo hriste (pro jednodussi indentifikaci)
+     */
+    private int number;
+
+    /**
+     * ID discipliny, pro kterou je hriste urcene
+     */
+    private Long disciplineID;
 
     public PlaygroundObj() {
     }

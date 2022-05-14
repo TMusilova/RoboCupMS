@@ -2,9 +2,11 @@
 package com.robogames.RoboCupMS.Business.Model;
 
 public class TeamObj {
-    
-    private String name;
 
+    /**
+     * Jmen tymu
+     */
+    private String name;
 
     public TeamObj() {
     }

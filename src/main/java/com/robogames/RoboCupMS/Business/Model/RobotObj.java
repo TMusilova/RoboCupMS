@@ -2,6 +2,9 @@ package com.robogames.RoboCupMS.Business.Model;
 
 public class RobotObj {
 
+    /**
+     * Jmeno robota
+     */
     private String name;
 
     public RobotObj() {

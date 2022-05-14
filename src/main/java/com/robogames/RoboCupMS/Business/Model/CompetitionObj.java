@@ -5,11 +5,25 @@ import java.util.Date;
 
 public class CompetitionObj {
 
+    /**
+     * Rok konani souteze
+     */
     private int year;
-    private Date date;
-    private Time startTime;
-    private Time endTime;
 
+    /**
+     * Datum konani souteze
+     */
+    private Date date;
+
+    /**
+     * Cas zahajeni souteze
+     */
+    private Time startTime;
+
+    /**
+     * Cas ukonceni souteze
+     */
+    private Time endTime;
 
     public CompetitionObj() {
     }

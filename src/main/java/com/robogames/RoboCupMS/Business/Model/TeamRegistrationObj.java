@@ -1,10 +1,17 @@
 package com.robogames.RoboCupMS.Business.Model;
 
 public class TeamRegistrationObj {
-    
-    private int year;
-    private boolean open;
 
+    /**
+     * Rocnik souteze, do ktereho se tym registruje
+     */
+    private int year;
+
+    /**
+     * Pokud bude true automaticky bude tym zarazen do kategorie OPEN. V opecnem
+     * pripade bude zarazen do kategorie podle veku nejstarsiho clena tymu.
+     */
+    private boolean open;
 
     public TeamRegistrationObj() {
     }
@@ -33,5 +40,5 @@ public class TeamRegistrationObj {
     public void setOpen(boolean open) {
         this.open = open;
     }
-    
+
 }

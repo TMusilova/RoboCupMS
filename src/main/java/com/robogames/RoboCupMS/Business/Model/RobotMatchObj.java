@@ -2,8 +2,19 @@ package com.robogames.RoboCupMS.Business.Model;
 
 public class RobotMatchObj {
 
+    /**
+     * ID robota, ktery bude hrat tento zapas
+     */
     private long robotID;
+
+    /**
+     * ID hriste, na kterem se zapas odehraje
+     */
     private long playgroundID;
+
+    /**
+     * ID skupiny, do ktere tento zapas nalezi (pokud bude ID zaporne, neni soucasti zadne skupiny)
+     */
     private long groupID;
 
     public RobotMatchObj() {

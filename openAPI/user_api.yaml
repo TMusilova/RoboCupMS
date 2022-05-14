@@ -303,15 +303,8 @@ paths:
 
   /edit:
     put:
-      summary: Změní atributy uživatele s konktretním ID
-      parameters:
-        - in: query
-          name: id
-          required: true
-          description: ID uživatele
-          schema:
-            type: integer
-            example: 1
+      summary: Umožní editovat údaje přihlášeného uživatele
+      parameters: []
       requestBody:
         required: true
         content:

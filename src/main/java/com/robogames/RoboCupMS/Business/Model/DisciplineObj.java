@@ -4,10 +4,29 @@ import com.robogames.RoboCupMS.Business.Enum.EScoreAggregation;
 
 public class DisciplineObj {
     
+    /**
+     * Nazev discipliny
+     */
     private String name;
+
+    /**
+     * Popis discipliny
+     */
     private String description;
+
+    /**
+     * Agregacni funkce skore (pro automatizovane vyhodnoceni) [MIN, MAX, SUM]
+     */
     private EScoreAggregation scoreAggregation;
+
+    /**
+     * Casovy limit na jeden zapas pro tuto disciplinu
+     */
     private int time;
+
+    /**
+     * Maximalni pocet zapasu, ktere robotu muze v teto discipline odehrat
+     */
     private int maxRounds;
 
 

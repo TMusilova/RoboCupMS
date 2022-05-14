@@ -1,13 +1,13 @@
 package com.robogames.RoboCupMS.Business.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Model.UserEditObj;
 import com.robogames.RoboCupMS.Business.Security.RegistrationObj;
 import com.robogames.RoboCupMS.Entity.Role;
 import com.robogames.RoboCupMS.Entity.UserRC;
@@ -110,25 +110,17 @@ public class UserService {
     }
 
     /**
-     * Editace atributu uzivatele s konktretnim ID
+     * Editace udaju prihlaseneho uzivatele
      * 
-     * @param id        ID uzivatele jehoz atributy budou zmeneny
-     * @param jmeno     Nove jmeno uzivatle
-     * @param prijmeni  Nove prijmeni uzivatele
-     * @param birthDate Datum narozeni uzivatele
+     * @param userEditObj Nove paramtery uzivatele
      * @throws Exception
      */
-    public void edit(long id, String name, String surname, Date birthDate) throws Exception {
-        Optional<UserRC> map = repository.findById(id)
-                .map(user -> {
-                    user.setName(name);
-                    user.setSurname(surname);
-                    user.setBirthDate(birthDate);
-                    return repository.save(user);
-                });
-        if (!map.isPresent()) {
-            throw new Exception(String.format("failure, user with UUID [%s] not found", id));
-        }
+    public void edit(UserEditObj userEditObj) throws Exception {
+        UserRC user = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        user.setName(userEditObj.getName());
+        user.setSurname(userEditObj.getSurname());
+        user.setBirthDate(userEditObj.getBirthDate());
+        this.repository.save(user);
     }
 
     /**

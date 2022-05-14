@@ -108,18 +108,15 @@ public class UserControler {
     }
 
     /**
-     * Editace atributu uzivatele s konktretnim ID
+     * Editace udaju prihlaseneho uzivatele
      * 
-     * @param id        ID uzivatele jehoz atributy budou zmeneny
-     * @param jmeno     Nove jmeno uzivatle
-     * @param prijmeni  Nove prijmeni uzivatele
-     * @param birthDate Datum narozeni uzivatele
+     * @param userEditObj Nove parametry uzivatele
      * @return Informace o stavu provedeneho requestu
      */
     @PutMapping("/edit")
-    Response edit(@RequestParam long id, @RequestBody UserEditObj user) {
+    Response edit(@RequestBody UserEditObj userEditObj) {
         try {
-            this.userService.edit(id, user.getName(), user.getSurname(), user.getBirthDate());
+            this.userService.edit(userEditObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
