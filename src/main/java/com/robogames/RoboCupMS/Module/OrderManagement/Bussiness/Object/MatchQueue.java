@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.Module.OrderManagement.Bussiness.Model;
+package com.robogames.RoboCupMS.Module.OrderManagement.Bussiness.Object;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

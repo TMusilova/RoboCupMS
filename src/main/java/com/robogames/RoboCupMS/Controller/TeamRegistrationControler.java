@@ -7,7 +7,7 @@ import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
-import com.robogames.RoboCupMS.Business.Model.TeamRegistrationObj;
+import com.robogames.RoboCupMS.Business.Object.TeamRegistrationObj;
 import com.robogames.RoboCupMS.Business.Service.TeamRegistrationService;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 

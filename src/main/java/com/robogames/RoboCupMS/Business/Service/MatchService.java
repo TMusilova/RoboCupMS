@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 import com.robogames.RoboCupMS.Communication;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Business.Enum.EMatchState;
-import com.robogames.RoboCupMS.Business.Model.RobotMatchObj;
+import com.robogames.RoboCupMS.Business.Object.RobotMatchObj;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
 import com.robogames.RoboCupMS.Entity.MatchState;
 import com.robogames.RoboCupMS.Entity.Playground;

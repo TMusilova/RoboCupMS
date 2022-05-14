@@ -20,7 +20,7 @@ import com.robogames.RoboCupMS.Entity.MatchState;
 import com.robogames.RoboCupMS.Entity.Playground;
 import com.robogames.RoboCupMS.Entity.Robot;
 import com.robogames.RoboCupMS.Entity.RobotMatch;
-import com.robogames.RoboCupMS.Module.OrderManagement.Bussiness.Model.MatchQueue;
+import com.robogames.RoboCupMS.Module.OrderManagement.Bussiness.Object.MatchQueue;
 import com.robogames.RoboCupMS.Repository.CompetitionRepository;
 import com.robogames.RoboCupMS.Repository.MatchGroupRepository;
 import com.robogames.RoboCupMS.Repository.MatchStateRepository;

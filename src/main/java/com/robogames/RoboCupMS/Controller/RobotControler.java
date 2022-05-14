@@ -6,7 +6,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
-import com.robogames.RoboCupMS.Business.Model.RobotObj;
+import com.robogames.RoboCupMS.Business.Object.RobotObj;
 import com.robogames.RoboCupMS.Business.Service.RobotService;
 import com.robogames.RoboCupMS.Entity.Robot;
 

@@ -1,17 +1,16 @@
+package com.robogames.RoboCupMS.Business.Object;
 
-package com.robogames.RoboCupMS.Business.Model;
-
-public class TeamObj {
+public class RobotObj {
 
     /**
-     * Jmen tymu
+     * Jmeno robota
      */
     private String name;
 
-    public TeamObj() {
+    public RobotObj() {
     }
 
-    public TeamObj(String name) {
+    public RobotObj(String name) {
         this.name = name;
     }
 

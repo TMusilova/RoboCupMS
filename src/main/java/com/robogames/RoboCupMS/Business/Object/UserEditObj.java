@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.Business.Model;
+package com.robogames.RoboCupMS.Business.Object;
 
 import java.util.Date;
 

@@ -39,19 +39,29 @@ paths:
                       name:
                         type: string
                         example: "MyTeam"
-                      membersID:
+                      memberNames:
                         type: array
                         items:
-                          type: integer
-                        example: [1, 3]
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            surname:
+                              type: string
                       leaderID:
                         type: integer
                         example: 1
-                      registrationsID:
+                      registrationYears:
                         type: array
                         items:
-                          type: integer
-                        example: [10, 34]
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            year:
+                              type: integer
 
   /findByID:
     get:

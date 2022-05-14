@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.robogames.RoboCupMS.Communication;
-import com.robogames.RoboCupMS.Business.Model.CompetitionObj;
+import com.robogames.RoboCupMS.Business.Object.CompetitionObj;
 import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Repository.CompetitionRepository;

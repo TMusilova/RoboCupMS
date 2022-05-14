@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.robogames.RoboCupMS.Business.Model.MatchGroupObj;
+import com.robogames.RoboCupMS.Business.Object.MatchGroupObj;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
 import com.robogames.RoboCupMS.Repository.MatchGroupRepository;
 import com.robogames.RoboCupMS.Repository.RobotMatchRepository;

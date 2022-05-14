@@ -3,7 +3,7 @@ package com.robogames.RoboCupMS.Business.Service;
 import java.util.List;
 import java.util.Optional;
 
-import com.robogames.RoboCupMS.Business.Model.PlaygroundObj;
+import com.robogames.RoboCupMS.Business.Object.PlaygroundObj;
 import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Entity.Playground;
 import com.robogames.RoboCupMS.Entity.RobotMatch;

@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Model;
+package com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Object;
 
 import java.util.ArrayList;
 import java.util.List;

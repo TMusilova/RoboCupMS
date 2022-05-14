@@ -1,4 +1,4 @@
-package com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Model;
+package com.robogames.RoboCupMS.Module.CompetitionEvaluation.Bussiness.Object;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;

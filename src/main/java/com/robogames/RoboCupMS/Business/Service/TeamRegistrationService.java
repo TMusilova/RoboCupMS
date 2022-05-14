@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
-import com.robogames.RoboCupMS.Business.Model.TeamRegistrationObj;
+import com.robogames.RoboCupMS.Business.Object.TeamRegistrationObj;
 import com.robogames.RoboCupMS.Entity.Category;
 import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.Robot;

@@ -16,6 +16,8 @@ import javax.persistence.OneToOne;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
+import com.robogames.RoboCupMS.Business.Object.UserNameObj;
+import com.robogames.RoboCupMS.Business.Object.YearObj;
 
 /**
  * Tym pro soutezici
@@ -104,16 +106,20 @@ public class Team {
     }
 
     /**
-     * Navrati ID vsech clenu, vcetne vedouciho
+     * Navrati ID, jmena a prijmeni vsech clenu, vcetne vedouciho
      * 
      * @return Clenove tymu
      */
-    public List<Long> getMembersID() {
-        List<Long> idList = new ArrayList<>();
+    public List<UserNameObj> getMemberNames() {
+        List<UserNameObj> userNames = new ArrayList<>();
         this.members.stream().forEach((u) -> {
-            idList.add(u.getID());
+            userNames.add(
+                    new UserNameObj(
+                            u.getID(),
+                            u.getName(),
+                            u.getSurname()));
         });
-        return idList;
+        return userNames;
     }
 
     /**
@@ -134,12 +140,15 @@ public class Team {
      * 
      * @return Registrace
      */
-    public List<Long> getRegistrationsID() {
-        List<Long> idList = new ArrayList<>();
+    public List<YearObj> getRegistrationYears() {
+        List<YearObj> yearObjs = new ArrayList<>();
         this.registrations.stream().forEach((r) -> {
-            idList.add(r.getID());
+            yearObjs.add(
+                    new YearObj(
+                            r.getID(),
+                            r.getCompatitionYear()));
         });
-        return idList;
+        return yearObjs;
     }
 
     /**
