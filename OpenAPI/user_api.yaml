@@ -2,7 +2,7 @@ openapi: 3.0.2
 info:
   title: RoboCupMS - User API
   description: API slouži pro spravů uživatelů na serveru. Umožnuje zakladní operace (informace o uživateli, vyhledavání, modifikace, odstranění).
-  version: 1.0.0
+  version: 2.0.0
   contact:
     email: m1_krcma@utb.cz
 servers:
