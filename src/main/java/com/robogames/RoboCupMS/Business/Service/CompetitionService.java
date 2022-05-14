@@ -3,6 +3,7 @@ package com.robogames.RoboCupMS.Business.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.Communication;
 import com.robogames.RoboCupMS.Business.Model.CompetitionObj;
 import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
@@ -19,6 +20,15 @@ public class CompetitionService {
 
     @Autowired
     private CompetitionRepository repository;
+
+    /**
+     * Typy zprav
+     */
+    public static enum Message {
+        CREATE,
+        REMOVE,
+        START
+    }
 
     /**
      * Navrati vsechny uskutecnene a naplanovane rocniky soutezi
@@ -53,14 +63,17 @@ public class CompetitionService {
     public void create(CompetitionObj compatitionObj) throws Exception {
         if (this.repository.findByYear(compatitionObj.getYear()).isPresent()) {
             throw new Exception("failure, the competition has already been created for this year");
-        } else {
-            Competition c = new Competition(
-                    compatitionObj.getYear(),
-                    compatitionObj.getDate(),
-                    compatitionObj.getStartTime(),
-                    compatitionObj.getEndTime());
-            this.repository.save(c);
         }
+
+        Competition c = new Competition(
+                compatitionObj.getYear(),
+                compatitionObj.getDate(),
+                compatitionObj.getStartTime(),
+                compatitionObj.getEndTime());
+        this.repository.save(c);
+
+        // odesle do komunikacniho systemu zpravu
+        Communication.getInstance().sendAll(this, CompetitionService.Message.CREATE);
     }
 
     /**
@@ -70,12 +83,20 @@ public class CompetitionService {
      */
     public void remove(Long id) throws Exception {
         Optional<Competition> c = this.repository.findById(id);
-        if (c.isPresent()) {
-            // odstrani soutez
-            this.repository.delete(c.get());
-        } else {
-            throw new Exception(String.format("compatition with ID [%d] not exists", id));
+        if (!c.isPresent()) {
+            throw new Exception(String.format("failure, compatition with ID [%d] not exists", id));
         }
+
+        // pokud soutezi jiz zacala nebude mozne ji odstranit
+        if(c.get().getStarted()) {
+            throw new Exception(String.format("failure, compatition with ID [%d] already begin", id));    
+        }
+
+        // odstrani soutez
+        this.repository.delete(c.get());
+
+        // odesle do komunikacniho systemu zpravu
+        Communication.getInstance().sendAll(this, CompetitionService.Message.REMOVE);
     }
 
     /**
@@ -118,6 +139,9 @@ public class CompetitionService {
         // spusti soutez a ulozi zmeny
         competition.get().setStarted(true);
         this.repository.save(competition.get());
+
+        // odesle do komunikacniho systemu zpravu
+        Communication.getInstance().sendAll(this, CompetitionService.Message.START);
     }
 
 }

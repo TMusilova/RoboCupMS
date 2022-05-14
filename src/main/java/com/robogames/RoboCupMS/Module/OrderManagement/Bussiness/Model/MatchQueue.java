@@ -64,12 +64,16 @@ public class MatchQueue {
         List<Integer> indexes = new ArrayList<Integer>();
 
         // synchronizace stavu
-        this.queue.forEach((m) -> {
+        int index = 0;
+        for(RobotMatch m : this.queue) {
             Optional<RobotMatch> match = repository.findById(m.getID());
             if (match.isPresent()) {
                 m.setMatchState(match.get().getState());
+            } else {
+                indexes.add(index);  
             }
-        });
+            index++;
+        }
 
         // odstraneni neexistujicich
         indexes.stream().forEach((i) -> {

@@ -45,6 +45,17 @@ public class MatchService {
     private MatchGroupRepository matchGroupRepository;
 
     /**
+     * Typy zprav
+     */
+    public static enum Message {
+        CREATE,
+        REMOVE,
+        REMOVE_ALL,
+        WRITE_SCORE,
+        REMATCH
+    }
+
+    /**
      * Navrati vsechny zapasy
      * 
      * @return Seznam vsech zapasu
@@ -86,13 +97,15 @@ public class MatchService {
         // overi zda hriste existuje
         Optional<Playground> playground = this.playgroundRepository.findById(robotMatchObj.getPlaygroundID());
         if (!playground.isPresent()) {
-            throw new Exception(String.format("failure, playground with ID [%d] not exists", robotMatchObj.getPlaygroundID()));
+            throw new Exception(
+                    String.format("failure, playground with ID [%d] not exists", robotMatchObj.getPlaygroundID()));
         }
 
         // overi zda ma robot povoleno zapasit (registrace byla uspesna => povoluje se
         // pri kontrole pred zacatkem souteze)
         if (!robot.get().getConfirmed()) {
-            throw new Exception(String.format("failure, robot with ID [%d] is not confirmed", robotMatchObj.getRobotID()));
+            throw new Exception(
+                    String.format("failure, robot with ID [%d] is not confirmed", robotMatchObj.getRobotID()));
         }
 
         // overi zda jiz nebyl prekrocen maximalni pocet zapasu "pokusu"
@@ -100,7 +113,8 @@ public class MatchService {
         if (maxRounds >= 0) {
             if (robot.get().getMatches().size() >= maxRounds) {
                 throw new Exception(
-                        String.format("failure, robot with ID [%d] exceeded the maximum number of matches", robotMatchObj.getRobotID()));
+                        String.format("failure, robot with ID [%d] exceeded the maximum number of matches",
+                                robotMatchObj.getRobotID()));
             }
         }
 
@@ -110,7 +124,8 @@ public class MatchService {
         if (robotMatchObj.getGroupID() >= 0) {
             Optional<MatchGroup> gOpt = this.matchGroupRepository.findById(robotMatchObj.getGroupID());
             if (!gOpt.isPresent()) {
-                throw new Exception(String.format("failure, group with ID [%d] not exists", robotMatchObj.getGroupID()));
+                throw new Exception(
+                        String.format("failure, group with ID [%d] not exists", robotMatchObj.getGroupID()));
             }
             group = gOpt.get();
 
@@ -120,7 +135,8 @@ public class MatchService {
             for (RobotMatch matche : matches) {
                 if (matche.getRobot().getTeamRegistration().getCategory() != mainCategory) {
                     throw new Exception(
-                            String.format("failure, the robots in the group are not in the same category", robotMatchObj.getGroupID()));
+                            String.format("failure, the robots in the group are not in the same category",
+                                    robotMatchObj.getGroupID()));
                 }
             }
         }
@@ -135,6 +151,9 @@ public class MatchService {
                 playground.get(),
                 state);
         this.robotMatchRepository.save(m);
+
+        // odesle do komunikacniho systemu zpravu
+        Communication.getInstance().sendAll(this, MatchService.Message.CREATE);
     }
 
     /**
@@ -150,6 +169,9 @@ public class MatchService {
 
         // odstrani zapas
         this.robotMatchRepository.deleteById(id);
+
+        // odesle do komunikacniho systemu zpravu
+        Communication.getInstance().sendAll(this, MatchService.Message.REMOVE);
     }
 
     /**
@@ -169,6 +191,9 @@ public class MatchService {
             ++cnt;
             this.robotMatchRepository.delete((RobotMatch) m);
         }
+
+        // odesle do komunikacniho systemu zpravu
+        Communication.getInstance().sendAll(this, MatchService.Message.REMOVE_ALL);
         return cnt;
     }
 
@@ -187,8 +212,9 @@ public class MatchService {
             MatchState state = matchStateRepository.findByName(EMatchState.DONE).get();
             m.get().setMatchState(state);
             this.robotMatchRepository.save(m.get());
-            // odesle do komunikacniho systemu zparavu o zapisu skore
-            Communication.getInstance().sendAll(this, "writeScore");
+
+            // odesle do komunikacniho systemu zpravu
+            Communication.getInstance().sendAll(this, MatchService.Message.WRITE_SCORE);
         } else {
             throw new Exception(String.format("failure, match with ID [%d] not exists", id));
         }
@@ -202,7 +228,7 @@ public class MatchService {
      */
     public void rematch(long id) throws Exception {
         // novy stav zapasu
-        MatchState state = matchStateRepository.findByName(EMatchState.REMATCH).get();
+        MatchState state = this.matchStateRepository.findByName(EMatchState.REMATCH).get();
 
         // provede zmeni
         Optional<RobotMatch> match = this.robotMatchRepository.findById(id);
@@ -213,11 +239,17 @@ public class MatchService {
             this.robotMatchRepository.save(match.get());
 
             // pokud jde o skupinovy zapas pak pozadavek uplatni i na ostatni zapasy skupiny
-            match.get().getMatchGroup().getMatches().stream().forEach((m) -> {
-                m.setScore(0);
-                m.setMatchState(state);
-                this.robotMatchRepository.save(m);
-            });
+            MatchGroup matchGroup = match.get().getMatchGroup();
+            if (matchGroup != null) {
+                matchGroup.getMatches().stream().forEach((m) -> {
+                    m.setScore(0);
+                    m.setMatchState(state);
+                    this.robotMatchRepository.save(m);
+                });
+            }
+
+            // odesle do komunikacniho systemu zpravu
+            Communication.getInstance().sendAll(this, MatchService.Message.REMATCH);
         } else {
             throw new Exception(String.format("failure, match with ID [%d] not exists", id));
         }

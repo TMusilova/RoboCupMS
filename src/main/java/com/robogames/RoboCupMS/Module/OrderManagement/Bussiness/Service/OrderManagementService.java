@@ -76,8 +76,13 @@ public class OrderManagementService {
                 // /match/writeScore" -> zapas byl
                 // odehran -> dojde k obnoveni
                 if (sender instanceof MatchService) {
-                    if (data instanceof String) {
-                        if (((String) data).equals("writeScore")) {
+                    if (data instanceof MatchService.Message) {
+                        MatchService.Message msg = (MatchService.Message) data;
+                        if (msg.equals(MatchService.Message.WRITE_SCORE)
+                                || msg.equals(MatchService.Message.REMATCH)
+                                || msg.equals(MatchService.Message.REMOVE)
+                                || msg.equals(MatchService.Message.REMOVE_ALL)
+                                || msg.equals(MatchService.Message.WRITE_SCORE)) {
                             // refresh systemu pro rizeni poradi
                             refreshSystem();
                         }

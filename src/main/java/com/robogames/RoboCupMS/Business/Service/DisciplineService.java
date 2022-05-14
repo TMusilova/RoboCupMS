@@ -3,6 +3,7 @@ package com.robogames.RoboCupMS.Business.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.Communication;
 import com.robogames.RoboCupMS.Business.Model.DisciplineObj;
 import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Entity.ScoreAggregation;
@@ -23,6 +24,15 @@ public class DisciplineService {
 
     @Autowired
     private ScoreAggregationRepository aggregationRepository;
+
+    /**
+     * Typy zprav
+     */
+    public static enum Message {
+        CREATE,
+        REMOVE
+    }
+
 
     /**
      * Navrati vsechny vytvorene discipliny
@@ -62,6 +72,9 @@ public class DisciplineService {
                 disciplineObj.getTime(),
                 disciplineObj.getMaxRounds());
         this.disciplineRepository.save(discipline);
+
+        // odesle do komunikacniho systemu zpravu
+        Communication.getInstance().sendAll(this, DisciplineService.Message.CREATE);
     }
 
     /**
@@ -89,6 +102,9 @@ public class DisciplineService {
 
         // odstrani disciplinu
         this.disciplineRepository.delete(d.get());
+
+        // odesle do komunikacniho systemu zpravu
+        Communication.getInstance().sendAll(this, DisciplineService.Message.REMOVE);
     }
 
     /**
