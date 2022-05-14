@@ -6,6 +6,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Model.MatchGroupObj;
 import com.robogames.RoboCupMS.Business.Service.MatchGroupService;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,14 +78,14 @@ public class MatchGroupControler {
     /**
      * Vytvori novou zapasovou skupinu
      * 
-     * @param creatorid Identifikator tvurce skupiny
+     * @param groupObj Parametry nove zapasove skupiny
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @PostMapping("/create")
-    Response create(@RequestParam Long creatorID) {
+    Response create(@RequestBody MatchGroupObj groupObj) {
         try {
-            this.groupService.create(creatorID);
+            this.groupService.create(groupObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

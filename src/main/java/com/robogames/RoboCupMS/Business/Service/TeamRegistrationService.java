@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
+import com.robogames.RoboCupMS.Business.Model.TeamRegistrationObj;
 import com.robogames.RoboCupMS.Entity.Category;
 import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.Robot;
@@ -40,10 +41,10 @@ public class TeamRegistrationService {
     /**
      * Registruje tym do souteze (registrovat muze pouze vedouci tymu!!!!!)
      * 
-     * @param year Rocni souteze, do ktere se tym chce registrovate
+     * @param teamRegistrationObj Parametry nove registrace tymu
      * @throws Exception
      */
-    public void register(int year, Boolean open) throws Exception {
+    public void register(TeamRegistrationObj teamRegistrationObj) throws Exception {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // overi zda uzivatel je vedoucim nejakeho tymu
@@ -53,15 +54,15 @@ public class TeamRegistrationService {
         }
 
         // overi zda rocnik souteze, do ktereho se hlasi existuje
-        Optional<Competition> c = competitionRepository.findByYear(year);
+        Optional<Competition> c = competitionRepository.findByYear(teamRegistrationObj.getYear());
         if (!c.isPresent()) {
-            throw new Exception(String.format("failure, compatition [%d] not exists", year));
+            throw new Exception(String.format("failure, compatition [%d] not exists", teamRegistrationObj.getYear()));
         }
 
         // overi zda soutez jiz nezacala (registrace je mozna jen pokud soutez jeste
         // nezacala)
         if (c.get().getStarted()) {
-            throw new Exception(String.format("failure, competition has already begin", year));
+            throw new Exception(String.format("failure, competition has already begin", teamRegistrationObj.getYear()));
         }
 
         // overi zda tym jiz neni prihlasen do tohoto rocniku
@@ -72,7 +73,7 @@ public class TeamRegistrationService {
 
         // urci kategorii tymu
         ECategory cat_name;
-        if (!open) {
+        if (!teamRegistrationObj.getOpen()) {
             cat_name = t.get().determinateCategory();
         } else {
             cat_name = ECategory.OPEN;

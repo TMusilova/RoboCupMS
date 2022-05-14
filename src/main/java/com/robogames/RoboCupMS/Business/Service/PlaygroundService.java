@@ -3,6 +3,7 @@ package com.robogames.RoboCupMS.Business.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.Business.Model.PlaygroundObj;
 import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Entity.Playground;
 import com.robogames.RoboCupMS.Entity.RobotMatch;
@@ -69,20 +70,18 @@ public class PlaygroundService {
     /**
      * Vytvori nove soutezni hriste
      * 
-     * @param name         Jmeno noveho hriste
-     * @param number       Cislo noveho hriste
-     * @param disciplineID ID discipliny, pro ktere bude nove vytvorene hriste
-     *                     urcene
+     * @param playgroundObj Paramtery noveho hriste
      */
-    public void create(String name, int number, Long disciplineID) throws Exception {
+    public void create(PlaygroundObj playgroundObj) throws Exception {
         // overi zda disciplina existuje
-        Optional<Discipline> discipline = this.disciplineRepository.findById(disciplineID);
+        Optional<Discipline> discipline = this.disciplineRepository.findById(playgroundObj.getDisciplineID());
         if (!discipline.isPresent()) {
-            throw new Exception(String.format("failure, discipline with ID [%d] not exists", disciplineID));
+            throw new Exception(
+                    String.format("failure, discipline with ID [%d] not exists", playgroundObj.getDisciplineID()));
         }
 
         // vytvori hriste
-        Playground p = new Playground(name, number, discipline.get());
+        Playground p = new Playground(playgroundObj.getName(), playgroundObj.getNumber(), discipline.get());
         this.playgroundRepository.save(p);
     }
 
@@ -104,24 +103,22 @@ public class PlaygroundService {
     /**
      * Upravi parametry souzezniho hriste
      * 
-     * @param id           ID hriste, ktere ma byt upraveno
-     * @param name         Nove jmeno hriste
-     * @param number       Nove cislo hriste
-     * @param disciplineID Nove ID discipliny, pro ktere bude hriste urcene
+     * @param id            ID hriste, ktere ma byt upraveno
+     * @param playgroundObj Nove parametry hriste
      * 
      */
-    public void edit(Long id, String name, int number, Long disciplineID) throws Exception {
+    public void edit(Long id, PlaygroundObj playgroundObj) throws Exception {
         // overi zda disciplina existuje
-        Optional<Discipline> discipline = this.disciplineRepository.findById(disciplineID);
+        Optional<Discipline> discipline = this.disciplineRepository.findById(playgroundObj.getDisciplineID());
         if (!discipline.isPresent()) {
-            throw new Exception(String.format("failure, discipline with ID [%d] not exists", disciplineID));
+            throw new Exception(String.format("failure, discipline with ID [%d] not exists", playgroundObj.getDisciplineID()));
         }
 
         // provede zmeni
         Optional<Playground> map = this.playgroundRepository.findById(id)
                 .map(p -> {
-                    p.setName(name);
-                    p.setNumber(number);
+                    p.setName(playgroundObj.getName());
+                    p.setNumber(playgroundObj.getNumber());
                     p.setDiscipline(discipline.get());
                     return this.playgroundRepository.save(p);
                 });

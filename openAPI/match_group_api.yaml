@@ -108,13 +108,19 @@ paths:
     post:
       summary: Vytvoří novou zápasovou skupinu
       description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, REFEREE].
-      parameters:
-        - in: query
-          name: creatorID
-          required: true
-          description: Identifikátor tvůrce skupiny
-          schema:
-            type: integer
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                creatorID:
+                  type: integer
+                  description: Identifikátor tvůrce skupiny
+              required:
+                - creatorID
       security:
         - ApiKeyAuth: []
       responses:

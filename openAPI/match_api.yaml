@@ -131,27 +131,28 @@ paths:
     post:
       summary: Naplánuje nový zápas
       description: Vytvořený zápas je automaticky nastaven do stavu "čeká na odehrání". U skupinového zápasu je nutné zápas naplánovat pro každého robota skupiny (všichni budou mít stejné ID skupiny). Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, REFEREE].
-      parameters:
-        - in: query
-          name: robotID
-          required: true
-          description: ID robota, který bude zápasit
-          schema:
-            type: integer
-        - in: query
-          name: playgroundID
-          required: true
-          description: ID hřiště, na kterém se bude hrát
-          schema:
-            type: integer
-        - in: query
-          name: groupID
-          required: false
-          description: ID zápasové skupiny. Jen v případě pokud zápasí proti
-            sobě více robotů. V opačném případě zadat neplatnou
-            zápornou hodnotu.
-          schema:
-            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                robotID:
+                  type: integer
+                  description: ID robota, který bude zápasit
+                playgroundID:
+                  type: integer
+                  description: ID hřiště, na kterém se bude hrát
+                groupID:
+                  type: integer
+                  description: ID zápasové skupiny. Jen v případě pokud zápasí proti
+                    sobě více robotů. V opačném případě zadat neplatnou
+                    zápornou hodnotu.
+              required:
+                - robotID
+                - description
+                - scoreAggregation
       security:
         - ApiKeyAuth: []
       responses:

@@ -6,6 +6,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Model.PlaygroundObj;
 import com.robogames.RoboCupMS.Business.Service.PlaygroundService;
 import com.robogames.RoboCupMS.Entity.Playground;
 import com.robogames.RoboCupMS.Entity.RobotMatch;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -77,17 +79,14 @@ public class PlaygroundControler {
     /**
      * Vytvori nove soutezni hriste
      * 
-     * @param name         Jmeno noveho hriste
-     * @param number       Cislo noveho hriste
-     * @param disciplineID ID discipliny, pro ktere bude nove vytvorene hriste
-     *                     urcene
+     * @param playgroundObj Parametry noveho hriste
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PostMapping("/create")
-    Response create(@RequestParam String name, @RequestParam int number, @RequestParam Long disciplineID) {
+    Response create(@RequestBody PlaygroundObj playgroundObj) {
         try {
-            this.playgroundService.create(name, number, disciplineID);
+            this.playgroundService.create(playgroundObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -122,10 +121,9 @@ public class PlaygroundControler {
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.ASSISTANT })
     @PutMapping("/edit")
-    Response edit(@RequestParam Long id, @RequestParam String name, @RequestParam int number,
-            @RequestParam Long disciplineID) {
+    Response edit(@RequestParam Long id, @RequestBody PlaygroundObj playgroundObj) {
         try {
-            this.playgroundService.edit(id, name, number, disciplineID);
+            this.playgroundService.edit(id, playgroundObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.robogames.RoboCupMS.GlobalConfig;
+import com.robogames.RoboCupMS.Business.Model.TeamObj;
 import com.robogames.RoboCupMS.Entity.Robot;
 import com.robogames.RoboCupMS.Entity.Team;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
@@ -90,10 +91,10 @@ public class TeamService {
     /**
      * Vytvori novy tym. Uzivatel, ktery tym vytvari se stava jeho vedoucim.
      * 
-     * @param name Jmeno tymu (unikatni!!)
+     * @param teamObj Parametry noveho tymu
      * @throws Exception
      */
-    public void create(String name) throws Exception {
+    public void create(TeamObj teamObj) throws Exception {
         UserRC leader = (UserRC) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         // overi zda uzivatel jiz neni clenem tymu
@@ -102,11 +103,11 @@ public class TeamService {
         }
 
         // overeni unikatnosti jmena
-        if (this.teamRepository.findByName(name).isPresent()) {
+        if (this.teamRepository.findByName(teamObj.getName()).isPresent()) {
             throw new Exception("failure, team with this name already exists");
         }
 
-        Team t = new Team(name, leader);
+        Team t = new Team(teamObj.getName(), leader);
         this.teamRepository.save(t);
         this.userRepository.save(leader);
     }

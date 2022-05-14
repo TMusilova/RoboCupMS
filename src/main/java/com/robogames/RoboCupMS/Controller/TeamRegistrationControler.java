@@ -7,6 +7,7 @@ import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Model.TeamRegistrationObj;
 import com.robogames.RoboCupMS.Business.Service.TeamRegistrationService;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,13 +51,13 @@ public class TeamRegistrationControler {
     /**
      * Registruje tym do souteze (registrovat muze pouze vedouci tymu!!!!!)
      * 
-     * @param year Rocni souteze, do ktere se tym chce registrovate
+     * @param teamRegistrationObj Parametry nove registrace tymu
      * @return Informace o stavu provedeneho requestu
      */
     @PostMapping("/register")
-    Response register(@RequestParam int year, @RequestParam Boolean open) {
+    Response register(@RequestBody TeamRegistrationObj teamRegistrationObj) {
         try {
-            this.registrationService.register(year, open);
+            this.registrationService.register(teamRegistrationObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

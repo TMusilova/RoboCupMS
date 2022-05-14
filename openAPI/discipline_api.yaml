@@ -105,38 +105,35 @@ paths:
     post:
       summary: Vytvoří novou disciplínu
       description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER].
-      parameters:
-        - in: query
-          name: name
-          required: true
-          description: Nazev nové discipliny
-          schema:
-            type: string
-        - in: query
-          name: description
-          required: true
-          description: Popis nové discipliny
-          schema:
-            type: string
-        - in: query
-          name: scoreAggregation
-          required: true
-          description: Název agregáční funkce skore (pro automatizované vyhodnocení) 
-          schema:
-            type: string
-            enum: ["MIN", "MAX", "SUM"]
-        - in: query
-          name: time
-          required: true
-          description: Časový limit jednoho zápasu
-          schema:
-            type: integer
-        - in: query
-          name: maxRounds
-          required: true
-          description: Omezení počtů zápasu, odehraných robotem v teto disciplině
-          schema:
-            type: integer
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nazev nové discipliny
+                description:
+                  type: string
+                  description: Popis nové discipliny
+                scoreAggregation:
+                  type: string
+                  description: Název agregáční funkce skore (pro automatizované vyhodnocení). MIN, MAX, SUM 
+                time:
+                  type: string
+                  description: Časový limit jednoho zápasu
+                maxRounds:
+                  type: integer
+                  description: Omezení počtů zápasu, odehraných robotem v teto disciplině
+              required:
+                - name
+                - description
+                - scoreAggregation
+                - time
+                - maxRounds
 
       security:
         - ApiKeyAuth: []
@@ -166,37 +163,34 @@ paths:
           description: ID discipliny, která má být upravena
           schema:
             type: integer
-        - in: query
-          name: name
-          required: true
-          description: Nazev nové discipliny
-          schema:
-            type: string
-        - in: query
-          name: description
-          required: true
-          description: Popis nové discipliny
-          schema:
-            type: string
-        - in: query
-          name: scoreAggregation
-          required: true
-          description: Název agregáční funkce skore (pro automatizované vyhodnocení) 
-          schema:
-            type: string
-            enum: ["MIN", "MAX", "SUM"]
-        - in: query
-          name: time
-          required: true
-          description: Časový limit jednoho zápasu
-          schema:
-            type: integer
-        - in: query
-          name: maxRounds
-          required: true
-          description: Omezení počtů zápasu, odehraných robotem v teto disciplině
-          schema:
-            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nový nazev discipliny
+                description:
+                  type: string
+                  description: Nový popis discipliny
+                scoreAggregation:
+                  type: string
+                  description: Nový název agregáční funkce skore (pro automatizované vyhodnocení). MIN, MAX, SUM 
+                time:
+                  type: string
+                  description: Nový časový limit jednoho zápasu
+                maxRounds:
+                  type: integer
+                  description: Nové omezení počtů zápasu, odehraných robotem v teto disciplině
+              required:
+                - name
+                - description
+                - scoreAggregation
+                - time
+                - maxRounds
 
       security:
         - ApiKeyAuth: []

@@ -3,6 +3,7 @@ package com.robogames.RoboCupMS.Business.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.Business.Model.CompetitionObj;
 import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
 import com.robogames.RoboCupMS.Repository.CompetitionRepository;
@@ -47,17 +48,17 @@ public class CompetitionService {
     /**
      * Vytvori novy rocnik souteze
      * 
-     * @param compatition Nova soutez
+     * @param compatitionObj Parametry nové souteze
      */
-    public void create(Competition compatition) throws Exception {
-        if (this.repository.findByYear(compatition.getYear()).isPresent()) {
+    public void create(CompetitionObj compatitionObj) throws Exception {
+        if (this.repository.findByYear(compatitionObj.getYear()).isPresent()) {
             throw new Exception("failure, the competition has already been created for this year");
         } else {
             Competition c = new Competition(
-                    compatition.getYear(),
-                    compatition.getDate(),
-                    compatition.getStartTime(),
-                    compatition.getEndTime());
+                    compatitionObj.getYear(),
+                    compatitionObj.getDate(),
+                    compatitionObj.getStartTime(),
+                    compatitionObj.getEndTime());
             this.repository.save(c);
         }
     }
@@ -80,10 +81,10 @@ public class CompetitionService {
     /**
      * Upravi parametry souteze, mozne jen pokud jeste nezacala
      * 
-     * @param id          ID souteze jejiz parametry maji byt upraveny
-     * @param compatition Soutez
+     * @param id             ID souteze jejiz parametry maji byt upraveny
+     * @param compatitionObj Nové paramtery souteze
      */
-    public void edit(Long id, Competition compatition) throws Exception {
+    public void edit(Long id, CompetitionObj compatitionObj) throws Exception {
         Optional<Competition> c = repository.findById(id);
         if (!c.isPresent()) {
             throw new Exception(String.format("failure, compatition with ID [%d] not exists", id));
@@ -94,11 +95,10 @@ public class CompetitionService {
         }
 
         // provede zmeny
-        c.get().setYear(compatition.getYear());
-        c.get().setDate(compatition.getDate());
-        c.get().setStartTime(compatition.getStartTime());
-        c.get().setEndTime(compatition.getEndTime());
-        c.get().setStarted(compatition.getStarted());
+        c.get().setYear(compatitionObj.getYear());
+        c.get().setDate(compatitionObj.getDate());
+        c.get().setStartTime(compatitionObj.getStartTime());
+        c.get().setEndTime(compatitionObj.getEndTime());
         repository.save(c.get());
     }
 

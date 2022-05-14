@@ -57,19 +57,23 @@ paths:
       description:
         Registrovat tým může pouze vedoucí týmu. System automaticky přiřadí tým do kategorie (podle věku členů týmu).
         Kategorie je volena podle nejstaršího člena týmu. Registrovat tým je možne jen v případě, že daný ročník soutěže ještě nezačal.
-      parameters:
-        - in: query
-          name: year
-          required: true
-          description: Ročník soutěže, do kterého se tým chce registrovat
-          schema:
-            type: integer
-        - in: query
-          name: open
-          required: true
-          description: Pokud je nastaven na "true", automaticky tým přihlási do kategorie OPEN
-          schema:
-            type: boolean
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                year:
+                  type: integer
+                  description: Ročník soutěže, do kterého se tým chce registrovat
+                open:
+                  type: integer
+                  description: Pokud je nastaven na "true", automaticky tým přihlási do kategorie OPEN
+              required:
+                - year
+                - open
       security:
         - ApiKeyAuth: []
       responses:

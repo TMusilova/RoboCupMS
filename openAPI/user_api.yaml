@@ -16,8 +16,7 @@ paths:
   /info:
     get:
       summary: Navrátí všechny dostupné informace o uživateli
-      description: 
-        Podle přistupového tokenu najde v databazi, kterému přihlášenému uživateli patří a informace o něm navrátí.
+      description: Podle přistupového tokenu najde v databazi, kterému přihlášenému uživateli patří a informace o něm navrátí.
       parameters: []
       security:
         - ApiKeyAuth: []
@@ -305,7 +304,7 @@ paths:
   /edit:
     put:
       summary: Změní atributy uživatele s konktretním ID
-      parameters: 
+      parameters:
         - in: query
           name: id
           required: true
@@ -313,25 +312,23 @@ paths:
           schema:
             type: integer
             example: 1
-        - in: query
-          name: name
-          required: true
-          description: Nové jméno uživatele
-          schema:
-            type: string
-        - in: query
-          name: surname
-          required: true
-          description: Nové příjmení uživatele
-          schema:
-            type: string
-        - in: query
-          name: birthDate
-          required: true
-          description: Nový datum narození uživatele
-          schema:
-            type: string
-            format: date
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                surname:
+                  type: string
+                birthDate:
+                  type: string
+              required:
+                - name
+                - surname
+                - password
       security:
         - ApiKeyAuth: []
       responses:
@@ -490,7 +487,7 @@ paths:
     delete:
       summary: Změní atributy uživatele s konktretním ID
       description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER]
-      parameters: 
+      parameters:
         - in: query
           name: id
           required: true

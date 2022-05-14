@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import com.robogames.RoboCupMS.Communication;
 import com.robogames.RoboCupMS.Business.Enum.ECategory;
 import com.robogames.RoboCupMS.Business.Enum.EMatchState;
+import com.robogames.RoboCupMS.Business.Model.RobotMatchObj;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
 import com.robogames.RoboCupMS.Entity.MatchState;
 import com.robogames.RoboCupMS.Entity.Playground;
@@ -72,47 +73,44 @@ public class MatchService {
     /**
      * Naplanuje novy zapas
      * 
-     * @param robotID      ID robota, ktery bude zapasit
-     * @param playgroundID ID hriste, na kterem se bude hrat
-     * @param groupID      ID zapasove skupiny. Jen v pripade pokud zapasi proti
-     *                     sobe vice robotu. V opacnem pripade zadat neplatnou
-     *                     zapornou hodnotu.
+     * @param robotMatchObj Nové parametry zápasu
      */
-    public void create(long robotID, long playgroundID, long groupID)
+    public void create(RobotMatchObj robotMatchObj)
             throws Exception {
         // overi zda robot existuje
-        Optional<Robot> robot = this.robotRepository.findById(robotID);
+        Optional<Robot> robot = this.robotRepository.findById(robotMatchObj.getRobotID());
         if (!robot.isPresent()) {
-            throw new Exception(String.format("failure, robot with ID [%d] not exists", robotID));
+            throw new Exception(String.format("failure, robot with ID [%d] not exists", robotMatchObj.getRobotID()));
         }
 
         // overi zda hriste existuje
-        Optional<Playground> playground = this.playgroundRepository.findById(playgroundID);
+        Optional<Playground> playground = this.playgroundRepository.findById(robotMatchObj.getPlaygroundID());
         if (!playground.isPresent()) {
-            throw new Exception(String.format("failure, playground with ID [%d] not exists", playgroundID));
+            throw new Exception(String.format("failure, playground with ID [%d] not exists", robotMatchObj.getPlaygroundID()));
         }
 
         // overi zda ma robot povoleno zapasit (registrace byla uspesna => povoluje se
         // pri kontrole pred zacatkem souteze)
         if (!robot.get().getConfirmed()) {
-            throw new Exception(String.format("failure, robot with ID [%d] is not confirmed", robotID));
+            throw new Exception(String.format("failure, robot with ID [%d] is not confirmed", robotMatchObj.getRobotID()));
         }
 
         // overi zda jiz nebyl prekrocen maximalni pocet zapasu "pokusu"
         int maxRounds = robot.get().getDiscipline().getMaxRounds();
         if (maxRounds >= 0) {
             if (robot.get().getMatches().size() >= maxRounds) {
-                throw new Exception(String.format("failure, robot with ID [%d] exceeded the maximum number of matches", robotID));
+                throw new Exception(
+                        String.format("failure, robot with ID [%d] exceeded the maximum number of matches", robotMatchObj.getRobotID()));
             }
         }
 
         // overi zda zapasova skupina existuje, pokud je id skupiny zaporne pak jde o
         // zapas jen jednoho robota (line follower, micromouse, ...)
         MatchGroup group = null;
-        if (groupID >= 0) {
-            Optional<MatchGroup> gOpt = this.matchGroupRepository.findById(groupID);
+        if (robotMatchObj.getGroupID() >= 0) {
+            Optional<MatchGroup> gOpt = this.matchGroupRepository.findById(robotMatchObj.getGroupID());
             if (!gOpt.isPresent()) {
-                throw new Exception(String.format("failure, group with ID [%d] not exists", groupID));
+                throw new Exception(String.format("failure, group with ID [%d] not exists", robotMatchObj.getGroupID()));
             }
             group = gOpt.get();
 
@@ -122,7 +120,7 @@ public class MatchService {
             for (RobotMatch matche : matches) {
                 if (matche.getRobot().getTeamRegistration().getCategory() != mainCategory) {
                     throw new Exception(
-                            String.format("failure, the robots in the group are not in the same category", groupID));
+                            String.format("failure, the robots in the group are not in the same category", robotMatchObj.getGroupID()));
                 }
             }
         }

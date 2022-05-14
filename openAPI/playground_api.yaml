@@ -150,25 +150,27 @@ paths:
     post:
       summary: Vytvoří nové soutěžní hřiště
       description: Mají přístup jen uživatelé s touto rolí [ADMIN, LEADER, ASSISTANT].
-      parameters:
-        - in: query
-          name: name
-          required: true
-          description: Jménpo hřiště
-          schema:
-            type: string
-        - in: query
-          name: number
-          required: true
-          description: Identifikační čislo hřiště (unikátní v rámci ročníku soutěže)
-          schema:
-            type: integer
-        - in: query
-          name: disciplineID
-          required: true
-          description: ID disciplíny, pro které bude nově vytvořené hřiště určené
-          schema:
-            type: integer
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Jménpo hřiště
+                number:
+                  type: integer
+                  description: Identifikační čislo hřiště (unikátní v rámci ročníku soutěže)
+                disciplineID:
+                  type: integer
+                  description: ID disciplíny, pro které bude nově vytvořené hřiště určené
+              required:
+                - name
+                - number
+                - disciplineID
       security:
         - ApiKeyAuth: []
       responses:
@@ -197,24 +199,26 @@ paths:
           description: ID discipliny, která má být upravena
           schema:
             type: integer
-        - in: query
-          name: name
-          required: true
-          description: Nové jméno hřiště
-          schema:
-            type: string
-        - in: query
-          name: number
-          required: true
-          description: Nové identifikační čislo hřiště (unikátní v rámci ročníku soutěže)
-          schema:
-            type: integer
-        - in: query
-          name: disciplineID
-          required: true
-          description: Nové ID disciplíny, pro které bude hřiště určené
-          schema:
-            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Nové jméno hřiště
+                number:
+                  type: integer
+                  description: Nové identifikační čislo hřiště (unikátní v rámci ročníku soutěže)
+                disciplineID:
+                  type: integer
+                  description: Nové ID disciplíny, pro které bude hřiště určené
+              required:
+                - name
+                - number
+                - disciplineID
       security:
         - ApiKeyAuth: []
       responses:

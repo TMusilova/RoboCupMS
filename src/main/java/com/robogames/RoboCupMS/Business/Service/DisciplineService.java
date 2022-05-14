@@ -3,8 +3,11 @@ package com.robogames.RoboCupMS.Business.Service;
 import java.util.List;
 import java.util.Optional;
 
+import com.robogames.RoboCupMS.Business.Model.DisciplineObj;
 import com.robogames.RoboCupMS.Entity.Discipline;
+import com.robogames.RoboCupMS.Entity.ScoreAggregation;
 import com.robogames.RoboCupMS.Repository.DisciplineRepository;
+import com.robogames.RoboCupMS.Repository.ScoreAggregationRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,9 @@ public class DisciplineService {
 
     @Autowired
     private DisciplineRepository disciplineRepository;
+
+    @Autowired
+    private ScoreAggregationRepository aggregationRepository;
 
     /**
      * Navrati vsechny vytvorene discipliny
@@ -46,9 +52,15 @@ public class DisciplineService {
     /**
      * Vytvori novou disciplinu
      * 
-     * @param discipline Nova disciplina
+     * @param disciplineObj Parametry nove discipliny
      */
-    public void create(Discipline discipline) throws Exception {
+    public void create(DisciplineObj disciplineObj) throws Exception {
+        Discipline discipline = new Discipline(
+                disciplineObj.getName(),
+                disciplineObj.getDescription(),
+                disciplineObj.getScoreAggregation(),
+                disciplineObj.getTime(),
+                disciplineObj.getMaxRounds());
         this.disciplineRepository.save(discipline);
     }
 
@@ -82,20 +94,18 @@ public class DisciplineService {
     /**
      * Upravi disciplinu (nazev nebo popis)
      * 
-     * @param id                ID discipliny jejiz data maji byt zmeneny
-     * @param _name             Nazev discipliny
-     * @param _description      Popis discipliny (max 8192 znaku)
-     * @param _scoreAggregation Agregacni funkce skore (pouziva se pro automaticke
-     *                          vyhodnoceni skore)
-     * @param _time             Casový limit na jeden zapas (v sekundách)
-     * @param _maxRounds        Maximalni pocet zapasu odehranych robotem (hodnota
-     *                          bude ignorovana v pripada zaporneho cisla)u
+     * @param id            ID discipliny jejiz data maji byt zmeneny
+     * @param disciplineObj Paramtery nove discipliny
      */
-    public void edit(Discipline discipline, Long id) throws Exception {
+    public void edit(Long id, DisciplineObj disciplineObj) throws Exception {
+        Optional<ScoreAggregation> score = this.aggregationRepository.findByName(disciplineObj.getScoreAggregation());
+
         Optional<Discipline> map = this.disciplineRepository.findById(id)
                 .map(d -> {
-                    d.setName(discipline.getName());
-                    d.setDescription(discipline.getDescription());
+                    d.setName(disciplineObj.getName());
+                    d.setDescription(disciplineObj.getDescription());
+                    d.setTime(disciplineObj.getTime());
+                    d.setScoreAggregation(score.get());
                     return this.disciplineRepository.save(d);
                 });
         if (!map.isPresent()) {

@@ -191,11 +191,45 @@ paths:
     post:
       summary: Vytvoří nový tým
       description: Uživatel, který vytváří tým se stává jeho vedoucím. Uživatel může byt jen v jednom tým. Tým muže vytvořit jen v případě, že se v žádnem nenachází.
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Jméno nového týmu (unikátní)
+              required:
+                - name
+      security:
+        - ApiKeyAuth: []
+      responses:
+        "200":
+          description: Odpověd o stavu provedeného požadavku
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    example: "RESPONSE"
+                  data:
+                    type: string
+                    example: "success"
+
+  /rename:
+    put:
+      summary: Přejmenuje tým
+      description: Přejmenovat tým může jen jeho vedoucí
       parameters:
         - in: query
           name: name
           required: true
-          description: Jméno týmu
+          description: Nové jméno týmu (unikátní)
           schema:
             type: string
       security:

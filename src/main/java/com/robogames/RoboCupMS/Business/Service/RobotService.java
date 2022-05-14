@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.robogames.RoboCupMS.GlobalConfig;
+import com.robogames.RoboCupMS.Business.Model.RobotObj;
 import com.robogames.RoboCupMS.Entity.Discipline;
 import com.robogames.RoboCupMS.Entity.Robot;
 import com.robogames.RoboCupMS.Entity.Team;
@@ -103,11 +104,10 @@ public class RobotService {
      * Vytvori noveho robata. Robot je vytvaren na registraci tymu v urcitem
      * rocniku souteze.
      * 
-     * @param year Rocnik souteze
-     * @param name Jmeno noveho robota (jmeno musi byt unikatni v ramci rocniku
-     *             souteze)
+     * @param year     Rocnik souteze
+     * @param robotObj Parametry noveho robota
      */
-    public void create(int year, String name) throws Exception {
+    public void create(int year, RobotObj robotObj) throws Exception {
         // ziska registraci tymu v danem rocniku souteze pro prihlaseneho uzivatele
         TeamRegistration registration;
         try {
@@ -117,13 +117,14 @@ public class RobotService {
         }
 
         // overeni unikatnosti jmena robota v ramci rocniku souteze
-        if (this.robotRepository.findByName(name).isPresent()) {
+        if (this.robotRepository.findByName(robotObj.getName()).isPresent()) {
             throw new Exception(
-                    String.format("failure, robot with name [%s] already exists in the year [%d]", name, year));
+                    String.format("failure, robot with name [%s] already exists in the year [%d]", robotObj.getName(),
+                            year));
         }
 
         // ulozi robota do databaze
-        Robot r = new Robot(name, 0, registration);
+        Robot r = new Robot(robotObj.getName(), 0, registration);
         this.robotRepository.save(r);
     }
 

@@ -6,8 +6,8 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Model.RobotMatchObj;
 import com.robogames.RoboCupMS.Business.Service.MatchService;
-import com.robogames.RoboCupMS.Entity.MatchGroup;
 import com.robogames.RoboCupMS.Entity.RobotMatch;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,19 +61,14 @@ public class MatchControler {
     /**
      * Naplanuje novy zapas
      * 
-     * @param robotID      ID robota, ktery bude zapasit
-     * @param playgroundID ID hriste, na kterem se bude hrat
-     * @param groupID      ID zapasove skupiny. Jen v pripade pokud zapasi proti
-     *                     sobe vice robotu. V opacnem pripade zadat neplatnou
-     *                     zapornou hodnotu.
+     * @param robotMatchObj Nové parametry zapasu
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER, ERole.Names.REFEREE })
     @PostMapping("/create")
-    Response create(@RequestParam long robotID, @RequestParam long playgroundID,
-            @RequestParam(defaultValue = MatchGroup.NOT_IN_GROUP + "") long groupID) {
+    Response create(@RequestBody RobotMatchObj robotMatchObj) {
         try {
-            this.matchService.create(robotID, playgroundID, groupID);
+            this.matchService.create(robotMatchObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

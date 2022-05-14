@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.robogames.RoboCupMS.Business.Model.MatchGroupObj;
 import com.robogames.RoboCupMS.Entity.MatchGroup;
 import com.robogames.RoboCupMS.Repository.MatchGroupRepository;
 import com.robogames.RoboCupMS.Repository.RobotMatchRepository;
@@ -69,11 +70,11 @@ public class MatchGroupService {
     /**
      * Vytvori novou zapasovou skupinu
      * 
-     * @param creatorid Identifikator tvurce skupiny
+     * @param groupObj Parametry nove zapasove skupiny
      * @return Informace o stavu provedeneho requestu
      */
-    public void create(Long creatorID) throws Exception {
-        MatchGroup g = new MatchGroup(creatorID);
+    public void create(MatchGroupObj groupObj) throws Exception {
+        MatchGroup g = new MatchGroup(groupObj.getCreatorID());
         this.repository.save(g);
     }
 

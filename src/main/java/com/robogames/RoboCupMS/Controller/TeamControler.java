@@ -5,6 +5,7 @@ import java.util.List;
 import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
+import com.robogames.RoboCupMS.Business.Model.TeamObj;
 import com.robogames.RoboCupMS.Business.Service.TeamService;
 import com.robogames.RoboCupMS.Entity.Team;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -91,13 +93,13 @@ public class TeamControler {
     /**
      * Vytvori novy tym. Uzivatel, ktery tym vytvari se stava jeho vedoucim.
      * 
-     * @param name Jmeno tymu (unikatni!!)
+     * @param teamObj Parametry noveho tymu 
      * @return Informace o stavu provedeneho requestu
      */
     @PostMapping("/create")
-    Response create(@RequestParam String name) {
+    Response create(@RequestBody TeamObj teamObj) {
         try {
-            this.teamService.create(name);
+            this.teamService.create(teamObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

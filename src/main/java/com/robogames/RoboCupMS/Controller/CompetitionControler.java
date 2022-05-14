@@ -6,6 +6,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Model.CompetitionObj;
 import com.robogames.RoboCupMS.Business.Service.CompetitionService;
 import com.robogames.RoboCupMS.Entity.Competition;
 import com.robogames.RoboCupMS.Entity.TeamRegistration;
@@ -66,9 +67,9 @@ public class CompetitionControler {
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/create")
-    Response create(@RequestBody Competition compatition) {
+    Response create(@RequestBody CompetitionObj compatitionObj) {
         try {
-            this.competitionService.create(compatition);
+            this.competitionService.create(compatitionObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -95,15 +96,15 @@ public class CompetitionControler {
     /**
      * Upravi parametry souteze, mozne jen pokud jeste nezacala
      * 
-     * @param id          ID souteze jejiz parametry maji byt upraveny
-     * @param compatition Soutez
+     * @param id             ID souteze jejiz parametry maji byt upraveny
+     * @param compatitionObj Nove parametry souteze
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PutMapping("/edit")
-    Response edit(@RequestParam Long id, @RequestBody Competition compatition) {
+    Response edit(@RequestParam Long id, @RequestBody CompetitionObj compatitionObj) {
         try {
-            this.competitionService.edit(id, compatition);
+            this.competitionService.edit(id, compatitionObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

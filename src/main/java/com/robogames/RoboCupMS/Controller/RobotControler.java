@@ -6,6 +6,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
+import com.robogames.RoboCupMS.Business.Model.RobotObj;
 import com.robogames.RoboCupMS.Business.Service.RobotService;
 import com.robogames.RoboCupMS.Entity.Robot;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -83,15 +85,14 @@ public class RobotControler {
      * Vytvori noveho robata. Robot je vytvaren na registraci tymu v urcitem
      * rocniku souteze.
      * 
-     * @param year Rocnik souteze
-     * @param name Jmeno noveho robota (jmeno musi byt unikatni v ramci rocniku
-     *             souteze)
+     * @param year     Rocnik souteze
+     * @param robotObj Parametry noveho robota
      * @return Informace o stavu provedeneho requestu
      */
     @PostMapping("/create")
-    Response create(@RequestParam int year, @RequestParam String name) {
+    Response create(@RequestParam int year, @RequestBody RobotObj robotObj) {
         try {
-            this.robotService.create(year, name);
+            this.robotService.create(year, robotObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());

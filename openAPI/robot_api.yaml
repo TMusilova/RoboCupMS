@@ -187,12 +187,18 @@ paths:
           description: Ročník soutěže
           schema:
             type: integer
-        - in: query
-          name: name
-          required: true
-          description: Jméno robota (uníkátní v rámci ročníku soutěže)
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Jméno robota (uníkátní v rámci ročníku soutěže)
+              required:
+                - name
       security:
         - ApiKeyAuth: []
       responses:

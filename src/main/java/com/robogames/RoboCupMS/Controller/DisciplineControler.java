@@ -6,7 +6,7 @@ import com.robogames.RoboCupMS.GlobalConfig;
 import com.robogames.RoboCupMS.Response;
 import com.robogames.RoboCupMS.ResponseHandler;
 import com.robogames.RoboCupMS.Business.Enum.ERole;
-import com.robogames.RoboCupMS.Business.Enum.EScoreAggregation;
+import com.robogames.RoboCupMS.Business.Model.DisciplineObj;
 import com.robogames.RoboCupMS.Business.Service.DisciplineService;
 import com.robogames.RoboCupMS.Entity.Discipline;
 
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,22 +61,14 @@ public class DisciplineControler {
     /**
      * Vytvori novou disciplinu
      * 
-     * @param _name             Nazev discipliny
-     * @param _description      Popis discipliny (max 8192 znaku)
-     * @param _scoreAggregation Agregacni funkce skore (pouziva se pro automaticke
-     *                          vyhodnoceni skore)
-     * @param _time             Casový limit na jeden zapas (v sekundách)
-     * @param _maxRounds        Maximalni pocet zapasu odehranych robotem (hodnota
-     *                          bude ignorovana v pripada zaporneho cisla)
+     * @param disciplineObj Parametry nové disciplíny
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PostMapping("/create")
-    Response create(@RequestParam String name, @RequestParam String description,
-            @RequestParam EScoreAggregation scoreAggregation, @RequestParam int time, @RequestParam int maxRounds) {
+    Response create(@RequestBody DisciplineObj disciplineObj) {
         try {
-            this.disciplineService
-                    .create(new Discipline(name, description, scoreAggregation, time, maxRounds));
+            this.disciplineService.create(disciplineObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
@@ -102,24 +95,16 @@ public class DisciplineControler {
     /**
      * Upravi disciplinu (nazev nebo popis)
      * 
-     * @param id                ID discipliny jejiz data maji byt zmeneny
-     * @param _name             Nazev discipliny
-     * @param _description      Popis discipliny (max 8192 znaku)
-     * @param _scoreAggregation Agregacni funkce skore (pouziva se pro automaticke
-     *                          vyhodnoceni skore)
-     * @param _time             Casový limit na jeden zapas (v sekundách)
-     * @param _maxRounds        Maximalni pocet zapasu odehranych robotem (hodnota
-     *                          bude ignorovana v pripada zaporneho cisla)
+     * @param id            ID discipliny jejiz data maji byt zmeneny
+     * @param disciplineObj Nové parametry discipliny
+     * 
      * @return Informace o stavu provedeneho requestu
      */
     @Secured({ ERole.Names.ADMIN, ERole.Names.LEADER })
     @PutMapping("/edit")
-    Response edit(@RequestParam String name, @RequestParam String description,
-            @RequestParam EScoreAggregation scoreAggregation, @RequestParam int time, @RequestParam int maxRounds,
-            @RequestParam Long id) {
+    Response edit(@RequestParam Long id, @RequestBody DisciplineObj disciplineObj) {
         try {
-            this.disciplineService.edit(new Discipline(name, description, scoreAggregation, time, maxRounds),
-                    id);
+            this.disciplineService.edit(id, disciplineObj);
             return ResponseHandler.response("success");
         } catch (Exception ex) {
             return ResponseHandler.error(ex.getMessage());
