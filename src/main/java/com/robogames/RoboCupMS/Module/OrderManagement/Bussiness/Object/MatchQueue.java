@@ -106,6 +106,9 @@ public class MatchQueue {
      * @return True -> zapas byl pridan
      */
     public synchronized boolean add(RobotMatch match) {
+        if(match.getState().getName() == EMatchState.DONE) {
+            return false;
+        }
         if (!this.queue.stream().anyMatch((m) -> (m.getID() == match.getID()))) {
             this.queue.add(match);
             return true;

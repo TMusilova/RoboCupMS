@@ -307,25 +307,22 @@ public class OrderManagementService {
             return;
         }
 
-        // seznam zapasu cekajicich na odehrani
-        Stream<RobotMatch> waiting = this.robotMatchRepository.findAll().stream()
-                .filter((m) -> (m.getRobot().getTeamRegistration().getCompatitionYear() == YEAR &&
-                        (m.getState().getName() == EMatchState.WAITING
-                                || m.getState().getName() == EMatchState.REMATCH)));
-
         logger.info("OrderManagementService refresh");
 
-        // sychrnonizace a odstrani odehranych zapasu
+        // sychrnonizace
         OrderManagementService.MATCH_GUEUES.forEach((p, queue) -> {
-            // synchronizace
+            // synchronizace dat
             queue.synchronize(this.robotMatchRepository);
-            // odstraneni
+            // odstraneni odehranych zapasu
             int cnt = queue.removeAllDone();
             logger.info(String.format("[Playground ID: %d] removed from queue: %d", p, cnt));
         });
 
         // prida vsechny zapasy, ktere cekaji na odehrani
-        waiting.forEach((m) -> {
+        Stream<RobotMatch> matches = this.robotMatchRepository.findAll().stream()
+                .filter((m) -> (m.getRobot().getTeamRegistration().getCompatitionYear() == YEAR));
+
+        matches.forEach((m) -> {
             MatchQueue queue = OrderManagementService.MATCH_GUEUES.get(m.getPlayground().getID());
             if (queue == null) {
                 queue = new MatchQueue(m.getPlayground());
