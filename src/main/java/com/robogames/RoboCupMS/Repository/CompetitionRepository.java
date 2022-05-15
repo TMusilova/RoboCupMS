@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Repozitar pro tymy
+ * Repozitar pro souteze
  */
 @Repository
 public interface CompetitionRepository extends JpaRepository<Competition, Long> {
