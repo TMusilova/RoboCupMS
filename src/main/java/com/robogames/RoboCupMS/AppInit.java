@@ -109,11 +109,11 @@ public class AppInit {
                 logger.info("UNIVERSITY_MAX_AGE set on: " + UNIVERSITY_MAX_AGE);
             }
 
-            // maximalni mocet robotu v kategorii na jeden tym
-            Long MAX_ROBOTS_IN_CATEGORY = (Long) obj.get("MAX_ROBOTS_IN_CATEGORY");
-            if (MAX_ROBOTS_IN_CATEGORY != null) {
-                GlobalConfig.MAX_ROBOTS_IN_CATEGORY = (int) MAX_ROBOTS_IN_CATEGORY.longValue();
-                logger.info("MAX_ROBOTS_IN_CATEGORY set on: " + MAX_ROBOTS_IN_CATEGORY);
+            // maximalni mocet robotu v discipline na jeden tym
+            Long MAX_ROBOTS_IN_DISCIPLINE = (Long) obj.get("MAX_ROBOTS_IN_DISCIPLINE");
+            if (MAX_ROBOTS_IN_DISCIPLINE != null) {
+                GlobalConfig.MAX_ROBOTS_IN_DISCIPLINE = (int) MAX_ROBOTS_IN_DISCIPLINE.longValue();
+                logger.info("MAX_ROBOTS_IN_DISCIPLINE set on: " + MAX_ROBOTS_IN_DISCIPLINE);
             }
 
             // maximalni mocet robotu v kategorii na jeden tym

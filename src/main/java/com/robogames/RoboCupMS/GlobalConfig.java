@@ -69,9 +69,9 @@ public class GlobalConfig {
     public static int UNIVERSITY_MAX_AGE = 26;
 
     /**
-     * Maximalni pocet robotu v kategorii na jeden tym
+     * Maximalni pocet registrovanych robotu v discipline na jeden tym
      */
-    public static int MAX_ROBOTS_IN_CATEGORY = 1;
+    public static int MAX_ROBOTS_IN_DISCIPLINE = 1;
 
     /**
      * Maximalni pocet clenu v jednom tymu

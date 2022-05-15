@@ -239,7 +239,7 @@ public class RobotService {
                 cnt++;
             }
         }
-        if (cnt >= GlobalConfig.MAX_ROBOTS_IN_CATEGORY) {
+        if (cnt >= GlobalConfig.MAX_ROBOTS_IN_DISCIPLINE) {
             throw new Exception("failure, you have exceeded the maximum limit of registered robots per discipline");
         }
 
